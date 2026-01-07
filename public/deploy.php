@@ -5,8 +5,15 @@
 // 1. Security Check (Optional: Add a password query param ?key=123)
 // if ($_GET['key'] !== 'secret123') die('Access Denied');
 
-// 2. Define Paths
-$baseDir = __DIR__ . '/..'; // Go up one level from public/
+// 2. Define Paths - Try to guess if we are in Root or Public
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    // We are in ROOT (public_html)
+    $baseDir = __DIR__;
+} else {
+    // We are likely in PUBLIC (public_html/public)
+    $baseDir = __DIR__ . '/..';
+}
+
 $vendorPath = $baseDir . '/vendor/autoload.php';
 $bootstrapPath = $baseDir . '/bootstrap/app.php';
 
