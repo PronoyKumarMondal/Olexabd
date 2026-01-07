@@ -290,6 +290,23 @@
                 </div>
             @endif
 
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 border-start border-danger border-4" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-exclamation-triangle-fill text-danger me-2 fs-5"></i>
+                        <div>
+                            <strong>Please fix the following errors:</strong>
+                            <ul class="mb-0 mt-1 ps-3">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
             @yield('content')
         </div>
     </div>
