@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Product;
-use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Auth\Access\Response;
 
 class ProductPolicy
@@ -11,39 +11,27 @@ class ProductPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(Admin $user): bool
     {
         return $user->isAdmin();
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Product $product): bool
+    public function view(Admin $user, Product $product): bool
     {
         return $user->isAdmin();
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(Admin $user): bool
     {
         return $user->hasPermission('product_create');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Product $product): bool
+    public function update(Admin $user, Product $product): bool
     {
         return $user->hasPermission('product_edit');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Product $product): bool
+    public function delete(Admin $user, Product $product): bool
     {
         return $user->hasPermission('product_delete');
     }
