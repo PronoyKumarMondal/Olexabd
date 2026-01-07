@@ -43,8 +43,8 @@ class DashboardController extends Controller
             ->whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
             ->where('payment_status', 'paid')
-            ->groupBy('day')
-            ->orderBy('day')
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%d')"))
+            ->orderBy(DB::raw("DATE_FORMAT(created_at, '%d')"))
             ->pluck('revenue', 'day')
             ->toArray();
 
