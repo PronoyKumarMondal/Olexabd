@@ -30,8 +30,7 @@ class DashboardController extends Controller
                              ->whereMonth('created_at', $month)
                              ->sum('total_amount');
                              
-        $totalCustomers = User::where('is_admin', false)
-                              ->whereYear('created_at', $year)
+        $totalCustomers = User::whereYear('created_at', $year)
                               ->whereMonth('created_at', $month)
                               ->count();
 
