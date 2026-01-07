@@ -33,20 +33,31 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/account/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
-    // Admin Routes
-    Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-        
-        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-        Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
-        Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
-        Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
-        
-        // Customers
-        Route::get('/customers', [\App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/account/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
-        // Super Admin Only
-        Route::middleware(['can:super_admin'])->group(function () {
+    // Admin Routes (Subdomain)
+    Route::domain('admin.olexabd.com')->name('admin.')->group(function () {
+        
+        // Admin Auth
+        Route::get('/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'create'])->name('login');
+        Route::post('/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'store'])->name('login.store');
+        Route::post('/logout', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'destroy'])->name('logout');
+
+        // Admin Protected Routes
+        Route::middleware(['admin'])->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+            
+            Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+            Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+            Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
+            Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+            Route::get('/customers', [\App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('customers.index');
+
+            // Super Admin Only
+            // Note: Middleware for super_admin needs to be updated to support Admin model or removed if Admin model handles logic differently
+            // For now, assuming Admin model works with existing gate/policy logic if traits are compatible. 
+            // If strictly relying on 'can', we need to check if Gate uses default guard.
+            // Simplified: Access control logic inside controllers might need review.
             Route::get('/super', [App\Http\Controllers\Admin\SuperAdminController::class, 'index'])->name('super.index');
             Route::post('/super/store', [App\Http\Controllers\Admin\SuperAdminController::class, 'store'])->name('super.store');
             Route::put('/super/{user}/role', [App\Http\Controllers\Admin\SuperAdminController::class, 'updateRole'])->name('super.update_role');

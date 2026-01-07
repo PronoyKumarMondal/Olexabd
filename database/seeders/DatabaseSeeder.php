@@ -7,20 +7,27 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Hash;
+use Database\Seeders\AdminSeeder; // Added this line
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
     {
         // 1. Create Users
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@olexabd.com'],
-            [
-                'name' => 'Admin User',
-                'password' => Hash::make('password'),
-                'is_admin' => true,
-            ]
-        );
+        $this->call([
+            AdminSeeder::class,
+        ]);
+
+        // The AdminSeeder will handle the creation of the admin user.
+        // The following code for admin user creation is removed as per instruction.
+        // $admin = User::firstOrCreate(
+        //     ['email' => 'admin@olexabd.com'],
+        //     [
+        //         'name' => 'Admin User',
+        //         'password' => Hash::make('password'),
+        //         'is_admin' => true,
+        //     ]
+        // );
 
         $customer = User::firstOrCreate(
             ['email' => 'customer@olexabd.com'],
