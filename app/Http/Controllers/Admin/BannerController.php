@@ -35,7 +35,7 @@ class BannerController extends Controller
         }
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
             'title' => 'nullable|string|max:255',
             'badge_text' => 'nullable|string|max:50',
             'link' => 'nullable|url',
@@ -45,7 +45,9 @@ class BannerController extends Controller
         $data = $request->except('image');
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('banners', 'public');
+            $file = $request->file('image');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
+            $path = $file->storeAs('banners', $filename, 'public');
             $data['image'] = '/storage/' . $path;
         }
 
@@ -62,7 +64,7 @@ class BannerController extends Controller
     public function update(Request $request, Banner $banner)
     {
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'title' => 'nullable|string|max:255',
             'badge_text' => 'nullable|string|max:50',
             'link' => 'nullable|url',
@@ -75,7 +77,9 @@ class BannerController extends Controller
             // Delete old image if needed (optional)
             // if ($banner->image) { ... }
             
-            $path = $request->file('image')->store('banners', 'public');
+            $file = $request->file('image');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
+            $path = $file->storeAs('banners', $filename, 'public');
             $data['image'] = '/storage/' . $path;
         }
 

@@ -56,7 +56,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
-            'image_file' => 'nullable|image|max:2048',
+            'image_file' => 'nullable|image|max:5120',
             'image_url' => 'nullable|url'
         ]);
         
@@ -65,7 +65,9 @@ class ProductController extends Controller
         
         // Handle Image
         if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('products', 'public');
+            $file = $request->file('image_file');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
+            $path = $file->storeAs('products', $filename, 'public');
             $data['image'] = '/storage/' . $path;
         } elseif ($request->filled('image_url')) {
             $data['image'] = $request->image_url;
@@ -92,7 +94,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
-            'image_file' => 'nullable|image|max:2048',
+            'image_file' => 'nullable|image|max:5120',
             'image_url' => 'nullable|url'
         ]);
 
@@ -103,7 +105,9 @@ class ProductController extends Controller
 
         // Handle Image Update
         if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('products', 'public');
+            $file = $request->file('image_file');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
+            $path = $file->storeAs('products', $filename, 'public');
             $data['image'] = '/storage/' . $path;
         } elseif ($request->filled('image_url')) {
             $data['image'] = $request->image_url;
