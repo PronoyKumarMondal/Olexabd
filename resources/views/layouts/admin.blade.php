@@ -212,36 +212,36 @@
                 <i class="bi bi-grid-1x2-fill"></i> Dashboard
             </a>
             <!-- ... other links ... -->
-            @if(Auth::user()->isSuperAdmin() || Auth::user()->hasPermission('product_create') || Auth::user()->hasPermission('product_edit') || Auth::user()->hasPermission('product_delete'))
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('product_create') || Auth::guard('admin')->user()->hasPermission('product_edit') || Auth::guard('admin')->user()->hasPermission('product_delete'))
             <a class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
                 <i class="bi bi-gem"></i> Products
             </a>
             @endif
 
-            @if(Auth::user()->isSuperAdmin() || Auth::user()->hasPermission('category_create') || Auth::user()->hasPermission('category_edit') || Auth::user()->hasPermission('category_delete'))
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('category_create') || Auth::guard('admin')->user()->hasPermission('category_edit') || Auth::guard('admin')->user()->hasPermission('category_delete'))
             <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">
                 <i class="bi bi-collection"></i> Categories
             </a>
             @endif
 
-            @if(Auth::user()->isSuperAdmin() || Auth::user()->hasPermission('order_edit'))
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('order_edit'))
             <a class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
                 <i class="bi bi-bag-check-fill"></i> Orders
             </a>
             @endif
-            @if(Auth::user()->isSuperAdmin() || Auth::user()->hasPermission('view_customers'))
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('view_customers'))
             <a class="nav-link {{ request()->routeIs('admin.customers.*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
                 <i class="bi bi-people-fill"></i> Customers
             </a>
             @endif
 
-            @if(Auth::user()->isSuperAdmin() || Auth::user()->hasPermission('manage_banners'))
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('manage_banners'))
             <a class="nav-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}" href="{{ route('admin.banners.index') }}">
                 <i class="bi bi-images"></i> Banners
             </a>
             @endif
 
-            @if(Auth::user()->isSuperAdmin())
+            @if(Auth::guard('admin')->user()->isSuperAdmin())
                 <div class="sidebar-heading mt-3">Administration</div>
                 <a class="nav-link {{ request()->routeIs('admin.super.index') ? 'active' : '' }}" href="{{ route('admin.super.index') }}">
                     <i class="bi bi-shield-lock-fill"></i> Manage Admins
@@ -255,14 +255,14 @@
         <div class="p-3 border-top bg-light m-3 rounded-3 mb-4">
              <div class="d-flex align-items-center gap-2 mb-2">
                 <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
-                    {{ substr(Auth::user()->name, 0, 1) }}
+                    {{ substr(Auth::guard('admin')->user()->name, 0, 1) }}
                 </div>
                 <div class="overflow-hidden">
-                    <div class="fw-bold text-truncate small">{{ Auth::user()->name }}</div>
-                    <div class="text-muted small text-truncate" style="font-size: 0.7rem;">{{ Auth::user()->email }}</div>
+                    <div class="fw-bold text-truncate small">{{ Auth::guard('admin')->user()->name }}</div>
+                    <div class="text-muted small text-truncate" style="font-size: 0.7rem;">{{ Auth::guard('admin')->user()->email }}</div>
                 </div>
             </div>
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
                 <button type="submit" class="btn btn-outline-danger w-100 btn-sm"><i class="bi bi-box-arrow-right"></i> Log Out</button>
             </form>
