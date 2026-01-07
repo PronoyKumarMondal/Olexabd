@@ -175,4 +175,8 @@ If the route above failed, you need to upload the `vendor` folder manually becau
     *   Go to `yourdomain.com/admin`
     *   Login with your admin credentials (default seed: `admin@example.com` / `password` unless you changed it).
 
-**Your Automatic Deployment Pipeline is COMPLETE.** 🚀
+### Troubleshooting: Deployment Fails with "Error Code 1"
+If your deployment fails with `package:discover` or `post-update-cmd` errors, it's due to Hostinger's memory limits.
+1.  Open `composer.json` and remove any scripts inside `"post-update-cmd"` or `"post-create-project-cmd"`.
+2.  Push the change.
+3.  Run the tasks manually using the `deploy.php` setup described earlier.
