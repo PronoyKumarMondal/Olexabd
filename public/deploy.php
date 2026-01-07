@@ -1,6 +1,9 @@
 <?php
 // deploy.php - Standalone Deployment Script
 // Access this via https://yourdomain.com/deploy.php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // 1. Security Check (Optional: Add a password query param ?key=123)
 // if ($_GET['key'] !== 'secret123') die('Access Denied');
