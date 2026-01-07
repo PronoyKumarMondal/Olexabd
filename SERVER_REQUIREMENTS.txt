@@ -1,0 +1,34 @@
+# Server Requirements for E-Commerce App (Laravel 11 + React)
+
+## HOSTING ENVIRONMENT (Hostinger)
+- **PHP Version**: 8.2 or higher (CRITICAL)
+- **Web Server**: Apache or Nginx
+- **Database**: MySQL 5.7+ or MariaDB 10.3+
+
+## REQUIRED PHP EXTENSIONS
+Ensure these are enabled in your Hostinger PHP Configuration:
+- Ctype
+- cURL
+- DOM
+- Fileinfo
+- Filter
+- Hash
+- Mbstring
+- OpenSSL
+- PCRE
+- PDO
+- Session
+- Tokenizer
+- XML
+- JSON
+- BCMath (Recommended for E-commerce/money calculations)
+- Intl (Recommended for currency formatting)
+
+## FRONTEND BUILD REQUIREMENTS (Local Development)
+- **Node.js**: v18.0.0+ (REQUIRED for building React assets)
+- **NPM**: Included with Node.js
+
+## DEPLOYMENT NOTES
+- **Document Root**: Point your domain/subdomain to the `/public` folder.
+- **.htaccess**: Default Laravel .htaccess usually works on Hostinger.
+- **SSL**: Required for secure payments.
