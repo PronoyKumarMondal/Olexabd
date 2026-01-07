@@ -15,8 +15,9 @@ Route::get('/', function () {
     ]);
 });
 
+// Dashboard (Redirect to Profile or Home)
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return redirect()->route('shop.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Tracking (Public)
