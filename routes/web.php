@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
     // Admin Routes
-    Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         
         Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
