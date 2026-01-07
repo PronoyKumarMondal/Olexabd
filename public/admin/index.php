@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// DEBUG: Check if we are hitting this file and what the host is
+die("Admin Entry Point Hit! Host: " . $_SERVER['HTTP_HOST']);
+
 // Adjust paths to point to the main project root (Go up 2 levels: public/admin -> root)
 if (file_exists($maintenance = __DIR__.'/../../storage/framework/maintenance.php')) {
     require $maintenance;
