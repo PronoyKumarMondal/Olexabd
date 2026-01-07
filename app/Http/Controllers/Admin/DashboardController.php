@@ -38,7 +38,7 @@ class DashboardController extends Controller
         // 2. Sales Chart Data (Daily breakdown for the selected month)
         // Group by Day
         $dailySales = Order::select(
-                DB::raw("strftime('%d', created_at) as day"), 
+                DB::raw("DATE_FORMAT(created_at, '%d') as day"), 
                 DB::raw('sum(total_amount) as revenue')
             )
             ->whereYear('created_at', $year)
