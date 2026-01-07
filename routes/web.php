@@ -80,3 +80,23 @@ Route::middleware('auth')->group(function() {
 });
 
 require __DIR__.'/auth.php';
+
+
+Route::get('/server-setup', function () {
+    // 1. Install Dependencies (Might take time)
+    // Note: Hostinger usually blocks 'composer install' via web. 
+    // IF THIS FAILS, USE 'Option B' below.
+    // exec('composer install --no-dev --optimize-autoloader');
+
+    // 2. Clear Caches
+    \Artisan::call('optimize:clear');
+    \Artisan::call('config:clear');
+
+    // 3. Migrate Database (Create Tables)
+    \Artisan::call('migrate:fresh --seed --force');
+
+    // 4. Link Storage (For Images)
+    \Artisan::call('storage:link');
+
+    return 'Setup Completed! <br> 1. Cache Cleared <br> 2. Database Migrated <br> 3. Storage Linked';
+});
