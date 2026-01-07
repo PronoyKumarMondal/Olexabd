@@ -95,10 +95,4 @@ require __DIR__.'/auth.php';
 
 
 // 4. Link Storage (For Images)
-    // \Artisan::call('storage:link');
-    // return 'Setup Completed!';
-// });
-// 4. Link Storage (For Images)
-    // \Artisan::call('storage:link');
-    // return 'Setup Completed!';
-// });
+// \Artisan::call('storage:link');
