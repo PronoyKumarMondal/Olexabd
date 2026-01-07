@@ -87,4 +87,19 @@ class DashboardController extends Controller
             'statusData'
         ));
     }
+    public function serveStorage(Request $request, $path)
+    {
+        // Sanitize path to prevent directory traversal
+        if (str_contains($path, '..')) {
+            abort(403);
+        }
+
+        $fullPath = storage_path('app/public/' . $path);
+
+        if (!file_exists($fullPath)) {
+            abort(404);
+        }
+
+        return response()->file($fullPath);
+    }
 }

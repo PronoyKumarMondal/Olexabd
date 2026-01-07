@@ -72,6 +72,11 @@ Route::domain('admin.olexabd.com')->name('admin.')->group(function () {
     Route::post('/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'store'])->name('login.store');
     Route::post('/logout', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'destroy'])->name('logout');
 
+    // Storage Proxy (Bypasses Symlink Issues)
+    Route::get('/storage/{path}', [\App\Http\Controllers\Admin\DashboardController::class, 'serveStorage'])
+        ->where('path', '.*')
+        ->name('storage.proxy');
+
     // Admin Protected Routes
     Route::middleware(['admin'])->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
