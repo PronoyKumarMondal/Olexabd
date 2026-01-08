@@ -88,6 +88,10 @@
             .hero-banner-item {
                 height: auto;
                 aspect-ratio: 4/3; /* Mobile Ratio */
+                background-color: white;
+            }
+            .hero-banner-item .hero-banner-img {
+                object-fit: contain;
             }
             .hero-title {
                 font-size: 2.2rem;
