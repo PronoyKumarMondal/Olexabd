@@ -51,6 +51,8 @@
                         <th>Category</th>
                         <th>Price</th>
                         <th>Stock</th>
+                        <th>Last Updated</th>
+                        <th>Updated By</th>
                         <th class="text-end pe-4">Actions</th>
                     </tr>
                 </thead>
@@ -66,13 +68,23 @@
                         <td>{{ $product->category->name ?? '-' }}</td>
                         <td class="fw-bold">৳{{ $product->price }}</td>
                         <td>
-                            {{ $product->stock }}
-                            <div class="small text-muted mt-1" style="font-size: 0.7em;">
-                                <div><i class="bi bi-clock"></i> {{ $product->created_at->format('M d, y') }}</div>
-                                @if($product->updated_by)
-                                <div><i class="bi bi-pencil"></i> {{ $product->updater->name ?? 'Admin' }} ({{ $product->updated_at->format('M d') }})</div>
-                                @endif
-                            </div>
+                            @if($product->stock < 10)
+                                <span class="text-danger fw-bold">{{ $product->stock }}</span>
+                            @else
+                                {{ $product->stock }}
+                            @endif
+                        </td>
+                        <td>
+                            <span class="small text-muted">{{ $product->updated_at->format('M d, Y h:i A') }}</span>
+                        </td>
+                        <td>
+                            @if($product->updated_by)
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">
+                                    <i class="bi bi-person-circle me-1"></i> {{ $product->updater->name ?? 'Admin' }}
+                                </span>
+                            @else
+                                <span class="text-muted small">-</span>
+                            @endif
                         </td>
                         <td class="text-end pe-4">
                             @can('update', $product)

@@ -136,6 +136,8 @@
                     <tr>
                         <th class="ps-4">Name</th>
                         <th>Products</th>
+                        <th>Last Updated</th>
+                        <th>Updated By</th>
                         <th>Status</th>
                         <th class="text-end pe-4">Actions</th>
                     </tr>
@@ -161,13 +163,19 @@
                             </div>
                         </td>
                         <td>
-                            {{ $category->products_count }}
-                            <div class="small text-muted mt-1" style="font-size: 0.7em;">
-                                <div><i class="bi bi-clock"></i> {{ $category->created_at->format('M d, y') }}</div>
-                                @if($category->updated_by)
-                                <div><i class="bi bi-pencil"></i> {{ $category->updater->name ?? 'Admin' }} ({{ $category->updated_at->format('M d') }})</div>
-                                @endif
-                            </div>
+                            <span class="badge bg-light text-dark border">{{ $category->products_count }} items</span>
+                        </td>
+                         <td>
+                            <span class="small text-muted">{{ $category->updated_at->format('M d, Y h:i A') }}</span>
+                        </td>
+                        <td>
+                             @if($category->updated_by)
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">
+                                    <i class="bi bi-person-circle me-1"></i> {{ $category->updater->name ?? 'Admin' }}
+                                </span>
+                            @else
+                                <span class="text-muted small">-</span>
+                            @endif
                         </td>
                         <td>
                             @if($category->is_active)
