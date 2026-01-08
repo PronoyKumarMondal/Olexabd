@@ -11,7 +11,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::withCount('products')->latest();
+        $query = Category::with(['parent', 'children'])->withCount('products')->latest();
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -29,8 +29,13 @@ class CategoryController extends Controller
             }
         }
 
-        $categories = $query->paginate(8);
-        return view('admin.categories.index', compact('categories'));
+        $categories = $query->paginate(10);
+        $parentCategories = Category::whereNull('parent_id')->orderBy('name')->get(); // Only allowing 1 level deep for now for simplicity, or fetching all to allow deep nesting? User asked for mapping. Typically main dropdown has all.
+        // Let's pass all categories for the dropdown, but typically we exclude the category itself in update.
+        // For index view dropdown, we just need a list of potential parents.
+        $allCategories = Category::orderBy('name')->get();
+        
+        return view('admin.categories.index', compact('categories', 'allCategories'));
     }
 
     public function store(Request $request)
@@ -38,6 +43,7 @@ class CategoryController extends Controller
         $this->authorize('create', Category::class);
         $request->validate([
             'name' => 'required|unique:categories,name',
+            'parent_id' => 'nullable|exists:categories,id',
             'image_file' => 'nullable|image|max:2048',
             'image_url' => 'nullable|url'
         ]);
@@ -53,6 +59,7 @@ class CategoryController extends Controller
         Category::create([
             'name' => $request->name,
             'slug' => Str::slug($request->name),
+            'parent_id' => $request->parent_id,
             'image' => $image,
             'is_active' => true
         ]);
@@ -65,6 +72,7 @@ class CategoryController extends Controller
         $this->authorize('update', $category);
         $request->validate([
             'name' => 'required|unique:categories,name,' . $category->id,
+            'parent_id' => 'nullable|exists:categories,id|not_in:' . $category->id, // Prevent self-parenting
             'image_file' => 'nullable|image|max:2048',
             'image_url' => 'nullable|url'
         ]);
@@ -72,6 +80,7 @@ class CategoryController extends Controller
         $data = [
             'name' => $request->name,
             'slug' => Str::slug($request->name),
+            'parent_id' => $request->parent_id,
         ];
 
         if ($request->hasFile('image_file')) {

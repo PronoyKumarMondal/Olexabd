@@ -44,6 +44,15 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
+                        <label class="form-label">Parent Category</label>
+                        <select name="parent_id" class="form-select">
+                            <option value="">None (Main Category)</option>
+                            @foreach($allCategories as $cat)
+                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Category Name</label>
                         <input type="text" name="name" class="form-control" required>
                     </div>
@@ -83,6 +92,15 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Parent Category</label>
+                        <select name="parent_id" id="editParentId" class="form-select">
+                            <option value="">None (Main Category)</option>
+                            @foreach($allCategories as $cat)
+                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Category Name</label>
                         <input type="text" name="name" id="editName" class="form-control" required>
@@ -134,7 +152,12 @@
                                         <i class="bi bi-tag text-muted"></i>
                                     </div>
                                 @endif
-                                <div class="fw-bold">{{ $category->name }}</div>
+                                <div class="fw-bold">
+                                    @if($category->parent)
+                                        <span class="text-muted small fw-normal">{{ $category->parent->name }} <i class="bi bi-chevron-right" style="font-size:0.75em;"></i></span><br>
+                                    @endif
+                                    {{ $category->name }}
+                                </div>
                             </div>
                         </td>
                         <td>
@@ -155,7 +178,7 @@
                         </td>
                         <td class="text-end pe-4">
                              @can('update', $category)
-                            <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditModal('{{ $category->code }}', '{{ addslashes($category->name) }}', '{{ $category->image }}')">
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditModal('{{ $category->code }}', '{{ addslashes($category->name) }}', '{{ $category->image }}', '{{ $category->parent_id }}')">
                                 Edit
                             </button>
                             @endcan
@@ -180,9 +203,11 @@
 </div>
 
 <script>
-    function openEditModal(code, name, imageUrl) {
+    function openEditModal(code, name, imageUrl, parentId) {
         document.getElementById('editName').value = name;
         document.getElementById('editImageUrl').value = imageUrl;
+        document.getElementById('editParentId').value = parentId || "";
+        
         
         // Construct the URL using the code
         let url = "{{ route('admin.categories.update', ':code') }}";
