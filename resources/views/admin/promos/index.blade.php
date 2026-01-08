@@ -48,7 +48,7 @@
                             <div class="small text-muted" style="font-size: 0.7em;">
                                 <div><i class="bi bi-clock"></i> {{ $promo->updated_at->format('M d, H:i') }}</div>
                                 @if($promo->updated_by)
-                                <div><i class="bi bi-pencil"></i> {{ $promo->updater->name ?? 'Admin' }}</div>
+                                <div><i class="bi bi-pencil"></i> {{ $promo->updater?->name ?? 'Admin' }}</div>
                                 @endif
                             </div>
                         </td>

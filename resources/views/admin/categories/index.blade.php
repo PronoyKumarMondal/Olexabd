@@ -171,7 +171,7 @@
                         <td>
                              @if($category->updated_by)
                                 <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">
-                                    <i class="bi bi-person-circle me-1"></i> {{ $category->updater->name ?? 'Admin' }}
+                                    <i class="bi bi-person-circle me-1"></i> {{ $category->updater?->name ?? 'Admin' }}
                                 </span>
                             @else
                                 <span class="text-muted small">-</span>
