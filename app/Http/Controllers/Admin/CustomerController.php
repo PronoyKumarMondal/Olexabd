@@ -10,7 +10,7 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
-        if (!auth()->user()->hasPermission('view_customers')) {
+        if (!auth('admin')->user()->hasPermission('view_customers')) {
             abort(403, 'Unauthorized action.');
         }
 
