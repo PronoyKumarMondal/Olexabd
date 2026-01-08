@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Change Mobile Image (Optional)</label>
+                    <label class="form-label fw-bold">Change Mobile Image</label>
                     <input type="file" name="mobile_image" class="form-control" accept="image/*">
                     <div class="form-text text-primary">
                         <i class="bi bi-info-circle"></i> <strong>Ideal Size:</strong> 800x600 pixels.

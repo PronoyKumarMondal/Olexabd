@@ -23,8 +23,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Mobile Banner Image (Optional)</label>
-                    <input type="file" name="mobile_image" class="form-control" accept="image/*">
+                    <label class="form-label fw-bold">Mobile Banner Image <span class="text-danger">*</span></label>
+                    <input type="file" name="mobile_image" class="form-control" accept="image/*" required>
                     <div class="form-text text-primary">
                         <i class="bi bi-info-circle"></i> <strong>Ideal Size:</strong> 800x600 pixels (4:3 Ratio).<br>
                         Displayed on phones instead of the desktop banner.
