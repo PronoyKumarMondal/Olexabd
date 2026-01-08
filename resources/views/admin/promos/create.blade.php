@@ -75,25 +75,34 @@
 
                     <div id="categorySelect" class="mb-3 d-none">
                         <label class="form-label">Select Categories</label>
-                        <select name="target_ids[]" class="form-select" multiple style="height: 150px;">
+                        <input type="text" class="form-control mb-2" id="categorySearch" placeholder="Search categories..." onkeyup="filterList('categorySearch', 'categoryList')">
+                        <div class="border rounded p-3 overflow-auto bg-white" style="height: 200px;" id="categoryList">
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                <div class="form-check search-item">
+                                    <input class="form-check-input" type="checkbox" name="target_ids[]" value="{{ $category->id }}" id="cat{{$category->id}}">
+                                    <label class="form-check-label fw-bold" for="cat{{$category->id}}">{{ $category->name }}</label>
+                                </div>
                                 @foreach($category->children as $child)
-                                    <option value="{{ $child->id }}">&nbsp;&nbsp;↳ {{ $child->name }}</option>
+                                    <div class="form-check search-item ms-4">
+                                        <input class="form-check-input" type="checkbox" name="target_ids[]" value="{{ $child->id }}" id="cat{{$child->id}}">
+                                        <label class="form-check-label" for="cat{{$child->id}}">↳ {{ $child->name }}</label>
+                                    </div>
                                 @endforeach
                             @endforeach
-                        </select>
-                        <div class="form-text">Hold Ctrl/Cmd to select multiple.</div>
+                        </div>
                     </div>
 
                     <div id="productSelect" class="mb-3 d-none">
                         <label class="form-label">Select Products</label>
-                        <select name="target_ids[]" class="form-select" multiple style="height: 150px;">
+                        <input type="text" class="form-control mb-2" id="productSearch" placeholder="Search products..." onkeyup="filterList('productSearch', 'productList')">
+                         <div class="border rounded p-3 overflow-auto bg-white" style="height: 200px;" id="productList">
                             @foreach($products as $product)
-                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                <div class="form-check search-item">
+                                    <input class="form-check-input" type="checkbox" name="target_ids[]" value="{{ $product->id }}" id="prod{{$product->id}}">
+                                    <label class="form-check-label" for="prod{{$product->id}}">{{ $product->name }}</label>
+                                </div>
                             @endforeach
-                        </select>
-                        <div class="form-text">Hold Ctrl/Cmd to select multiple.</div>
+                        </div>
                     </div>
 
                     <div class="d-flex justify-content-between mt-4">
@@ -125,23 +134,46 @@
         categorySelect.classList.add('d-none');
         productSelect.classList.add('d-none');
         
-        // Disable inputs inside hidden divs to prevent form submission issues if name attribute conflicts (though here names are same target_ids[] so it matters to disable hidden ones or clear keys)
-        // Simplest: Just hide. Laravel will receive empty arrays or mixed data if we don't handle disabling.
-        // Better: Disable the SELECT elements inside the hidden DIVs.
-        document.querySelector('#categorySelect select').disabled = true;
-        document.querySelector('#productSelect select').disabled = true;
+        // Disable inputs inside checkboxes to prevent submission of hidden fields?
+        // Actually for checkboxes, if not checked they aren't sent. 
+        // But if we hide the DIV, we should probably disable them so they don't get sent if user checked then switched type.
+        disableInputsIn(categorySelect, true);
+        disableInputsIn(productSelect, true);
 
         if (this.value === 'category') {
             categorySelect.classList.remove('d-none');
-             document.querySelector('#categorySelect select').disabled = false;
+            disableInputsIn(categorySelect, false);
         } else if (this.value === 'product') {
             productSelect.classList.remove('d-none');
-             document.querySelector('#productSelect select').disabled = false;
+             disableInputsIn(productSelect, false);
         }
     });
+
+    function disableInputsIn(element, disabled) {
+        const inputs = element.querySelectorAll('input[type="checkbox"]');
+        inputs.forEach(input => input.disabled = disabled);
+    }
     
     // Init state
-    document.querySelector('#categorySelect select').disabled = true;
-    document.querySelector('#productSelect select').disabled = true;
+    disableInputsIn(categorySelect, true);
+    disableInputsIn(productSelect, true);
+
+    // Search Function
+    function filterList(inputId, listId) {
+        const input = document.getElementById(inputId);
+        const filter = input.value.toLowerCase();
+        const list = document.getElementById(listId);
+        const items = list.getElementsByClassName('search-item');
+
+        for (let i = 0; i < items.length; i++) {
+            const label = items[i].getElementsByTagName("label")[0];
+            const txtValue = label.textContent || label.innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                items[i].classList.remove('d-none');
+            } else {
+                items[i].classList.add('d-none');
+            }
+        }
+    }
 </script>
 @endsection

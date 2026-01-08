@@ -76,25 +76,34 @@
 
                     <div id="categorySelect" class="mb-3 {{ $promo->target_type == 'category' ? '' : 'd-none' }}">
                         <label class="form-label">Select Categories</label>
-                        <select name="target_ids[]" class="form-select" multiple style="height: 150px;" {{ $promo->target_type == 'category' ? '' : 'disabled' }}>
+                        <input type="text" class="form-control mb-2" id="categorySearch" placeholder="Search categories..." onkeyup="filterList('categorySearch', 'categoryList')">
+                        <div class="border rounded p-3 overflow-auto bg-white" style="height: 200px;" id="categoryList">
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ in_array($category->id, $promo->target_ids ?? []) ? 'selected' : '' }}>{{ $category->name }}</option>
+                                <div class="form-check search-item">
+                                    <input class="form-check-input" type="checkbox" name="target_ids[]" value="{{ $category->id }}" id="cat{{$category->id}}" {{ in_array($category->id, $promo->target_ids ?? []) ? 'checked' : '' }}>
+                                    <label class="form-check-label fw-bold" for="cat{{$category->id}}">{{ $category->name }}</label>
+                                </div>
                                 @foreach($category->children as $child)
-                                    <option value="{{ $child->id }}" {{ in_array($child->id, $promo->target_ids ?? []) ? 'selected' : '' }}>&nbsp;&nbsp;↳ {{ $child->name }}</option>
+                                <div class="form-check search-item ms-4">
+                                    <input class="form-check-input" type="checkbox" name="target_ids[]" value="{{ $child->id }}" id="cat{{$child->id}}" {{ in_array($child->id, $promo->target_ids ?? []) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="cat{{$child->id}}">↳ {{ $child->name }}</label>
+                                </div>
                                 @endforeach
                             @endforeach
-                        </select>
-                        <div class="form-text">Hold Ctrl/Cmd to select multiple.</div>
+                        </div>
                     </div>
 
                     <div id="productSelect" class="mb-3 {{ $promo->target_type == 'product' ? '' : 'd-none' }}">
                         <label class="form-label">Select Products</label>
-                        <select name="target_ids[]" class="form-select" multiple style="height: 150px;" {{ $promo->target_type == 'product' ? '' : 'disabled' }}>
+                        <input type="text" class="form-control mb-2" id="productSearch" placeholder="Search products..." onkeyup="filterList('productSearch', 'productList')">
+                         <div class="border rounded p-3 overflow-auto bg-white" style="height: 200px;" id="productList">
                             @foreach($products as $product)
-                                <option value="{{ $product->id }}" {{ in_array($product->id, $promo->target_ids ?? []) ? 'selected' : '' }}>{{ $product->name }}</option>
+                                <div class="form-check search-item">
+                                    <input class="form-check-input" type="checkbox" name="target_ids[]" value="{{ $product->id }}" id="prod{{$product->id}}" {{ in_array($product->id, $promo->target_ids ?? []) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="prod{{$product->id}}">{{ $product->name }}</label>
+                                </div>
                             @endforeach
-                        </select>
-                        <div class="form-text">Hold Ctrl/Cmd to select multiple.</div>
+                        </div>
                     </div>
 
 
@@ -131,16 +140,52 @@
         categorySelect.classList.add('d-none');
         productSelect.classList.add('d-none');
         
-        document.querySelector('#categorySelect select').disabled = true;
-        document.querySelector('#productSelect select').disabled = true;
+        disableInputsIn(categorySelect, true);
+        disableInputsIn(productSelect, true);
 
         if (this.value === 'category') {
             categorySelect.classList.remove('d-none');
-             document.querySelector('#categorySelect select').disabled = false;
+             disableInputsIn(categorySelect, false);
         } else if (this.value === 'product') {
             productSelect.classList.remove('d-none');
-             document.querySelector('#productSelect select').disabled = false;
+             disableInputsIn(productSelect, false);
         }
     });
+
+    function disableInputsIn(element, disabled) {
+        const inputs = element.querySelectorAll('input[type="checkbox"]');
+        inputs.forEach(input => input.disabled = disabled);
+    }
+
+    // Init Logic on Load
+    // We need to enable the inputs of the currently visible section
+     if (targetType.value === 'category') {
+        disableInputsIn(categorySelect, false);
+        disableInputsIn(productSelect, true); 
+    } else if (targetType.value === 'product') {
+        disableInputsIn(productSelect, false);
+        disableInputsIn(categorySelect, true);
+    } else {
+        disableInputsIn(categorySelect, true);
+        disableInputsIn(productSelect, true);
+    }
+
+     // Search Function
+    function filterList(inputId, listId) {
+        const input = document.getElementById(inputId);
+        const filter = input.value.toLowerCase();
+        const list = document.getElementById(listId);
+        const items = list.getElementsByClassName('search-item');
+
+        for (let i = 0; i < items.length; i++) {
+            const label = items[i].getElementsByTagName("label")[0];
+            const txtValue = label.textContent || label.innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                items[i].classList.remove('d-none');
+            } else {
+                items[i].classList.add('d-none');
+            }
+        }
+    }
 </script>
 @endsection
