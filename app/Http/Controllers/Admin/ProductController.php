@@ -59,7 +59,10 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image_file' => 'nullable|image|max:5120',
-            'image_url' => 'nullable|url'
+            'image_url' => 'nullable|url',
+            'discount_price' => 'nullable|numeric|lt:price',
+            'discount_start' => 'nullable|date',
+            'discount_end' => 'nullable|date|after:discount_start',
         ]);
         
         $data = $request->except(['image_file', 'image_url']);
@@ -99,7 +102,10 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image_file' => 'nullable|image|max:5120',
-            'image_url' => 'nullable|url'
+            'image_url' => 'nullable|url',
+            'discount_price' => 'nullable|numeric|lt:price',
+            'discount_start' => 'nullable|date',
+            'discount_end' => 'nullable|date|after:discount_start',
         ]);
 
         $data = $request->except(['image_file', 'image_url']);

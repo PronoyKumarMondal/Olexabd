@@ -37,6 +37,32 @@
                 </div>
             </div>
 
+            @if(auth('admin')->user()->role === 'super_admin' || in_array('manage_discounts', auth('admin')->user()->permissions ?? []))
+            <div class="card bg-light border-0 mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-tag-fill me-2"></i>Discount Configuration</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Discount Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text">৳</span>
+                                <input type="number" step="0.01" name="discount_price" id="discountPrice" class="form-control">
+                            </div>
+                            <div class="form-text text-success fw-bold" id="discountPercent"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Start Date</label>
+                            <input type="datetime-local" name="discount_start" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">End Date</label>
+                            <input type="datetime-local" name="discount_end" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <div class="mb-3">
                 <label class="form-label">Description</label>
                 <textarea name="description" class="form-control" rows="4"></textarea>
@@ -116,6 +142,30 @@
             document.getElementById('file-name').innerText = fileName;
             document.getElementById('preview-area').classList.remove('d-none');
         }
+    }
+
+    // Discount Calculation
+    const priceInput = document.querySelector('input[name="price"]');
+    const discountInput = document.getElementById('discountPrice');
+    const percentDisplay = document.getElementById('discountPercent');
+
+    function calcDiscount() {
+        if(!discountInput) return; // If permission denied, element won't exist
+        
+        const price = parseFloat(priceInput.value) || 0;
+        const discount = parseFloat(discountInput.value) || 0;
+
+        if (price > 0 && discount > 0 && discount < price) {
+            const percent = Math.round(((price - discount) / price) * 100);
+            percentDisplay.innerText = percent + "% OFF";
+        } else {
+            percentDisplay.innerText = "";
+        }
+    }
+
+    if(priceInput && discountInput) {
+        priceInput.addEventListener('input', calcDiscount);
+        discountInput.addEventListener('input', calcDiscount);
     }
 </script>
 @endsection

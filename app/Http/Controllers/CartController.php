@@ -31,7 +31,7 @@ class CartController extends Controller
             $cart[$id] = [
                 "name" => $product->name,
                 "quantity" => 1,
-                "price" => $product->price,
+                "price" => $product->effective_price, // Use discounted price if active
                 "image" => $product->image
             ];
         }

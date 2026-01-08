@@ -36,12 +36,23 @@
                     <h1 class="fw-bold mb-3 display-6">{{ $product->name }}</h1>
                     
                     <div class="d-flex align-items-center mb-4">
-                        <h2 class="text-primary fw-bold mb-0 me-3">৳{{ $product->price }}</h2>
+                        @if($product->has_discount)
+                            <div>
+                                <h2 class="text-danger fw-bold mb-0 me-2">৳{{ $product->effective_price }}</h2>
+                                <span class="text-muted text-decoration-line-through fs-5">৳{{ $product->price }}</span>
+                                <span class="badge bg-danger ms-2">{{ $product->discount_percentage }}% OFF</span>
+                            </div>
+                        @else
+                            <h2 class="text-primary fw-bold mb-0 me-3">৳{{ $product->price }}</h2>
+                        @endif
+                        
+                        <div class="ms-auto">
                         @if($product->stock > 0)
                             <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">In Stock</span>
                         @else
                             <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">Out of Stock</span>
                         @endif
+                        </div>
                     </div>
 
                     <p class="text-muted lead mb-4">{{ $product->description }}</p>
@@ -57,7 +68,7 @@
                         </form>
                         <form action="{{ route('checkout.init') }}" method="POST" class="flex-grow-1">
                             @csrf
-                            <input type="hidden" name="amount" value="{{ $product->price }}">
+                            <input type="hidden" name="amount" value="{{ $product->effective_price }}">
                             <input type="hidden" name="order_id" value="ORD-{{ rand(1000,9999) }}">
                             <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow-lg action-btn">
                                 <i class="bi bi-lightning-charge me-2"></i> Buy Now
