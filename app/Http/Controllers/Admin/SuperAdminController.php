@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -11,10 +11,9 @@ class SuperAdminController extends Controller
 {
     public function index()
     {
-        // List only Admins and Super Admins (hide customers)
-        $users = User::where('id', '!=', auth()->id())
-                     ->whereIn('role', ['admin', 'super_admin'])
-                     ->get();
+        // List only Admins (admins table)
+        // Hide the current admin to prevent self-deletion issues if we add that later
+        $users = Admin::where('id', '!=', auth('admin')->id())->get();
         return view('admin.super.index', compact('users'));
     }
 
@@ -22,41 +21,37 @@ class SuperAdminController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:admins', // Check admins table
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:admin,super_admin',
             'permissions' => 'array',
         ]);
 
-        User::create([
+        Admin::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => \Illuminate\Support\Facades\Hash::make($request->password),
             'role' => $request->role,
-            'is_admin' => true,
+            'is_active' => true, // Ensure default active
             'permissions' => $request->permissions ?? [],
         ]);
 
         return redirect()->back()->with('success', "New Admin created successfully.");
     }
 
-    public function updateRole(Request $request, User $user)
+    public function updateRole(Request $request, Admin $user) // Type hint Admin
     {
         $request->validate([
-            'role' => 'required|in:customer,admin,super_admin',
-            'permissions' => 'array', // Permissions array
+            'role' => 'required|in:admin,super_admin', // Removed customer option
+            'permissions' => 'array',
         ]);
 
         $user->update([
             'role' => $request->role,
-            'permissions' => $request->permissions ?? [] // Save permissions as JSON
+            'permissions' => $request->permissions ?? [] 
         ]);
         
-        // Sync backwards compatibility if needed
-        $user->is_admin = ($request->role === 'admin' || $request->role === 'super_admin');
-        $user->save();
-
-        return redirect()->back()->with('success', "User role and permissions updated.");
+        return redirect()->back()->with('success', "Admin role and permissions updated.");
     }
 
     public function health()
