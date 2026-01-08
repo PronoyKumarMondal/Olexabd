@@ -99,6 +99,8 @@ class ShopController extends Controller
             ->latest()
             ->paginate(12);
             
+        $recommendedProducts = Product::where('is_active', true)
+            ->inRandomOrder()
             ->take(4)
             ->get();
 
