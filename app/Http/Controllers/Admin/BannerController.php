@@ -35,7 +35,7 @@ class BannerController extends Controller
         }
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:10240', // 10MB Max (Compressed later)
             'title' => 'nullable|string|max:255',
             'badge_text' => 'nullable|string|max:50',
             'link' => 'nullable|url',
@@ -45,10 +45,7 @@ class BannerController extends Controller
         $data = $request->except('image');
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
-            $path = $file->storeAs('banners', $filename, 'public');
-            $data['image'] = '/storage/' . $path;
+            $data['image'] = $this->compressAndStore($request->file('image'));
         }
 
         Banner::create($data);
@@ -65,7 +62,7 @@ class BannerController extends Controller
     public function update(Request $request, Banner $banner)
     {
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240', // 10MB Max
             'title' => 'nullable|string|max:255',
             'badge_text' => 'nullable|string|max:50',
             'link' => 'nullable|url',
@@ -75,13 +72,15 @@ class BannerController extends Controller
         $data = $request->except('image');
 
         if ($request->hasFile('image')) {
-            // Delete old image if needed (optional)
-            // if ($banner->image) { ... }
+            // Delete old image if it exists
+             if ($banner->image) {
+                 $oldPath = str_replace('/storage/', 'public/', $banner->image);
+                 if (Storage::exists($oldPath)) {
+                     Storage::delete($oldPath);
+                 }
+             }
             
-            $file = $request->file('image');
-            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
-            $path = $file->storeAs('banners', $filename, 'public');
-            $data['image'] = '/storage/' . $path;
+            $data['image'] = $this->compressAndStore($request->file('image'));
         }
 
         $banner->update($data);
@@ -92,8 +91,96 @@ class BannerController extends Controller
 
     public function destroy(Banner $banner)
     {
+        if ($banner->image) {
+             $oldPath = str_replace('/storage/', 'public/', $banner->image);
+             if (Storage::exists($oldPath)) {
+                 Storage::delete($oldPath);
+             }
+         }
         $banner->delete();
         \Illuminate\Support\Facades\Cache::forget('home_banners');
         return redirect()->route('admin.banners.index')->with('success', 'Banner deleted successfully.');
+    }
+
+    /**
+     * Compress and Store Image
+     * Automatically compresses if size > 5MB. But effectively optimizes all images.
+     */
+    private function compressAndStore($file)
+    {
+        // Generate name
+        $extension = strtolower($file->guessExtension());
+        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $extension = 'jpg';
+        }
+        $filename = \Illuminate\Support\Str::random(40) . '.' . $extension;
+        $path = 'banners/' . $filename;
+        $fullPath = storage_path('app/public/' . $path);
+        
+        // Ensure directory exists
+        if (!file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
+        }
+
+        // Native Compression Logic
+        $sourceImage = null;
+        $mime = $file->getMimeType();
+
+        // Load Image
+        if ($extension == 'jpeg' || $extension == 'jpg' || $mime == 'image/jpeg') 
+            $sourceImage = @imagecreatefromjpeg($file->getRealPath());
+        elseif ($extension == 'png' || $mime == 'image/png')
+            $sourceImage = @imagecreatefrompng($file->getRealPath());
+        elseif ($extension == 'webp' || $mime == 'image/webp')
+             $sourceImage = @imagecreatefromwebp($file->getRealPath());
+        
+        // If GD fails or format unsupported, fallback to standard store
+        if (!$sourceImage) {
+            $storedPath = $file->storeAs('banners', $filename, 'public');
+            return '/storage/' . $storedPath;
+        }
+
+        // Resize if too massive (e.g. Width > 2500px) to ensure < 5MB
+        $width = imagesx($sourceImage);
+        $height = imagesy($sourceImage);
+        $maxWidth = 2000;
+
+        if ($width > $maxWidth) {
+            $newWidth = $maxWidth;
+            $newHeight = floor($height * ($maxWidth / $width));
+            $tempImage = imagecreatetruecolor($newWidth, $newHeight);
+            
+            // Preserve Transparency
+            if ($extension == 'png' || $extension == 'webp') {
+                imagealphablending($tempImage, false);
+                imagesavealpha($tempImage, true);
+            }
+
+            imagecopyresampled($tempImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+            imagedestroy($sourceImage);
+            $sourceImage = $tempImage;
+        }
+
+        // Save Compressed
+        $quality = 80; // Default good quality
+        
+        // Aggressive compression if original file > 5MB (5242880 bytes)
+        if ($file->getSize() > 5242880) {
+            $quality = 60; 
+        }
+
+        if ($extension == 'png') {
+            // PNG Quality is 0-9 (inverted scaling of compression)
+            $pngQuality = ($quality > 70) ? 6 : 8; 
+            imagepng($sourceImage, $fullPath, $pngQuality);
+        } elseif ($extension == 'webp') {
+            imagewebp($sourceImage, $fullPath, $quality);
+        } else {
+            imagejpeg($sourceImage, $fullPath, $quality);
+        }
+
+        imagedestroy($sourceImage);
+
+        return '/storage/' . $path;
     }
 }
