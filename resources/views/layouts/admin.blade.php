@@ -246,6 +246,11 @@
                 <i class="bi bi-tag-fill"></i> Promo Codes
             </a>
             @endif
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('view_cart_history'))
+            <a class="nav-link {{ request()->routeIs('admin.cart_history.*') ? 'active' : '' }}" href="{{ route('admin.cart_history.index') }}">
+                <i class="bi bi-cart4"></i> Cart History
+            </a>
+            @endif
 
             @if(Auth::guard('admin')->user()->isSuperAdmin())
                 <div class="sidebar-heading mt-3">Administration</div>

@@ -105,6 +105,10 @@
                                 <input class="form-check-input" type="checkbox" name="permissions[]" value="manage_discounts" id="new_perm_manage_discounts">
                                 <label class="form-check-label" for="new_perm_manage_discounts">Manage Product Discounts</label>
                             </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="permissions[]" value="view_cart_history" id="new_perm_view_cart_history">
+                                <label class="form-check-label" for="new_perm_view_cart_history">View Cart History</label>
+                            </div>
                         </div>
                         <small class="text-muted d-block mt-1">Super Admins have all permissions automatically.</small>
                     </div>
@@ -256,6 +260,11 @@
                                                     <input class="form-check-input" type="checkbox" name="permissions[]" value="manage_discounts" id="perm_manage_discounts_{{ $user->id }}"
                                                         {{ in_array('manage_discounts', $user->permissions ?? []) ? 'checked' : '' }}>
                                                     <label class="form-check-label" for="perm_manage_discounts_{{ $user->id }}">Manage Product Discounts</label>
+                                                </div>
+                                                <div class="form-check mt-2">
+                                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="view_cart_history" id="perm_view_cart_history_{{ $user->id }}"
+                                                        {{ in_array('view_cart_history', $user->permissions ?? []) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="perm_view_cart_history_{{ $user->id }}">View Cart History</label>
                                                 </div>
                                             </div>
                                             <small class="text-muted">Super Admins have all permissions by default.</small>
