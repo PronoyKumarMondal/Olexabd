@@ -88,8 +88,6 @@ class PaymentController extends Controller
                      'status' => 'processing'
                  ]);
                  
-                 ]);
-                 
                  // Persistent Cart Logic: Mark items as sold
                  if (auth()->check()) {
                      \App\Models\CartItem::where('user_id', auth()->id())
