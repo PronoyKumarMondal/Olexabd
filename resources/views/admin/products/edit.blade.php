@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            @if(auth('admin')->user()->role === 'super_admin' || in_array('manage_discounts', auth('admin')->user()->permissions ?? []))
+            @if(auth('admin')->user()->hasPermission('manage_discounts'))
             <div class="card bg-light border-0 mb-3">
                 <div class="card-body">
                     <h6 class="fw-bold mb-3"><i class="bi bi-tag-fill me-2"></i>Discount Configuration</h6>
