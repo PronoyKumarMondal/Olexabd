@@ -118,6 +118,107 @@
         </div>
     </div>
 
+    <!-- Detailed Directory Permissions -->
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+             <div class="card-header bg-white py-3 border-bottom border-secondary border-3">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-folder-check"></i> Filesystem Permissions</h6>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Directory</th>
+                            <th class="text-end">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($permissions as $path => $isWritable)
+                        <tr>
+                            <td class="font-monospace">{{ $path }}</td>
+                            <td class="text-end">
+                                @if($isWritable)
+                                    <span class="badge bg-success bg-opacity-75">Writable</span>
+                                @else
+                                    <span class="badge bg-danger">Not Writable</span>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database Analytics -->
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3 border-bottom border-dark border-3">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-graph-up"></i> Database Analytics</h6>
+            </div>
+            <div class="card-body p-0">
+                 <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Failed Jobs</span>
+                    @if($failedJobsCount > 0)
+                        <span class="badge bg-danger fs-6">{{ $failedJobsCount }}</span>
+                    @else
+                        <span class="badge bg-success bg-opacity-75">0 (Healthy)</span>
+                    @endif
+                </div>
+                <div class="bg-light p-2 fw-bold small text-uppercase text-muted border-bottom">Top 5 Largest Tables</div>
+                <table class="table table-sm mb-0 small">
+                    <thead>
+                        <tr>
+                            <th>Table</th>
+                            <th class="text-end">Rows</th>
+                            <th class="text-end">Size (MB)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($tableStats as $stat)
+                        <tr>
+                            <td>{{ $stat->table_name }}</td>
+                            <td class="text-end">{{ number_format($stat->table_rows) }}</td>
+                            <td class="text-end fw-bold">{{ $stat->size_mb }} MB</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Insights -->
+    <div class="col-12">
+        <div class="card border-0 shadow-sm bg-light">
+            <div class="card-body">
+                <div class="row g-4 text-center">
+                    <div class="col-6 col-md-3">
+                        <small class="text-muted d-block text-uppercase ls-1 fw-bold mb-1">Current Version (Git)</small>
+                        <div class="font-monospace text-primary text-break">{{ $gitInfo }}</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <small class="text-muted d-block text-uppercase ls-1 fw-bold mb-1">Registered Routes</small>
+                        <div class="h4 fw-bold mb-0">{{ number_format($routeCount) }}</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <small class="text-muted d-block text-uppercase ls-1 fw-bold mb-1">Maintenance Mode</small>
+                        @if($maintenanceMode)
+                            <span class="badge bg-warning text-dark">ACTIVE</span>
+                        @else
+                            <span class="badge bg-success">LIVE</span>
+                        @endif
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <small class="text-muted d-block text-uppercase ls-1 fw-bold mb-1">Active Sessions (1h)</small>
+                        <div class="h4 fw-bold mb-0">{{ $activeSessions }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- PHP Extensions -->
     <div class="col-12">
         <div class="card border-0 shadow-sm">

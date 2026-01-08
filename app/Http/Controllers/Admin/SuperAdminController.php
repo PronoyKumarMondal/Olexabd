@@ -105,6 +105,63 @@ class SuperAdminController extends Controller
         $storageWritable = is_writable($storagePath);
         $diskFree = function_exists('disk_free_space') ? round(disk_free_space($storagePath) / 1024 / 1024 / 1024, 2) . ' GB' : 'N/A';
         
+        $permissions = [
+            'storage' => is_writable(storage_path()),
+            'storage/app' => is_writable(storage_path('app')),
+            'storage/framework' => is_writable(storage_path('framework')),
+            'storage/logs' => is_writable(storage_path('logs')),
+            'bootstrap/cache' => is_writable(base_path('bootstrap/cache')),
+        ];
+
+        // 6. Advanced Monitoring (Tech Head)
+        // Git Info
+        try {
+            $gitHash = trim(exec('git log -1 --format="%h"'));
+            $gitMessage = trim(exec('git log -1 --format="%s"'));
+            $gitDate = trim(exec('git log -1 --format="%ci"'));
+            $gitInfo = $gitHash ? "[$gitHash] $gitMessage ($gitDate)" : 'Version info unavailable';
+        } catch (\Exception $e) {
+            $gitInfo = 'Git not accessible';
+        }
+
+        // Database Tables Stats (Top 5 by Size/Rows) - MySQL Specific
+        $tableStats = [];
+        try {
+            $dbName = DB::connection()->getDatabaseName();
+            // This query gets row counts and size
+            $tableStats = DB::select("
+                SELECT table_name, table_rows, 
+                ROUND(((data_length + index_length) / 1024 / 1024), 2) AS size_mb 
+                FROM information_schema.TABLES 
+                WHERE table_schema = ? 
+                ORDER BY size_mb DESC, table_rows DESC 
+                LIMIT 5
+            ", [$dbName]);
+        } catch (\Exception $e) {
+            // Fallback or ignore if not MySQL
+        }
+
+        // Failed Jobs
+        $failedJobsCount = 0;
+        if (\Illuminate\Support\Facades\Schema::hasTable('failed_jobs')) {
+            $failedJobsCount = DB::table('failed_jobs')->count();
+        }
+
+        // Route Count
+        $routeCount = count(\Illuminate\Support\Facades\Route::getRoutes());
+        
+        // Maintenance Mode
+        $maintenanceMode = app()->isDownForMaintenance();
+
+        // Active Sessions (approximate if using database driver, else N/A)
+        $activeSessions = 'N/A';
+        if (config('session.driver') === 'database' && \Illuminate\Support\Facades\Schema::hasTable('sessions')) {
+             // Active in last hour
+            $activeSessions = DB::table('sessions')
+                ->where('last_activity', '>=', now()->subHour()->timestamp)
+                ->count();
+        }
+
         // Log File Size & Content
         $logFile = storage_path('logs/laravel.log');
         $logSize = file_exists($logFile) ? round(filesize($logFile) / 1024 / 1024, 2) . ' MB' : 'No Log File';
@@ -120,7 +177,9 @@ class SuperAdminController extends Controller
             'dbStatus', 'dbVersion', 'dbDriver',
             'serverInfo', 'appInfo', 'extensions',
             'storageWritable', 'diskFree', 'logSize',
-            'recentLogs'
+            'recentLogs',
+            'permissions', 'gitInfo', 'tableStats', 
+            'failedJobsCount', 'routeCount', 'maintenanceMode', 'activeSessions'
         ));
     }
 }
