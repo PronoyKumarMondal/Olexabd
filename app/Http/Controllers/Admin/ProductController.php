@@ -58,7 +58,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
-            'image_file' => 'nullable|image|max:5120',
+            'image_file' => 'nullable|image|max:10240', // 10MB
             'image_url' => 'nullable|url',
             'discount_price' => 'nullable|numeric|lt:price',
             'discount_start' => 'nullable|date',
@@ -68,30 +68,25 @@ class ProductController extends Controller
         $data = $request->except(['image_file', 'image_url']);
         $data['slug'] = Str::slug($request->name);
         
-        // Handle Image
+        // Handle Main Image (Compress > 2MB)
         if ($request->hasFile('image_file')) {
-            $file = $request->file('image_file');
-            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
-            $path = $file->storeAs('products', $filename, 'public');
-            $data['image'] = '/storage/' . $path;
+            $data['image'] = $this->compressAndStore($request->file('image_file'), 'products', 2097152, 1200);
         } elseif ($request->filled('image_url')) {
             $data['image'] = $request->image_url;
         }
 
         $product = Product::create($data);
 
-        // Handle Featured Images (Max 3)
+        // Handle Featured Images (Max 3) (Compress > 1MB)
         if ($request->hasFile('featured_images')) {
             $count = 0;
             foreach ($request->file('featured_images') as $file) {
                 if ($count >= 3) break;
                 
-                $filename = 'feat_' . \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
-                $path = $file->storeAs('products/featured', $filename, 'public');
+                $path = $this->compressAndStore($file, 'products/featured', 1048576, 1000);
                 
                 $product->images()->create([
-                    'image_path' => '/storage/' . $path,
-                    // updated_by handled by Observer
+                    'image_path' => $path,
                 ]);
                 $count++;
             }
@@ -119,7 +114,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
-            'image_file' => 'nullable|image|max:5120',
+            'image_file' => 'nullable|image|max:10240', // 10MB
             'image_url' => 'nullable|url',
             'discount_price' => 'nullable|numeric|lt:price',
             'discount_start' => 'nullable|date',
@@ -133,10 +128,7 @@ class ProductController extends Controller
 
         // Handle Image Update
         if ($request->hasFile('image_file')) {
-            $file = $request->file('image_file');
-            $filename = \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
-            $path = $file->storeAs('products', $filename, 'public');
-            $data['image'] = '/storage/' . $path;
+            $data['image'] = $this->compressAndStore($request->file('image_file'), 'products', 2097152, 1200);
         } elseif ($request->filled('image_url')) {
             $data['image'] = $request->image_url;
         }
@@ -164,11 +156,10 @@ class ProductController extends Controller
             foreach ($request->file('featured_images') as $file) {
                 if ($currentCount >= 3) break;
                 
-                $filename = 'feat_' . \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
-                $path = $file->storeAs('products/featured', $filename, 'public');
+                $path = $this->compressAndStore($file, 'products/featured', 1048576, 1000);
                 
                 $product->images()->create([
-                    'image_path' => '/storage/' . $path,
+                    'image_path' => $path,
                 ]);
                 $currentCount++;
             }
@@ -187,5 +178,84 @@ class ProductController extends Controller
         \Illuminate\Support\Facades\Cache::forget('home_featured');
         \Illuminate\Support\Facades\Cache::forget('home_recent');
         return redirect()->back()->with('success', 'Product deleted.');
+    }
+
+    /**
+     * Compress Image Helper
+     */
+    private function compressAndStore($file, $folder, $maxSizeBytes, $maxWidth = 1500)
+    {
+        // Generate name
+        $extension = strtolower($file->guessExtension());
+        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $extension = 'jpg';
+        }
+        $filename = \Illuminate\Support\Str::random(40) . '.' . $extension;
+        $path = $folder . '/' . $filename;
+        $fullPath = storage_path('app/public/' . $path);
+        
+        // Ensure directory exists
+        if (!file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
+        }
+
+        // Native Compression Logic
+        $sourceImage = null;
+        $mime = $file->getMimeType();
+
+        // Load Image
+        if ($extension == 'jpeg' || $extension == 'jpg' || $mime == 'image/jpeg') 
+            $sourceImage = @imagecreatefromjpeg($file->getRealPath());
+        elseif ($extension == 'png' || $mime == 'image/png')
+            $sourceImage = @imagecreatefrompng($file->getRealPath());
+        elseif ($extension == 'webp' || $mime == 'image/webp')
+             $sourceImage = @imagecreatefromwebp($file->getRealPath());
+        
+        // If GD fails or format unsupported, fallback to standard store
+        if (!$sourceImage) {
+            $storedPath = $file->storeAs($folder, $filename, 'public');
+            return '/storage/' . $storedPath;
+        }
+
+        // Resize if wider than maxWidth
+        $width = imagesx($sourceImage);
+        $height = imagesy($sourceImage);
+
+        if ($width > $maxWidth) {
+            $newWidth = $maxWidth;
+            $newHeight = floor($height * ($maxWidth / $width));
+            $tempImage = imagecreatetruecolor($newWidth, $newHeight);
+            
+            // Preserve Transparency
+            if ($extension == 'png' || $extension == 'webp') {
+                imagealphablending($tempImage, false);
+                imagesavealpha($tempImage, true);
+            }
+
+            imagecopyresampled($tempImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+            imagedestroy($sourceImage);
+            $sourceImage = $tempImage;
+        }
+
+        // Save Compressed
+        $quality = 80; 
+        
+        // Aggressive compression if original file > maxSizeBytes
+        if ($file->getSize() > $maxSizeBytes) {
+            $quality = 60; 
+        }
+
+        if ($extension == 'png') {
+            $pngQuality = ($quality > 70) ? 6 : 8; 
+            imagepng($sourceImage, $fullPath, $pngQuality);
+        } elseif ($extension == 'webp') {
+            imagewebp($sourceImage, $fullPath, $quality);
+        } else {
+            imagejpeg($sourceImage, $fullPath, $quality);
+        }
+
+        imagedestroy($sourceImage);
+
+        return '/storage/' . $path;
     }
 }
