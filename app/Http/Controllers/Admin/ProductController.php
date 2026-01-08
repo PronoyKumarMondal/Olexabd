@@ -152,6 +152,7 @@ class ProductController extends Controller
         }
 
         if ($request->hasFile('featured_images')) {
+            $currentCount = $product->images()->count();
             foreach ($request->file('featured_images') as $file) {
                 if ($currentCount >= 3) break;
                 if (!$file) continue;
