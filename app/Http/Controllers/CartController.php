@@ -143,11 +143,15 @@ class CartController extends Controller
         // Calculate Discount
         $discountAmount = 0;
         if ($promo->type == 'fixed') {
-             // Fixed amount is applied, but capped at eligible amount? 
-             // Logic: $10 off specific pants. If pants cost $100. Discount $10. item. If pants cost $5. Discount $5.
+             // Fixed amount is applied, but capped at eligible amount
              $discountAmount = min($promo->value, $eligibleAmount);
         } else {
-             $discountAmount = ($eligibleAmount * $promo->value) / 100;
+             $calculatedDiscount = ($eligibleAmount * $promo->value) / 100;
+             if ($promo->max_discount_amount > 0) {
+                 $discountAmount = min($calculatedDiscount, $promo->max_discount_amount);
+             } else {
+                 $discountAmount = $calculatedDiscount;
+             }
         }
 
         session()->put('coupon', [
@@ -155,7 +159,8 @@ class CartController extends Controller
             'amount' => $discountAmount,
             'type' => $promo->type,
             'value' => $promo->value,
-            'target_type' => $promo->target_type
+            'target_type' => $promo->target_type,
+            'max_discount_amount' => $promo->max_discount_amount // Store for reference display if needed
         ]);
 
         return back()->with('success', 'Coupon applied successfully!');

@@ -120,9 +120,11 @@
         if (this.value === 'percent') {
             document.getElementById('valuePrefix').classList.add('d-none');
             document.getElementById('valueSuffix').classList.remove('d-none');
+            document.getElementById('maxDiscountDiv').classList.remove('d-none');
         } else {
             document.getElementById('valuePrefix').classList.remove('d-none');
             document.getElementById('valueSuffix').classList.add('d-none');
+            document.getElementById('maxDiscountDiv').classList.add('d-none');
         }
     });
 
