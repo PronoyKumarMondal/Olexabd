@@ -18,16 +18,34 @@
         <div class="row g-5">
             <!-- Product Image -->
             <div class="col-lg-6">
-                <div class="bg-white rounded-4 shadow-sm p-4 text-center">
-                    @if($product->image)
-                        <img src="{{ $product->image }}" class="img-fluid rounded-3" style="max-height: 500px; object-fit: contain;" alt="{{ $product->name }}">
-                    @else
-                        <div class="d-flex align-items-center justify-content-center bg-light rounded-3" style="height: 400px;">
-                            <i class="bi bi-image display-1 text-muted opacity-25"></i>
-                        </div>
-                    @endif
+                <div class="bg-white rounded-4 shadow-sm p-4 text-center mb-3">
+                    <img id="mainImage" src="{{ $product->image ? $product->image : 'https://placehold.co/400?text=No+Image' }}" class="img-fluid rounded-3" style="max-height: 500px; object-fit: contain;" alt="{{ $product->name }}">
                 </div>
+                
+                @if($product->images->count() > 0)
+                <div class="d-flex justify-content-center gap-2">
+                    <!-- Main Image Thumbnail -->
+                    <div class="border rounded-3 p-1 cursor-pointer gallery-thumb active" onclick="updateMainImage('{{ $product->image }}', this)" style="width: 80px; height: 80px; cursor: pointer;">
+                        <img src="{{ $product->image }}" class="w-100 h-100 object-fit-cover rounded-2">
+                    </div>
+                    
+                    <!-- Featured Images Thumbnails -->
+                    @foreach($product->images as $img)
+                    <div class="border rounded-3 p-1 cursor-pointer gallery-thumb" onclick="updateMainImage('{{ $img->image_path }}', this)" style="width: 80px; height: 80px; cursor: pointer;">
+                        <img src="{{ $img->image_path }}" class="w-100 h-100 object-fit-cover rounded-2">
+                    </div>
+                    @endforeach
+                </div>
+                @endif
             </div>
+
+            <script>
+                function updateMainImage(src, element) {
+                    document.getElementById('mainImage').src = src;
+                    document.querySelectorAll('.gallery-thumb').forEach(el => el.classList.remove('border-primary', 'border-2'));
+                    element.classList.add('border-primary', 'border-2');
+                }
+            </script>
 
             <!-- Product Details -->
             <div class="col-lg-6">

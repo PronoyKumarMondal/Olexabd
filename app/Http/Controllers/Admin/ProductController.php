@@ -78,7 +78,25 @@ class ProductController extends Controller
             $data['image'] = $request->image_url;
         }
 
-        Product::create($data);
+        $product = Product::create($data);
+
+        // Handle Featured Images (Max 3)
+        if ($request->hasFile('featured_images')) {
+            $count = 0;
+            foreach ($request->file('featured_images') as $file) {
+                if ($count >= 3) break;
+                
+                $filename = 'feat_' . \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
+                $path = $file->storeAs('products/featured', $filename, 'public');
+                
+                $product->images()->create([
+                    'image_path' => '/storage/' . $path,
+                    // updated_by handled by Observer
+                ]);
+                $count++;
+            }
+        }
+
         \Illuminate\Support\Facades\Cache::forget('home_featured');
         \Illuminate\Support\Facades\Cache::forget('home_recent');
 
@@ -124,6 +142,38 @@ class ProductController extends Controller
         }
 
         $product->update($data);
+
+        // Delete Selected Images
+        if ($request->has('delete_images')) {
+            foreach ($request->delete_images as $imageId) {
+                $img = $product->images()->find($imageId);
+                if ($img) {
+                    // Optional: Delete file from storage
+                    $path = str_replace('/storage/', 'public/', $img->image_path);
+                    if (\Illuminate\Support\Facades\Storage::exists($path)) {
+                        \Illuminate\Support\Facades\Storage::delete($path);
+                    }
+                    $img->delete();
+                }
+            }
+        }
+
+        // Add New Featured Images
+        $currentCount = $product->images()->count();
+        if ($request->hasFile('featured_images')) {
+            foreach ($request->file('featured_images') as $file) {
+                if ($currentCount >= 3) break;
+                
+                $filename = 'feat_' . \Illuminate\Support\Str::random(40) . '.' . $file->guessExtension();
+                $path = $file->storeAs('products/featured', $filename, 'public');
+                
+                $product->images()->create([
+                    'image_path' => '/storage/' . $path,
+                ]);
+                $currentCount++;
+            }
+        }
+
         \Illuminate\Support\Facades\Cache::forget('home_featured');
         \Illuminate\Support\Facades\Cache::forget('home_recent');
 

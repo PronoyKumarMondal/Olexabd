@@ -89,6 +89,13 @@
                 </div>
             </div>
 
+            <!-- Featured Images (Max 3) -->
+            <div class="mb-3">
+                <label class="form-label">Featured Images (Max 3, Optional)</label>
+                <input type="file" name="featured_images[]" class="form-control" multiple accept="image/*" max="3">
+                <div class="form-text">You can select up to 3 images. These will appear in the product gallery.</div>
+            </div>
+
             <div class="mb-4 d-flex gap-4">
                 <div class="form-check">
                     <input type="checkbox" name="is_active" class="form-check-input" id="activeCheck" checked value="1">

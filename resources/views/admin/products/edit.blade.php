@@ -91,6 +91,30 @@
                 </div>
             </div>
 
+            <!-- Featured Images -->
+            <div class="mb-3">
+                <label class="form-label">Featured Images (Gallery)</label>
+                
+                @if($product->images->count() > 0)
+                <div class="row g-2 mb-2">
+                    @foreach($product->images as $img)
+                    <div class="col-md-3 position-relative">
+                        <img src="{{ $img->image_path }}" class="img-thumbnail" style="height: 100px; width: 100%; object-fit: cover;">
+                        <div class="form-check mt-1">
+                            <input class="form-check-input" type="checkbox" name="delete_images[]" value="{{ $img->id }}" id="del_{{ $img->id }}">
+                            <label class="form-check-label text-danger small" for="del_{{ $img->id }}">Delete</label>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+                <div class="mt-2">
+                    <label class="form-label small text-muted">Add More Images (Max 3 Total)</label>
+                    <input type="file" name="featured_images[]" class="form-check" multiple accept="image/*">
+                </div>
+            </div>
+
             <div class="mb-4 d-flex gap-4">
                 <div class="form-check">
                     <input type="checkbox" name="is_active" class="form-check-input" id="activeCheck" value="1" {{ $product->is_active ? 'checked' : '' }}>

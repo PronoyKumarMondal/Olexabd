@@ -52,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(\App\Observers\AuditObserver::class);
         Order::observe(\App\Observers\AuditObserver::class);
         \App\Models\PromoCode::observe(\App\Observers\AuditObserver::class);
+        \App\Models\ProductImage::observe(\App\Observers\AuditObserver::class);
         
         // Vite::prefetch(concurrency: 3);
     }
