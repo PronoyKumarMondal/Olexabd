@@ -115,13 +115,18 @@ class SuperAdminController extends Controller
 
         // 6. Advanced Monitoring (Tech Head)
         // Git Info
+        $gitInfo = 'Version info unavailable';
         try {
-            $gitHash = trim(exec('git log -1 --format="%h"'));
-            $gitMessage = trim(exec('git log -1 --format="%s"'));
-            $gitDate = trim(exec('git log -1 --format="%ci"'));
-            $gitInfo = $gitHash ? "[$gitHash] $gitMessage ($gitDate)" : 'Version info unavailable';
-        } catch (\Exception $e) {
-            $gitInfo = 'Git not accessible';
+            if (function_exists('exec')) {
+                $gitHash = trim(exec('git log -1 --format="%h"'));
+                $gitMessage = trim(exec('git log -1 --format="%s"'));
+                $gitDate = trim(exec('git log -1 --format="%ci"'));
+                if ($gitHash) {
+                    $gitInfo = "[$gitHash] $gitMessage ($gitDate)";
+                }
+            }
+        } catch (\Throwable $e) {
+            $gitInfo = 'Git Check Failed';
         }
 
         // Database Tables Stats (Top 5 by Size/Rows) - MySQL Specific
@@ -137,30 +142,37 @@ class SuperAdminController extends Controller
                 ORDER BY size_mb DESC, table_rows DESC 
                 LIMIT 5
             ", [$dbName]);
-        } catch (\Exception $e) {
-            // Fallback or ignore if not MySQL
+        } catch (\Throwable $e) {
+             // Fallback: Create a dummy object or empty array
         }
 
         // Failed Jobs
         $failedJobsCount = 0;
-        if (\Illuminate\Support\Facades\Schema::hasTable('failed_jobs')) {
-            $failedJobsCount = DB::table('failed_jobs')->count();
-        }
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('failed_jobs')) {
+                $failedJobsCount = DB::table('failed_jobs')->count();
+            }
+        } catch (\Throwable $e) {}
 
         // Route Count
-        $routeCount = count(\Illuminate\Support\Facades\Route::getRoutes());
+        $routeCount = 0;
+        try {
+            $routeCount = count(\Illuminate\Support\Facades\Route::getRoutes());
+        } catch (\Throwable $e) {}
         
         // Maintenance Mode
         $maintenanceMode = app()->isDownForMaintenance();
 
         // Active Sessions (approximate if using database driver, else N/A)
         $activeSessions = 'N/A';
-        if (config('session.driver') === 'database' && \Illuminate\Support\Facades\Schema::hasTable('sessions')) {
-             // Active in last hour
-            $activeSessions = DB::table('sessions')
-                ->where('last_activity', '>=', now()->subHour()->timestamp)
-                ->count();
-        }
+        try {
+            if (config('session.driver') === 'database' && \Illuminate\Support\Facades\Schema::hasTable('sessions')) {
+                // Active in last hour
+                $activeSessions = DB::table('sessions')
+                    ->where('last_activity', '>=', now()->subHour()->timestamp)
+                    ->count();
+            }
+        } catch (\Throwable $e) {}
 
         // Log File Size & Content
         $logFile = storage_path('logs/laravel.log');
