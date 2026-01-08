@@ -90,11 +90,27 @@
             </div>
 
             <!-- Featured Images (Max 3) -->
+            <!-- Featured Images (Max 3) -->
             <div class="mb-3">
-                <label class="form-label">Featured Images (Max 3, Optional)</label>
-                <input type="file" name="featured_images[]" id="featuredInput" class="form-control" multiple accept="image/*" onchange="previewFeatured(this)">
-                <div class="form-text">You can select up to 3 images. These will appear in the product gallery.</div>
-                <div id="featured-preview" class="d-flex gap-2 mt-2 flex-wrap"></div>
+                <label class="form-label fw-bold">Featured Images (Optional)</label>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <label class="small text-muted mb-1">Image 1</label>
+                        <input type="file" name="featured_images[]" class="form-control form-control-sm" accept="image/*" onchange="previewIndividual(this, 'preview1')">
+                        <img id="preview1" class="img-thumbnail mt-2 d-none" style="height: 60px; width: 60px; object-fit: cover;">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="small text-muted mb-1">Image 2</label>
+                        <input type="file" name="featured_images[]" class="form-control form-control-sm" accept="image/*" onchange="previewIndividual(this, 'preview2')">
+                        <img id="preview2" class="img-thumbnail mt-2 d-none" style="height: 60px; width: 60px; object-fit: cover;">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="small text-muted mb-1">Image 3</label>
+                        <input type="file" name="featured_images[]" class="form-control form-control-sm" accept="image/*" onchange="previewIndividual(this, 'preview3')">
+                        <img id="preview3" class="img-thumbnail mt-2 d-none" style="height: 60px; width: 60px; object-fit: cover;">
+                    </div>
+                </div>
+                <div class="form-text mt-1">Select up to 3 images for the gallery.</div>
             </div>
 
             <div class="mb-4 d-flex gap-4">
@@ -173,24 +189,18 @@
         }
     }
 
-    function previewFeatured(input) {
-        const previewContainer = document.getElementById('featured-preview');
-        previewContainer.innerHTML = ''; // Clear previous
-
-        if (input.files) {
-            Array.from(input.files).slice(0, 3).forEach(file => { // Limit preview to 3
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'img-thumbnail';
-                    img.style.height = '80px';
-                    img.style.width = '80px';
-                    img.style.objectFit = 'cover';
-                    previewContainer.appendChild(img);
-                }
-                reader.readAsDataURL(file);
-            });
+    function previewIndividual(input, imgId) {
+        const img = document.getElementById(imgId);
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                img.classList.remove('d-none');
+            }
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            img.src = '';
+            img.classList.add('d-none');
         }
     }
 

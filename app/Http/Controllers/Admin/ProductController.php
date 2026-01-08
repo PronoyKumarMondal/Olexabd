@@ -82,6 +82,7 @@ class ProductController extends Controller
             $count = 0;
             foreach ($request->file('featured_images') as $file) {
                 if ($count >= 3) break;
+                if (!$file) continue; // Skip empty inputs
                 
                 $path = $this->compressAndStore($file, 'products/featured', 1048576, 1000);
                 
@@ -150,11 +151,10 @@ class ProductController extends Controller
             }
         }
 
-        // Add New Featured Images
-        $currentCount = $product->images()->count();
         if ($request->hasFile('featured_images')) {
             foreach ($request->file('featured_images') as $file) {
                 if ($currentCount >= 3) break;
+                if (!$file) continue;
                 
                 $path = $this->compressAndStore($file, 'products/featured', 1048576, 1000);
                 

@@ -110,8 +110,24 @@
                 @endif
 
                 <div class="mt-2">
-                    <label class="form-label small text-muted">Add More Images (Max 3 Total)</label>
-                    <input type="file" name="featured_images[]" class="form-check" multiple accept="image/*">
+                    <label class="form-label small text-muted">Add Additional Images (Variable)</label>
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="small text-muted mb-1">New Image 1</label>
+                            <input type="file" name="featured_images[]" class="form-control form-control-sm" accept="image/*" onchange="previewIndividual(this, 'previewNew1')">
+                            <img id="previewNew1" class="img-thumbnail mt-2 d-none" style="height: 60px; width: 60px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small text-muted mb-1">New Image 2</label>
+                            <input type="file" name="featured_images[]" class="form-control form-control-sm" accept="image/*" onchange="previewIndividual(this, 'previewNew2')">
+                            <img id="previewNew2" class="img-thumbnail mt-2 d-none" style="height: 60px; width: 60px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small text-muted mb-1">New Image 3</label>
+                            <input type="file" name="featured_images[]" class="form-control form-control-sm" accept="image/*" onchange="previewIndividual(this, 'previewNew3')">
+                            <img id="previewNew3" class="img-thumbnail mt-2 d-none" style="height: 60px; width: 60px; object-fit: cover;">
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -186,6 +202,21 @@
             const fileName = input.files[0].name;
             document.getElementById('file-name').innerText = fileName;
             document.getElementById('preview-area').classList.remove('d-none');
+        }
+    }
+
+    function previewIndividual(input, imgId) {
+        const img = document.getElementById(imgId);
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                img.classList.remove('d-none');
+            }
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            img.src = '';
+            img.classList.add('d-none');
         }
     }
 
