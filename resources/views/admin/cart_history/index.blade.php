@@ -41,7 +41,8 @@
             <table class="table table-hover mb-0 align-middle">
                 <thead class="bg-light">
                     <tr>
-                        <th class="ps-4">User</th>
+                        <th class="ps-4">ID</th>
+                        <th>User</th>
                         <th>Product</th>
                         <th>Status</th>
                         <th>Qty</th>
@@ -53,7 +54,8 @@
                 <tbody>
                     @forelse($items as $item)
                     <tr>
-                        <td class="ps-4">
+                        <td class="ps-4 text-muted small">#{{ $item->id }}</td>
+                        <td>
                             <div class="fw-bold">{{ $item->user->name ?? 'Unknown' }}</div>
                             <small class="text-muted">{{ $item->user->email ?? '-' }}</small>
                         </td>

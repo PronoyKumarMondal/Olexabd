@@ -32,7 +32,8 @@
             <table class="table table-hover mb-0 align-middle">
                 <thead class="bg-light">
                     <tr>
-                        <th class="ps-4">Query</th>
+                        <th class="ps-4">ID</th>
+                        <th>Query</th>
                         <th>User</th>
                         <th>Results Found</th>
                         <th>IP Address</th>
@@ -42,7 +43,8 @@
                 <tbody>
                     @forelse($searches as $search)
                     <tr>
-                        <td class="ps-4 fw-bold text-primary">{{ $search->query }}</td>
+                        <td class="ps-4 text-muted small">#{{ $search->id }}</td>
+                        <td class="fw-bold text-primary">{{ $search->query }}</td>
                         <td>
                             @if($search->user)
                                 <div class="fw-bold">{{ $search->user->name }}</div>
