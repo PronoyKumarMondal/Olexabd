@@ -122,11 +122,10 @@ class BannerController extends Controller
 
     /**
      * Compress and Store Image
-     * Automatically compresses if size > 5MB. But effectively optimizes all images.
      */
     private function compressAndStore($file, $targetWidth = 1920, $targetHeight = 450)
     {
-        // Generate name
+        // Generate Name
         $extension = strtolower($file->guessExtension());
         if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
             $extension = 'jpg';
@@ -134,17 +133,16 @@ class BannerController extends Controller
         $filename = \Illuminate\Support\Str::random(40) . '.' . $extension;
         $path = 'banners/' . $filename;
         $fullPath = storage_path('app/public/' . $path);
-        
+
         // Ensure directory exists
         if (!file_exists(dirname($fullPath))) {
             mkdir(dirname($fullPath), 0755, true);
         }
 
-        // Native Compression Logic
+        // Native Compression
         $sourceImage = null;
         $mime = $file->getMimeType();
 
-        // Load Image
         if ($extension == 'jpeg' || $extension == 'jpg' || $mime == 'image/jpeg') 
             $sourceImage = @imagecreatefromjpeg($file->getRealPath());
         elseif ($extension == 'png' || $mime == 'image/png')
@@ -152,67 +150,51 @@ class BannerController extends Controller
         elseif ($extension == 'webp' || $mime == 'image/webp')
              $sourceImage = @imagecreatefromwebp($file->getRealPath());
         
-        // If GD fails or format unsupported, fallback to standard store
+        // Fallback
         if (!$sourceImage) {
             $storedPath = $file->storeAs('banners', $filename, 'public');
             return '/storage/' . $storedPath;
         }
 
-        // Resize & Pad Logic
+        // Resize
         $width = imagesx($sourceImage);
         $height = imagesy($sourceImage);
         
         $srcRatio = $width / $height;
         $targetRatio = $targetWidth / $targetHeight;
         
-        // Calculate dimensions to FIT inside target
         if ($srcRatio > $targetRatio) {
-            // Wider than target: Limit by Width
             $newW = $targetWidth;
             $newH = $targetWidth / $srcRatio;
         } else {
-            // Taller than target: Limit by Height
             $newH = $targetHeight;
             $newW = $targetHeight * $srcRatio;
         }
 
-        // Calculate Centering Offsets
         $dstX = ($targetWidth - $newW) / 2;
         $dstY = ($targetHeight - $newH) / 2;
 
-        // Create Canvas (White Background)
         $finalImage = imagecreatetruecolor($targetWidth, $targetHeight);
         $white = imagecolorallocate($finalImage, 255, 255, 255);
         imagefill($finalImage, 0, 0, $white);
 
-        // Preserve Transparency
         if ($extension == 'png' || $extension == 'webp') {
             imagealphablending($finalImage, false);
             imagesavealpha($finalImage, true);
         }
 
-        // Resample (Resize & Center)
-        imagecopyresampled(
-            $finalImage, $sourceImage, 
-            $dstX, $dstY, 
-            0, 0, 
-            $newW, $newH, 
-            $width, $height
-        );
+        imagecopyresampled($finalImage, $sourceImage, $dstX, $dstY, 0, 0, $newW, $newH, $width, $height);
         
         imagedestroy($sourceImage);
         $sourceImage = $finalImage;
 
-        // Save Compressed
-        $quality = 80; // Default good quality
-        
-        // Aggressive compression if original file > 2MB (2097152 bytes)
+        // Compression
+        $quality = 80; 
         if ($file->getSize() > 2097152) {
             $quality = 60; 
         }
 
         if ($extension == 'png') {
-            // PNG Quality is 0-9 (inverted scaling of compression)
             $pngQuality = ($quality > 70) ? 6 : 8; 
             imagepng($sourceImage, $fullPath, $pngQuality);
         } elseif ($extension == 'webp') {
