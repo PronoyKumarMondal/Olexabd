@@ -140,23 +140,52 @@ class BannerController extends Controller
             return '/storage/' . $storedPath;
         }
 
-        $targetWidth = $width; // Default to original if no target set
-        $targetHeight = $height; // Default to original
-
-        // Define target dimensions based on type (heuristic or explicit arg if updated)
-        // Since we want to reuse this for both Desktop (1920x450) and Mobile (e.g. 800x600)
-        // We should pass dimensions as arguments.
-        // For now, let's just make the method signature accept optional dimensions.
-    }
-}
+        // Resize & Pad Logic
+        $width = imagesx($sourceImage);
+        $height = imagesy($sourceImage);
         
-        // Aggressive compression if original file > 5MB (5242880 bytes)
-        if ($file->getSize() > 5242880) {
-            $quality = 60; 
+        $srcRatio = $width / $height;
+        $targetRatio = $targetWidth / $targetHeight;
+        
+        // Calculate dimensions to FIT inside target
+        if ($srcRatio > $targetRatio) {
+            // Wider
+            $newW = $targetWidth;
+            $newH = $targetWidth / $srcRatio;
+        } else {
+            // Taller
+            $newH = $targetHeight;
+            $newW = $targetHeight * $srcRatio;
         }
 
+        $dstX = ($targetWidth - $newW) / 2;
+        $dstY = ($targetHeight - $newH) / 2;
+
+        $finalImage = imagecreatetruecolor($targetWidth, $targetHeight);
+        $white = imagecolorallocate($finalImage, 255, 255, 255);
+        imagefill($finalImage, 0, 0, $white);
+
+        if ($extension == 'png' || $extension == 'webp') {
+            imagealphablending($finalImage, false);
+            imagesavealpha($finalImage, true);
+        }
+
+        imagecopyresampled(
+            $finalImage, $sourceImage, 
+            $dstX, $dstY, 
+            0, 0, 
+            $newW, $newH, 
+            $width, $height
+        );
+        
+        imagedestroy($sourceImage);
+        $sourceImage = $finalImage;
+
+        // Save
+        $quality = 80; 
+        if ($file->getSize() > 5242880) { $quality = 60; }
+
         if ($extension == 'png') {
-            // PNG Quality is 0-9 (inverted scaling of compression)
             $pngQuality = ($quality > 70) ? 6 : 8; 
             imagepng($sourceImage, $fullPath, $pngQuality);
         } elseif ($extension == 'webp') {
