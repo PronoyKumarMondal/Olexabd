@@ -17,7 +17,9 @@ class PromoCode extends Model
         'starts_at',
         'expires_at',
         'is_active',
-        'updated_by'
+        'updated_by',
+        'target_type',
+        'target_ids'
     ];
 
     protected $casts = [
@@ -26,6 +28,7 @@ class PromoCode extends Model
         'is_active' => 'boolean',
         'value' => 'decimal:2',
         'min_order_amount' => 'decimal:2',
+        'target_ids' => 'array',
     ];
 
     // Relationship for Audit Trail

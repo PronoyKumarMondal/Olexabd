@@ -16,7 +16,9 @@ class PromoCodeController extends Controller
 
     public function create()
     {
-        return view('admin.promos.create');
+        $categories = \App\Models\Category::whereNull('parent_id')->with('children')->select('id', 'name', 'parent_id')->get();
+        $products = \App\Models\Product::select('id', 'name')->get();
+        return view('admin.promos.create', compact('categories', 'products'));
     }
 
     public function store(Request $request)
@@ -26,8 +28,11 @@ class PromoCodeController extends Controller
             'type' => 'required|in:fixed,percent',
             'value' => 'required|numeric|min:0',
             'min_order_amount' => 'nullable|numeric|min:0',
-            'starts_at' => 'nullable|date',
-            'expires_at' => 'nullable|date|after_or_equal:starts_at',
+            'starts_at' => 'required|date',
+            'expires_at' => 'required|date|after:starts_at',
+            'target_type' => 'required|in:all,category,product',
+            'target_ids' => 'nullable|array',
+            'target_ids.*' => 'numeric',
         ]);
 
         PromoCode::create([
@@ -38,6 +43,8 @@ class PromoCodeController extends Controller
             'starts_at' => $request->starts_at,
             'expires_at' => $request->expires_at,
             'is_active' => $request->has('is_active'),
+            'target_type' => $request->target_type,
+            'target_ids' => $request->target_ids ?? [],
         ]);
 
         return redirect()->route('admin.promos.index')->with('success', 'Promo Code created successfully.');
@@ -45,7 +52,9 @@ class PromoCodeController extends Controller
 
     public function edit(PromoCode $promo)
     {
-        return view('admin.promos.edit', compact('promo'));
+        $categories = \App\Models\Category::whereNull('parent_id')->with('children')->select('id', 'name', 'parent_id')->get();
+        $products = \App\Models\Product::select('id', 'name')->get();
+        return view('admin.promos.edit', compact('promo', 'categories', 'products'));
     }
 
     public function update(Request $request, PromoCode $promo)
@@ -55,8 +64,11 @@ class PromoCodeController extends Controller
             'type' => 'required|in:fixed,percent',
             'value' => 'required|numeric|min:0',
             'min_order_amount' => 'nullable|numeric|min:0',
-            'starts_at' => 'nullable|date',
-            'expires_at' => 'nullable|date|after_or_equal:starts_at',
+            'starts_at' => 'required|date',
+            'expires_at' => 'required|date|after:starts_at',
+            'target_type' => 'required|in:all,category,product',
+            'target_ids' => 'nullable|array',
+            'target_ids.*' => 'numeric',
         ]);
 
         $promo->update([
@@ -67,11 +79,13 @@ class PromoCodeController extends Controller
             'starts_at' => $request->starts_at,
             'expires_at' => $request->expires_at,
             'is_active' => $request->has('is_active'),
+            'target_type' => $request->target_type,
+            'target_ids' => $request->target_ids ?? [],
         ]);
 
         return redirect()->route('admin.promos.index')->with('success', 'Promo Code updated successfully.');
     }
-
+}
     public function destroy(PromoCode $promo)
     {
         $promo->delete();

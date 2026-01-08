@@ -83,23 +83,79 @@ class CartController extends Controller
             return back()->with('error', 'Invalid promo code.');
         }
 
+        // 1. Basic Validation (Active, Dates, Min Amount)
+        // Note: Min Amount check should probably be against the "Eligible Total" or "Grand Total"?
+        // Usually Min Order Amount applies to the whole cart total.
         if (!$promo->isValid($this->getCartTotal())) {
              return back()->with('error', 'Promo code cannot be applied (Check requirements).');
+        }
+
+        // 2. Target Validation & Calculation
+        $cart = session('cart', []);
+        $eligibleAmount = 0;
+        $hasEligibleItem = false;
+
+        if ($promo->target_type == 'all') {
+            $eligibleAmount = $this->getCartTotal();
+            $hasEligibleItem = true;
+        } else {
+            // Need to check specific items
+            // Fetch necessary product details to check categories if needed
+            $productIds = array_keys($cart);
+            $products = \App\Models\Product::whereIn('id', $productIds)->get()->keyBy('id');
+
+            foreach ($cart as $id => $item) {
+                $isItemEligible = false;
+                $product = $products[$id] ?? null;
+
+                if (!$product) continue;
+
+                if ($promo->target_type == 'product') {
+                    if (in_array($id, $promo->target_ids ?? [])) {
+                        $isItemEligible = true;
+                    }
+                } elseif ($promo->target_type == 'category') {
+                    if (in_array($product->category_id, $promo->target_ids ?? [])) {
+                        $isItemEligible = true;
+                    }
+                    // Handle Subcategories logic (if product's category is child of target)
+                    // This is complex without loading all categories. 
+                    // Optimization: We loaded categories in Admin, but here we just check ID.
+                    // If user selected Parent Category, we expect standard "exact match" 
+                    // unless we do a recursive check. 
+                    // For now, let's Stick to DIRECT Category Match for simplicity and speed.
+                    // If user wants to target subcategory, they select it.
+                    // Refinment: If we want Parent to include Children, we need to fetch category ancestry.
+                    // Let's rely on checking `category_id`.
+                }
+
+                if ($isItemEligible) {
+                    $eligibleAmount += $item['price'] * $item['quantity'];
+                    $hasEligibleItem = true;
+                }
+            }
+        }
+
+        if (!$hasEligibleItem) {
+            return back()->with('error', 'This promo code applies to specific items that are not in your cart.');
         }
 
         // Calculate Discount
         $discountAmount = 0;
         if ($promo->type == 'fixed') {
-             $discountAmount = $promo->value;
+             // Fixed amount is applied, but capped at eligible amount? 
+             // Logic: $10 off specific pants. If pants cost $100. Discount $10. item. If pants cost $5. Discount $5.
+             $discountAmount = min($promo->value, $eligibleAmount);
         } else {
-             $discountAmount = ($this->getCartTotal() * $promo->value) / 100;
+             $discountAmount = ($eligibleAmount * $promo->value) / 100;
         }
 
         session()->put('coupon', [
             'code' => $promo->code,
             'amount' => $discountAmount,
             'type' => $promo->type,
-            'value' => $promo->value
+            'value' => $promo->value,
+            'target_type' => $promo->target_type
         ]);
 
         return back()->with('success', 'Coupon applied successfully!');
