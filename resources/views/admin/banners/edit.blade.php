@@ -25,7 +25,9 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Change Image (Optional)</label>
                     <input type="file" name="image" class="form-control" accept="image/*">
-                    <div class="form-text">Leave empty to keep current image.</div>
+                    <div class="form-text text-primary">
+                        <i class="bi bi-info-circle"></i> <strong>Ideal Size:</strong> 1920x450 pixels.
+                    </div>
                 </div>
 
                 <div class="mb-3">

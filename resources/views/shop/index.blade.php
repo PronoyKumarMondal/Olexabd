@@ -56,11 +56,13 @@
     </button>
 
     <style>
-        /* Responsive Banner Heights */
         .hero-banner-item {
-            height: 450px;
+            /* height: 450px; Removed fixed height */
+            aspect-ratio: 21/5; /* approx 1920x450 */
         }
         .hero-banner-img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             object-position: center;
             transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -84,7 +86,8 @@
         /* Mobile Adjustments */
         @media (max-width: 768px) {
             .hero-banner-item {
-                height: 380px; /* Taller on mobile for content */
+                height: auto;
+                aspect-ratio: 4/3; /* Mobile Ratio */
             }
             .hero-title {
                 font-size: 2.2rem;

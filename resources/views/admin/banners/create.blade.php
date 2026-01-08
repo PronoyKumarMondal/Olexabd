@@ -17,7 +17,10 @@
                 <div class="mb-3">
                     <label class="form-label fw-bold">Banner Image <span class="text-danger">*</span></label>
                     <input type="file" name="image" class="form-control" accept="image/*" required>
-                    <div class="form-text">Recommended size: 1200x400 pixels. Max: 2MB.</div>
+                    <div class="form-text text-primary">
+                        <i class="bi bi-info-circle"></i> <strong>Ideal Size:</strong> 1920x450 pixels (Desktop).<br>
+                        The image will be displayed full width. Keep important text in the center safe zone.
+                    </div>
                 </div>
 
                 <div class="mb-3">
