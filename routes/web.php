@@ -58,6 +58,8 @@ Route::domain(env('APP_FRONTEND_DOMAIN', 'www.olexabd.com'))->group(function () 
         Route::post('/cart/add', 'addToCart')->name('cart.add');
         Route::patch('/cart/update', 'updateCart')->name('cart.update');
         Route::delete('/cart/remove', 'remove')->name('cart.remove');
+        Route::post('/cart/apply-promo', 'applyPromo')->name('cart.apply_promo');
+        Route::post('/cart/remove-promo', 'removePromo')->name('cart.remove_promo');
     });
 
     Route::middleware('auth')->group(function() {
@@ -90,6 +92,7 @@ Route::domain(env('APP_ADMIN_DOMAIN', 'admin.olexabd.com'))->name('admin.')->gro
         Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
         Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
         Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+        Route::resource('promos', \App\Http\Controllers\Admin\PromoCodeController::class);
         Route::get('/customers', [\App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('customers.index');
 
         // Super Admin Only

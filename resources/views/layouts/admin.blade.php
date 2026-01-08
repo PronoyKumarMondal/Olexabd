@@ -241,6 +241,12 @@
             </a>
             @endif
 
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('manage_promos'))
+            <a class="nav-link {{ request()->routeIs('admin.promos.*') ? 'active' : '' }}" href="{{ route('admin.promos.index') }}">
+                <i class="bi bi-tag-fill"></i> Promo Codes
+            </a>
+            @endif
+
             @if(Auth::guard('admin')->user()->isSuperAdmin())
                 <div class="sidebar-heading mt-3">Administration</div>
                 <a class="nav-link {{ request()->routeIs('admin.super.index') ? 'active' : '' }}" href="{{ route('admin.super.index') }}">

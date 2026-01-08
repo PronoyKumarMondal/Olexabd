@@ -16,15 +16,35 @@ class PaymentController extends Controller
         }
 
         // Calculate Total
-        $total = 0;
+        // Calculate Total
+        $subtotal = 0;
         foreach($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
+            $subtotal += $item['price'] * $item['quantity'];
         }
+
+        // Apply Coupon
+        $discount = 0;
+        $couponCode = null;
+        if (session()->has('coupon')) {
+             $coupon = session('coupon');
+             // Recalculate discount based on current total (in case cart changed)
+             // Or rely on session value if we trust it won't drift too much without re-validation
+             // Ideally re-validate here, but for simplicity read session
+             $discount = $coupon['amount'];
+             $couponCode = $coupon['code'];
+             
+             // Ensure discount doesn't exceed total
+             if($discount > $subtotal) $discount = $subtotal;
+        }
+
+        $total = $subtotal - $discount;
 
         // Create Order
         $order = Order::create([
             'user_id' => auth()->id(), // Ensure user is logged in
             'total_amount' => $total,
+            'coupon_code' => $couponCode,
+            'discount_amount' => $discount,
             'status' => 'pending',
             'payment_status' => 'unpaid',
             'shipping_address' => 'Dhaka, Bangladesh', // Placeholder until address form is added

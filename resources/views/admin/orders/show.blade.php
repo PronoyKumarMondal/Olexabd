@@ -38,6 +38,17 @@
                                 <td class="text-end pe-4 fw-bold">৳{{ number_format($item->unit_price * $item->quantity, 2) }}</td>
                             </tr>
                             @endforeach
+                            @endforeach
+                            <tr class="bg-light">
+                                <td colspan="3" class="text-end fw-bold">Subtotal</td>
+                                <td class="text-end pe-4 fw-bold">৳{{ number_format($order->total_amount + $order->discount_amount, 2) }}</td>
+                            </tr>
+                            @if($order->discount_amount > 0)
+                            <tr class="bg-light text-success">
+                                <td colspan="3" class="text-end fw-bold">Discount ({{ $order->coupon_code }})</td>
+                                <td class="text-end pe-4 fw-bold">-৳{{ number_format($order->discount_amount, 2) }}</td>
+                            </tr>
+                            @endif
                             <tr class="bg-light">
                                 <td colspan="3" class="text-end fw-bold">Grand Total</td>
                                 <td class="text-end pe-4 fw-bold fs-5">৳{{ number_format($order->total_amount, 2) }}</td>

@@ -107,6 +107,29 @@
                                 <span class="text-muted">Subtotal</span>
                                 <span class="fw-bold">৳{{ $total }}</span>
                             </div>
+                            
+                            @if(session('coupon'))
+                                <div class="d-flex justify-content-between mb-2 text-success">
+                                    <span>Discount ({{ session('coupon')['code'] }})</span>
+                                    <span>-৳{{ session('coupon')['amount'] }}</span>
+                                </div>
+                                <div class="mb-3">
+                                    <form action="{{ route('cart.remove_promo') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-link text-danger p-0 text-decoration-none" style="font-size: 0.85rem;">Remove Coupon</button>
+                                    </form>
+                                </div>
+                                @php $total = $total - session('coupon')['amount']; @endphp
+                            @else
+                                <div class="mb-3">
+                                     <form action="{{ route('cart.apply_promo') }}" method="POST" class="input-group">
+                                        @csrf
+                                        <input type="text" name="code" class="form-control" placeholder="Promo Code" required>
+                                        <button class="btn btn-outline-secondary" type="submit">Apply</button>
+                                    </form>
+                                </div>
+                            @endif
+
                             <div class="d-flex justify-content-between mb-4">
                                 <span class="text-muted">Shipping</span>
                                 <span class="text-success fw-bold">Free</span>
@@ -114,7 +137,7 @@
                             <hr class="border-secondary opacity-25">
                             <div class="d-flex justify-content-between mb-4">
                                 <span class="h5 fw-bold mb-0">Total</span>
-                                <span class="h5 fw-bold mb-0 text-primary">৳{{ $total }}</span>
+                                <span class="h5 fw-bold mb-0 text-primary">৳{{ max(0, $total) }}</span>
                             </div>
 
                             <form action="{{ route('checkout.init') }}" method="POST">
