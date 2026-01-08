@@ -46,6 +46,7 @@
                 <thead class="bg-light">
                     <tr>
                         <th class="ps-4">ID</th>
+                        <th>Image</th>
                         <th>Code</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -61,6 +62,13 @@
                     @foreach($products as $product)
                     <tr>
                         <td class="ps-4 text-muted small">#{{ $product->id }}</td>
+                        <td>
+                            @if($product->image)
+                                <img src="{{ $product->image }}" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;">
+                            @else
+                                <span class="badge bg-light text-secondary border">No Img</span>
+                            @endif
+                        </td>
                         <td class="text-primary font-monospace">{{ $product->code }}</td>
                         <td>
                             <div class="fw-bold">{{ $product->name }}</div>
