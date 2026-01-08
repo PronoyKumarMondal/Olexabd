@@ -137,7 +137,15 @@
                                 <div class="fw-bold">{{ $category->name }}</div>
                             </div>
                         </td>
-                        <td>{{ $category->products_count }}</td>
+                        <td>
+                            {{ $category->products_count }}
+                            <div class="small text-muted mt-1" style="font-size: 0.7em;">
+                                <div><i class="bi bi-clock"></i> {{ $category->created_at->format('M d, y') }}</div>
+                                @if($category->updated_by)
+                                <div><i class="bi bi-pencil"></i> {{ $category->updater->name ?? 'Admin' }} ({{ $category->updated_at->format('M d') }})</div>
+                                @endif
+                            </div>
+                        </td>
                         <td>
                             @if($category->is_active)
                                 <span class="badge bg-success-subtle text-success">Active</span>

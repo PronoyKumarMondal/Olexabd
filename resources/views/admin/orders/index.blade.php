@@ -59,7 +59,14 @@
                                 <span class="badge bg-light text-dark border" style="font-size: 0.65em;">WEB</span>
                             @endif
                         </td>
-                        <td>৳{{ $order->total_amount }}</td>
+                        <td>
+                            ৳{{ $order->total_amount }}
+                            <div class="small text-muted mt-1" style="font-size: 0.7em;">
+                                @if($order->updated_by)
+                                <div title="Updated by {{ $order->updater->name ?? 'Admin' }}"><i class="bi bi-pencil"></i> {{ $order->updated_at->format('M d, H:i') }}</div>
+                                @endif
+                            </div>
+                        </td>
                         <td>
                             @if($order->status == 'completed')
                                 <span class="badge bg-success-subtle text-success">Completed</span>

@@ -46,6 +46,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Order::class, OrderPolicy::class);
         Gate::policy(Product::class, ProductPolicy::class);
         Gate::policy(Category::class, CategoryPolicy::class);
+
+        // Register Audit Observers
+        Product::observe(\App\Observers\AuditObserver::class);
+        Category::observe(\App\Observers\AuditObserver::class);
+        Order::observe(\App\Observers\AuditObserver::class);
         
         // Vite::prefetch(concurrency: 3);
     }

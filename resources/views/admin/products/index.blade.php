@@ -65,7 +65,15 @@
                         </td>
                         <td>{{ $product->category->name ?? '-' }}</td>
                         <td class="fw-bold">৳{{ $product->price }}</td>
-                        <td>{{ $product->stock }}</td>
+                        <td>
+                            {{ $product->stock }}
+                            <div class="small text-muted mt-1" style="font-size: 0.7em;">
+                                <div><i class="bi bi-clock"></i> {{ $product->created_at->format('M d, y') }}</div>
+                                @if($product->updated_by)
+                                <div><i class="bi bi-pencil"></i> {{ $product->updater->name ?? 'Admin' }} ({{ $product->updated_at->format('M d') }})</div>
+                                @endif
+                            </div>
+                        </td>
                         <td class="text-end pe-4">
                             @can('update', $product)
                             <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-outline-primary me-1">Edit</a>

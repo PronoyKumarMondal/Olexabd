@@ -29,4 +29,8 @@ class Category extends Model
     {
         return $this->hasMany(Product::class);
     }
+    public function updater()
+    {
+        return $this->belongsTo(Admin::class, 'updated_by');
+    }
 }
