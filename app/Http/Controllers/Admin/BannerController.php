@@ -52,6 +52,7 @@ class BannerController extends Controller
         }
 
         Banner::create($data);
+        \Illuminate\Support\Facades\Cache::forget('home_banners');
 
         return redirect()->route('admin.banners.index')->with('success', 'Banner created successfully.');
     }
@@ -84,6 +85,7 @@ class BannerController extends Controller
         }
 
         $banner->update($data);
+        \Illuminate\Support\Facades\Cache::forget('home_banners');
 
         return redirect()->route('admin.banners.index')->with('success', 'Banner updated successfully.');
     }
@@ -91,6 +93,7 @@ class BannerController extends Controller
     public function destroy(Banner $banner)
     {
         $banner->delete();
+        \Illuminate\Support\Facades\Cache::forget('home_banners');
         return redirect()->route('admin.banners.index')->with('success', 'Banner deleted successfully.');
     }
 }

@@ -10,20 +10,29 @@ class ShopController extends Controller
 {
     public function index()
     {
-        $banners = \App\Models\Banner::where('is_active', true)->orderBy('order')->get();
-        $categories = Category::where('is_active', true)->whereNull('parent_id')->withCount('products')->get();
+        $banners = \Illuminate\Support\Facades\Cache::remember('home_banners', 60*60, function () {
+            return \App\Models\Banner::where('is_active', true)->orderBy('order')->get();
+        });
+
+        $categories = \Illuminate\Support\Facades\Cache::remember('home_categories', 60*60, function () {
+            return Category::where('is_active', true)->whereNull('parent_id')->withCount('products')->get();
+        });
         
         // Featured: 8 items
-        $featuredProducts = Product::where('is_active', true)
-            ->inRandomOrder() // Or add 'is_featured' column check if available
-            ->take(8)
-            ->get();
+        $featuredProducts = \Illuminate\Support\Facades\Cache::remember('home_featured', 30*60, function () {
+            return Product::where('is_active', true)
+                ->inRandomOrder() 
+                ->take(8)
+                ->get();
+        });
 
-        // All/Recent: 11 items (12th slot is for "View All" card)
-        $products = Product::where('is_active', true)
-            ->latest()
-            ->take(11)
-            ->get();
+        // All/Recent: 11 items
+        $products = \Illuminate\Support\Facades\Cache::remember('home_recent', 30*60, function () {
+            return Product::where('is_active', true)
+                ->latest()
+                ->take(11)
+                ->get();
+        });
 
         return view('shop.index', compact('banners', 'categories', 'featuredProducts', 'products'));
     }

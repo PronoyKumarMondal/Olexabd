@@ -76,6 +76,8 @@ class ProductController extends Controller
         }
 
         Product::create($data);
+        \Illuminate\Support\Facades\Cache::forget('home_featured');
+        \Illuminate\Support\Facades\Cache::forget('home_recent');
 
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
     }
@@ -116,6 +118,8 @@ class ProductController extends Controller
         }
 
         $product->update($data);
+        \Illuminate\Support\Facades\Cache::forget('home_featured');
+        \Illuminate\Support\Facades\Cache::forget('home_recent');
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
     }
@@ -124,6 +128,8 @@ class ProductController extends Controller
     {
         $this->authorize('delete', $product);
         $product->delete();
+        \Illuminate\Support\Facades\Cache::forget('home_featured');
+        \Illuminate\Support\Facades\Cache::forget('home_recent');
         return redirect()->back()->with('success', 'Product deleted.');
     }
 }

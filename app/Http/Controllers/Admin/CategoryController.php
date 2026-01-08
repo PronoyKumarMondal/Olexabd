@@ -64,6 +64,8 @@ class CategoryController extends Controller
             'is_active' => true
         ]);
 
+        \Illuminate\Support\Facades\Cache::forget('home_categories');
+
         return redirect()->back()->with('success', 'Category created successfully.');
     }
 
@@ -91,6 +93,7 @@ class CategoryController extends Controller
         }
 
         $category->update($data);
+        \Illuminate\Support\Facades\Cache::forget('home_categories');
 
         return redirect()->back()->with('success', 'Category updated successfully.');
     }
@@ -99,6 +102,7 @@ class CategoryController extends Controller
     {
         $this->authorize('delete', $category);
         $category->delete();
+        \Illuminate\Support\Facades\Cache::forget('home_categories');
         return redirect()->back()->with('success', 'Category deleted successfully.');
     }
 }
