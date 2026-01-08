@@ -185,6 +185,8 @@ class ProductController extends Controller
      */
     private function compressAndStore($file, $folder, $maxSizeBytes, $maxWidth = 1500)
     {
+        \Illuminate\Support\Facades\Log::info("Compressing: " . $file->getClientOriginalName() . " Size: " . $file->getSize());
+        
         // Generate name
         $extension = strtolower($file->guessExtension());
         if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
@@ -213,6 +215,7 @@ class ProductController extends Controller
         
         // If GD fails or format unsupported, fallback to standard store
         if (!$sourceImage) {
+            \Illuminate\Support\Facades\Log::warning("GD Fallback used for: " . $file->getClientOriginalName());
             $storedPath = $file->storeAs($folder, $filename, 'public');
             return '/storage/' . $storedPath;
         }
@@ -243,6 +246,7 @@ class ProductController extends Controller
         // Aggressive compression if original file > maxSizeBytes
         if ($file->getSize() > $maxSizeBytes) {
             $quality = 60; 
+            \Illuminate\Support\Facades\Log::info("Applying Aggressive Compression (Quality 60) for: " . $filename);
         }
 
         if ($extension == 'png') {
@@ -252,6 +256,10 @@ class ProductController extends Controller
             imagewebp($sourceImage, $fullPath, $quality);
         } else {
             imagejpeg($sourceImage, $fullPath, $quality);
+        }
+
+        if (file_exists($fullPath)) {
+            \Illuminate\Support\Facades\Log::info("Saved Compressed: " . $filename . " New Size: " . filesize($fullPath));
         }
 
         imagedestroy($sourceImage);
