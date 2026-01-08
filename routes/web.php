@@ -6,8 +6,13 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Main Site Routes (www.olexabd.com)
-Route::domain('www.olexabd.com')->group(function () {
+// Main Site Routes (Dynamic Domain)
+Route::domain(env('APP_FRONTEND_DOMAIN', 'www.olexabd.com'))->group(function () {
+    
+    // Front-end Storage Proxy (Bypass Symlinks)
+    Route::get('/storage/{path}', [\App\Http\Controllers\ShopController::class, 'serveStorage'])
+        ->where('path', '.*')
+        ->name('shop.storage.proxy');
 
     Route::get('/', function () {
         return Inertia::render('Welcome', [
@@ -64,8 +69,8 @@ Route::domain('www.olexabd.com')->group(function () {
     require __DIR__.'/auth.php';
 });
 
-// Admin Routes (Subdomain)
-Route::domain('admin.olexabd.com')->name('admin.')->group(function () {
+// Admin Routes (Dynamic Domain)
+Route::domain(env('APP_ADMIN_DOMAIN', 'admin.olexabd.com'))->name('admin.')->group(function () {
     
     // Admin Auth
     Route::get('/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'create'])->name('login');
