@@ -1,11 +1,16 @@
 @extends('layouts.admin')
 
 @section('header')
-<div class="d-flex justify-content-between align-items-center w-100">
+<div class="d-flex justify-content-between align-items-center w-100 flex-wrap gap-2">
     <span>Dashboard</span>
     <form method="GET" action="{{ route('admin.dashboard') }}" class="d-flex align-items-center gap-2">
-        <label class="small fw-bold text-muted mb-0">Period:</label>
-        <input type="month" name="month" class="form-control form-control-sm" value="{{ $filterMonth }}" onchange="this.form.submit()">
+        <label class="small fw-bold text-muted mb-0">From:</label>
+        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $startDate }}" required>
+        
+        <label class="small fw-bold text-muted mb-0">To:</label>
+        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $endDate }}" required>
+        
+        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
     </form>
 </div>
 @endsection
@@ -16,7 +21,7 @@
     <div class="col-md-3">
         <div class="card p-3 h-100 border-0 border-start border-primary border-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <div class="text-muted small text-uppercase fw-bold ls-1">Revenue ({{ \Carbon\Carbon::parse($filterMonth)->format('M') }})</div>
+                <div class="text-muted small text-uppercase fw-bold ls-1">Revenue</div>
                 <div class="bg-primary-subtle text-primary p-2 rounded-circle">
                     <i class="bi bi-currency-dollar fs-5"></i>
                 </div>
@@ -28,7 +33,7 @@
     <div class="col-md-3">
         <div class="card p-3 h-100 border-0 border-start border-info border-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <div class="text-muted small text-uppercase fw-bold ls-1">Orders ({{ \Carbon\Carbon::parse($filterMonth)->format('M') }})</div>
+                <div class="text-muted small text-uppercase fw-bold ls-1">Orders</div>
                 <div class="bg-info-subtle text-info p-2 rounded-circle">
                     <i class="bi bi-cart fs-5"></i>
                 </div>
@@ -68,7 +73,7 @@
     <div class="col-xl-8">
         <div class="card h-100">
             <div class="card-header bg-white py-3">
-                <h6 class="mb-0 fw-bold">Daily Sales Analytics ({{ \Carbon\Carbon::parse($filterMonth)->format('F Y') }})</h6>
+                <h6 class="mb-0 fw-bold">Sales Analytics ({{ \Carbon\Carbon::parse($startDate)->format('M d') }} - {{ \Carbon\Carbon::parse($endDate)->format('M d') }})</h6>
             </div>
             <div class="card-body">
                 <canvas id="salesChart" height="100"></canvas>

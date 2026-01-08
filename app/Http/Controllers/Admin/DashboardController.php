@@ -14,55 +14,47 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // Filter: Default to current month if not provided
-        $filterMonth = $request->input('month', now()->format('Y-m'));
-        [$year, $month] = explode('-', $filterMonth);
+        // Filter: Date Range (Default to current month)
+        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
 
-        // 1. Key Metrics (Filtered by Month)
-        $totalProducts = Product::count(); // Products usually aren't filtered by date in this context (inventory is current)
+        // 1. Key Metrics (Filtered by Range)
+        $totalProducts = Product::count();
         
-        $totalOrders = Order::whereYear('created_at', $year)
-                            ->whereMonth('created_at', $month)
-                            ->count();
+        $totalOrders = Order::whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])->count();
                             
         $totalRevenue = Order::where('payment_status', 'paid')
-                             ->whereYear('created_at', $year)
-                             ->whereMonth('created_at', $month)
+                             ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
                              ->sum('total_amount');
                              
-        $totalCustomers = User::whereYear('created_at', $year)
-                              ->whereMonth('created_at', $month)
-                              ->count();
+        $totalCustomers = User::whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])->count();
 
-        // 2. Sales Chart Data (Daily breakdown for the selected month)
-        // Group by Day
+        // 2. Sales Chart Data (Daily breakdown)
         $dailySales = Order::select(
-                DB::raw("DATE_FORMAT(created_at, '%d') as day"), 
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as day"), 
                 DB::raw('sum(total_amount) as revenue')
             )
-            ->whereYear('created_at', $year)
-            ->whereMonth('created_at', $month)
+            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
             ->where('payment_status', 'paid')
-            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%d')"))
-            ->orderBy(DB::raw("DATE_FORMAT(created_at, '%d')"))
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))
+            ->orderBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))
             ->pluck('revenue', 'day')
             ->toArray();
 
-        // Prepare chart labels (Days of month) and data (Revenue)
-        $daysInMonth = Carbon::createFromDate($year, $month)->daysInMonth;
+        // Prepare chart labels (All days in range)
+        $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
         $chartLabels = [];
         $chartData = [];
         
-        for ($i = 1; $i <= $daysInMonth; $i++) {
-            $dayStr = str_pad($i, 2, '0', STR_PAD_LEFT);
-            $chartLabels[] = $dayStr;
+        foreach ($period as $date) {
+            $dayStr = $date->format('Y-m-d');
+            $chartLabels[] = $date->format('d M'); 
             $chartData[] = $dailySales[$dayStr] ?? 0;
         }
 
-        // 3. Order Status Data (for Pie Chart)
+        // 3. Order Status Data
         $orderStatusStats = Order::select('status', DB::raw('count(*) as total'))
-                                ->whereYear('created_at', $year)
-                                ->whereMonth('created_at', $month)
+                                ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
                                 ->groupBy('status')
                                 ->get();
                                 
@@ -70,8 +62,8 @@ class DashboardController extends Controller
         $statusData = $orderStatusStats->pluck('total');
 
         // 4. Recent Orders & Low Stock
-        $recentOrders = Order::with('user')->latest()->take(3)->get();
-        $lowStockProducts = Product::where('stock', '<', 10)->take(3)->get();
+        $recentOrders = Order::with('user')->latest()->take(5)->get();
+        $lowStockProducts = Product::where('stock', '<', 10)->take(5)->get();
 
         return view('admin.dashboard', compact(
             'totalProducts', 
@@ -80,7 +72,8 @@ class DashboardController extends Controller
             'totalCustomers',
             'recentOrders',
             'lowStockProducts',
-            'filterMonth',
+            'startDate',
+            'endDate',
             'chartLabels',
             'chartData',
             'statusLabels',

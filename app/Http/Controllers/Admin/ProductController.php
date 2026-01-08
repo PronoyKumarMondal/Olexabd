@@ -12,13 +12,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        // Debug Permissions
-        dd([
-            'User' => auth('admin')->user(),
-            'Guard' => \Illuminate\Support\Facades\Auth::getDefaultDriver(),
-            'Can Create?' => \Illuminate\Support\Facades\Gate::allows('create', Product::class),
-            'Super Admin?' => auth('admin')->user()->isSuperAdmin(),
-        ]);
+
 
         $query = Product::with('category')->latest();
 
