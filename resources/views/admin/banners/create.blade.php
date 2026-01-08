@@ -18,8 +18,16 @@
                     <label class="form-label fw-bold">Banner Image <span class="text-danger">*</span></label>
                     <input type="file" name="image" class="form-control" accept="image/*" required>
                     <div class="form-text text-primary">
-                        <i class="bi bi-info-circle"></i> <strong>Ideal Size:</strong> 1920x450 pixels (Desktop).<br>
-                        The image will be displayed full width. Keep important text in the center safe zone.
+                        <i class="bi bi-info-circle"></i> <strong>Ideal Size:</strong> 1920x450 pixels (Desktop).
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Mobile Banner Image (Optional)</label>
+                    <input type="file" name="mobile_image" class="form-control" accept="image/*">
+                    <div class="form-text text-primary">
+                        <i class="bi bi-info-circle"></i> <strong>Ideal Size:</strong> 800x600 pixels (4:3 Ratio).<br>
+                        Displayed on phones instead of the desktop banner.
                     </div>
                 </div>
 

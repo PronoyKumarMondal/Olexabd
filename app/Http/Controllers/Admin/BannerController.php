@@ -140,50 +140,15 @@ class BannerController extends Controller
             return '/storage/' . $storedPath;
         }
 
-        // Resize & Pad to Perfect 1920x450 (Letterbox)
-        $targetWidth = 1920;
-        $targetHeight = 450;
-        
-        $width = imagesx($sourceImage);
-        $height = imagesy($sourceImage);
-        
-        $srcRatio = $width / $height;
-        $targetRatio = $targetWidth / $targetHeight;
-        
-        // Calculate dimensions to FIT inside target
-        if ($srcRatio > $targetRatio) {
-            // Wider than target: Limit by Width
-            $newW = $targetWidth;
-            $newH = $targetWidth / $srcRatio;
-        } else {
-            // Taller than target: Limit by Height
-            $newH = $targetHeight;
-            $newW = $targetHeight * $srcRatio;
-        }
+        $targetWidth = $width; // Default to original if no target set
+        $targetHeight = $height; // Default to original
 
-        // Calculate Centering Offsets
-        $dstX = ($targetWidth - $newW) / 2;
-        $dstY = ($targetHeight - $newH) / 2;
-
-        // Create Canvas (White Background)
-        $finalImage = imagecreatetruecolor($targetWidth, $targetHeight);
-        $white = imagecolorallocate($finalImage, 255, 255, 255);
-        imagefill($finalImage, 0, 0, $white);
-
-        // Resample (Resize & Center)
-        imagecopyresampled(
-            $finalImage, $sourceImage, 
-            $dstX, $dstY, 
-            0, 0, 
-            $newW, $newH, 
-            $width, $height
-        );
-        
-        imagedestroy($sourceImage);
-        $sourceImage = $finalImage;
-
-        // Save Compressed
-        $quality = 80; // Default good quality
+        // Define target dimensions based on type (heuristic or explicit arg if updated)
+        // Since we want to reuse this for both Desktop (1920x450) and Mobile (e.g. 800x600)
+        // We should pass dimensions as arguments.
+        // For now, let's just make the method signature accept optional dimensions.
+    }
+}
         
         // Aggressive compression if original file > 5MB (5242880 bytes)
         if ($file->getSize() > 5242880) {

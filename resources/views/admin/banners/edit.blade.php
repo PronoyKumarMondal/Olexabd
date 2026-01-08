@@ -35,6 +35,25 @@
                     <input type="text" name="title" class="form-control" value="{{ $banner->title }}">
                 </div>
 
+                 <div class="mb-4">
+                    <label class="form-label fw-bold">Current Mobile Image</label>
+                    @if($banner->mobile_image)
+                        <div class="mb-2">
+                            <img src="{{ $banner->mobile_image }}" class="img-thumbnail" style="max-height: 150px;">
+                        </div>
+                    @else
+                        <div class="text-muted small">No mobile specific image uploaded.</div>
+                    @endif
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Change Mobile Image (Optional)</label>
+                    <input type="file" name="mobile_image" class="form-control" accept="image/*">
+                    <div class="form-text text-primary">
+                        <i class="bi bi-info-circle"></i> <strong>Ideal Size:</strong> 800x600 pixels.
+                    </div>
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label fw-bold">Badge Text</label>
                     <input type="text" name="badge_text" class="form-control" value="{{ $banner->badge_text }}" placeholder="e.g. New Arrival">

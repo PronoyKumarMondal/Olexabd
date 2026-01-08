@@ -14,8 +14,15 @@
         @foreach($banners as $key => $banner)
         <div class="carousel-item {{ $key == 0 ? 'active' : '' }} hero-banner-item">
             <a href="{{ $banner->link ?? '#' }}" class="d-block w-100 h-100 text-decoration-none">
-                <!-- Background Image -->
-                <img src="{{ $banner->image }}" class="d-block w-100 h-100 hero-banner-img" alt="{{ $banner->title ?? 'Banner' }}">
+                <!-- Background Image (Responsive) -->
+                <picture>
+                    {{-- Mobile Image (Max Width 768px) --}}
+                    @if($banner->mobile_image)
+                        <source media="(max-width: 768px)" srcset="{{ $banner->mobile_image }}">
+                    @endif
+                    {{-- Desktop Image (Default) --}}
+                    <img src="{{ $banner->image }}" class="d-block w-100 h-100 hero-banner-img" alt="{{ $banner->title ?? 'Banner' }}">
+                </picture>
                 
                 <!-- Premium Gradient Overlay (Left to Right) -->
                 <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 100%); pointer-events: none;"></div>
