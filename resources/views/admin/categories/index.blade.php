@@ -155,7 +155,7 @@
                         </td>
                         <td class="text-end pe-4">
                              @can('update', $category)
-                            <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#editCategory{{ $category->id }}">
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditModal('{{ $category->code }}', '{{ addslashes($category->name) }}', '{{ $category->image }}')">
                                 Edit
                             </button>
                             @endcan
