@@ -65,6 +65,8 @@
             @endif
 
             <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" id="description" class="form-control" rows="4">{{ $product->description }}</textarea>
             </div>
 
             <!-- Drag & Drop Image Upload -->
@@ -108,7 +110,26 @@
     </div>
 </div>
 
+<script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        ClassicEditor
+            .create(document.querySelector('#description'), {
+                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'undo', 'redo'],
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                    ]
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
+
     // Simple Drag & Drop & Preview Script
     const dropZone = document.querySelector('.image-upload-zone');
     const input = document.getElementById('imageInput');

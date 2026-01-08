@@ -55,7 +55,9 @@
                         </div>
                     </div>
 
-                    <p class="text-muted lead mb-4">{{ $product->description }}</p>
+                    <div class="product-description text-muted lead mb-4">
+                        {!! $product->description !!}
+                    </div>
 
                     <!-- Actions -->
                     <div class="d-flex gap-3 mb-5">
