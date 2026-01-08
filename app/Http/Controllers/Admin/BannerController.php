@@ -183,7 +183,7 @@ class BannerController extends Controller
 
         // Save
         $quality = 80; 
-        if ($file->getSize() > 5242880) { $quality = 60; }
+        if ($file->getSize() > 2097152) { $quality = 60; }
 
         if ($extension == 'png') {
             $pngQuality = ($quality > 70) ? 6 : 8; 
