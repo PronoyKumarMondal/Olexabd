@@ -140,7 +140,7 @@ class BannerController extends Controller
             return '/storage/' . $storedPath;
         }
 
-        // Resize & Crop to Perfect 1920x450 (21:5 Ratio)
+        // Resize & Pad to Perfect 1920x450 (Letterbox)
         $targetWidth = 1920;
         $targetHeight = 450;
         
@@ -150,36 +150,33 @@ class BannerController extends Controller
         $srcRatio = $width / $height;
         $targetRatio = $targetWidth / $targetHeight;
         
-        $srcX = 0; $srcY = 0;
-        $srcW = $width; $srcH = $height;
-
+        // Calculate dimensions to FIT inside target
         if ($srcRatio > $targetRatio) {
-            // Source is wider than target - Crop Width (keep height)
-            $newSrcW = $height * $targetRatio;
-            $srcX = ($width - $newSrcW) / 2;
-            $srcW = $newSrcW;
+            // Wider than target: Limit by Width
+            $newW = $targetWidth;
+            $newH = $targetWidth / $srcRatio;
         } else {
-            // Source is taller than target - Crop Height (keep width)
-            $newSrcH = $width / $targetRatio;
-            $srcY = ($height - $newSrcH) / 2;
-            $srcH = $newSrcH;
+            // Taller than target: Limit by Height
+            $newH = $targetHeight;
+            $newW = $targetHeight * $srcRatio;
         }
 
+        // Calculate Centering Offsets
+        $dstX = ($targetWidth - $newW) / 2;
+        $dstY = ($targetHeight - $newH) / 2;
+
+        // Create Canvas (White Background)
         $finalImage = imagecreatetruecolor($targetWidth, $targetHeight);
-        
-        // Preserve Transparency
-        if ($extension == 'png' || $extension == 'webp') {
-            imagealphablending($finalImage, false);
-            imagesavealpha($finalImage, true);
-        }
+        $white = imagecolorallocate($finalImage, 255, 255, 255);
+        imagefill($finalImage, 0, 0, $white);
 
-        // Resample (Crop + Resize)
+        // Resample (Resize & Center)
         imagecopyresampled(
             $finalImage, $sourceImage, 
+            $dstX, $dstY, 
             0, 0, 
-            $srcX, $srcY, 
-            $targetWidth, $targetHeight, 
-            $srcW, $srcH
+            $newW, $newH, 
+            $width, $height
         );
         
         imagedestroy($sourceImage);
