@@ -107,7 +107,7 @@
         </form>
     </div>
 </div>
-@endsection
+
 
 <!-- CKEditor 5 -->
 <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
