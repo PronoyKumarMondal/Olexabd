@@ -140,26 +140,50 @@ class BannerController extends Controller
             return '/storage/' . $storedPath;
         }
 
-        // Resize if too massive (e.g. Width > 2500px) to ensure < 5MB
+        // Resize & Crop to Perfect 1920x450 (21:5 Ratio)
+        $targetWidth = 1920;
+        $targetHeight = 450;
+        
         $width = imagesx($sourceImage);
         $height = imagesy($sourceImage);
-        $maxWidth = 2000;
+        
+        $srcRatio = $width / $height;
+        $targetRatio = $targetWidth / $targetHeight;
+        
+        $srcX = 0; $srcY = 0;
+        $srcW = $width; $srcH = $height;
 
-        if ($width > $maxWidth) {
-            $newWidth = $maxWidth;
-            $newHeight = floor($height * ($maxWidth / $width));
-            $tempImage = imagecreatetruecolor($newWidth, $newHeight);
-            
-            // Preserve Transparency
-            if ($extension == 'png' || $extension == 'webp') {
-                imagealphablending($tempImage, false);
-                imagesavealpha($tempImage, true);
-            }
-
-            imagecopyresampled($tempImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
-            imagedestroy($sourceImage);
-            $sourceImage = $tempImage;
+        if ($srcRatio > $targetRatio) {
+            // Source is wider than target - Crop Width (keep height)
+            $newSrcW = $height * $targetRatio;
+            $srcX = ($width - $newSrcW) / 2;
+            $srcW = $newSrcW;
+        } else {
+            // Source is taller than target - Crop Height (keep width)
+            $newSrcH = $width / $targetRatio;
+            $srcY = ($height - $newSrcH) / 2;
+            $srcH = $newSrcH;
         }
+
+        $finalImage = imagecreatetruecolor($targetWidth, $targetHeight);
+        
+        // Preserve Transparency
+        if ($extension == 'png' || $extension == 'webp') {
+            imagealphablending($finalImage, false);
+            imagesavealpha($finalImage, true);
+        }
+
+        // Resample (Crop + Resize)
+        imagecopyresampled(
+            $finalImage, $sourceImage, 
+            0, 0, 
+            $srcX, $srcY, 
+            $targetWidth, $targetHeight, 
+            $srcW, $srcH
+        );
+        
+        imagedestroy($sourceImage);
+        $sourceImage = $finalImage;
 
         // Save Compressed
         $quality = 80; // Default good quality
