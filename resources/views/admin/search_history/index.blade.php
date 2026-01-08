@@ -3,6 +3,29 @@
 @section('header', 'Search History')
 
 @section('content')
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form action="{{ route('admin.search_history.index') }}" method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label for="search" class="form-label small fw-bold text-muted">Search</label>
+                <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search query or Customer name...">
+            </div>
+            <div class="col-md-2">
+                <label for="start_date" class="form-label small fw-bold text-muted">From Date</label>
+                <input type="date" class="form-control" name="start_date" value="{{ request('start_date') }}">
+            </div>
+            <div class="col-md-2">
+                <label for="end_date" class="form-label small fw-bold text-muted">To Date</label>
+                <input type="date" class="form-control" name="end_date" value="{{ request('end_date') }}">
+            </div>
+            <div class="col-md-4 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                <a href="{{ route('admin.search_history.index') }}" class="btn btn-light border"><i class="bi bi-x-lg"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
