@@ -37,10 +37,31 @@ class CartController extends Controller
         }
 
         session()->put('cart', $cart);
+
+        // Persistent Cart Logic
+        if (auth()->check()) {
+            $existingItem = \App\Models\CartItem::where('user_id', auth()->id())
+                ->where('product_id', $id)
+                ->where('status', 'active')
+                ->first();
+
+            if ($existingItem) {
+                $existingItem->increment('quantity');
+                $existingItem->update(['price' => $product->effective_price]); // Update price snapshot? Optional.
+            } else {
+                \App\Models\CartItem::create([
+                    'user_id' => auth()->id(),
+                    'product_id' => $id,
+                    'quantity' => 1,
+                    'price' => $product->effective_price,
+                    'status' => 'active'
+                ]);
+            }
+        }
         
         // Return JSON for AJAX or Redirect back
         if ($request->wantsJson()) {
-            return response()->json(['success' => 'Product added to cart successfully!', 'count' => count($session->get('cart'))]);
+            return response()->json(['success' => 'Product added to cart successfully!', 'count' => count(session()->get('cart'))]);
         }
 
         return redirect()->back()->with('success', 'Product added to cart successfully!');
@@ -53,6 +74,15 @@ class CartController extends Controller
             $cart = session()->get('cart');
             $cart[$request->id]["quantity"] = $request->quantity;
             session()->put('cart', $cart);
+
+            // Persistent Cart Logic
+            if (auth()->check()) {
+                \App\Models\CartItem::where('user_id', auth()->id())
+                    ->where('product_id', $request->id)
+                    ->where('status', 'active')
+                    ->update(['quantity' => $request->quantity]);
+            }
+
             session()->flash('success', 'Cart updated successfully');
         }
     }
@@ -65,6 +95,14 @@ class CartController extends Controller
             if(isset($cart[$request->id])) {
                 unset($cart[$request->id]);
                 session()->put('cart', $cart);
+
+                // Persistent Cart Logic
+                if (auth()->check()) {
+                    \App\Models\CartItem::where('user_id', auth()->id())
+                        ->where('product_id', $request->id)
+                        ->where('status', 'active')
+                        ->update(['status' => 'removed']);
+                }
             }
             session()->flash('success', 'Product removed successfully');
         }
