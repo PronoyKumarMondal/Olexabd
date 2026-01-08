@@ -42,11 +42,20 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Minimum Order Amount (Optional)</label>
-                        <div class="input-group">
-                            <span class="input-group-text">৳</span>
-                            <input type="number" step="0.01" name="min_order_amount" class="form-control" placeholder="0.00">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Minimum Order Amount (Optional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">৳</span>
+                                <input type="number" step="0.01" name="min_order_amount" class="form-control" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-none" id="maxDiscountDiv">
+                            <label class="form-label">Max Discount (Upto)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Upto ৳</span>
+                                <input type="number" name="max_discount_amount" class="form-control" step="0.01" placeholder="Max Discount">
+                            </div>
                         </div>
                     </div>
 
