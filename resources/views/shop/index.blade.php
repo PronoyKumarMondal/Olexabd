@@ -58,7 +58,7 @@
     <style>
         /* Responsive Banner Heights */
         .hero-banner-item {
-            height: 550px;
+            height: 450px;
         }
         .hero-banner-img {
             object-fit: cover;
@@ -84,7 +84,7 @@
         /* Mobile Adjustments */
         @media (max-width: 768px) {
             .hero-banner-item {
-                height: 480px; /* Taller on mobile for content */
+                height: 380px; /* Taller on mobile for content */
             }
             .hero-title {
                 font-size: 2.2rem;
