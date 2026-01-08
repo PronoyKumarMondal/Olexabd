@@ -51,6 +51,7 @@
                         <th>Category</th>
                         <th>Price</th>
                         <th>Stock</th>
+                        <th>Views</th>
                         <th>Last Updated</th>
                         <th>Updated By</th>
                         <th class="text-end pe-4">Actions</th>
@@ -73,6 +74,11 @@
                             @else
                                 {{ $product->stock }}
                             @endif
+                        </td>
+                        <td>
+                            <span class="badge bg-info bg-opacity-10 text-info">
+                                <i class="bi bi-eye-fill me-1"></i> {{ number_format($product->views) }}
+                            </span>
                         </td>
                         <td>
                             <span class="small text-muted">{{ $product->updated_at->format('M d, Y h:i A') }}</span>

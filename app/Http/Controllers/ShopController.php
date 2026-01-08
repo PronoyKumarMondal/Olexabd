@@ -42,6 +42,8 @@ class ShopController extends Controller
         if (!$product->is_active) {
             abort(404);
         }
+
+        $product->increment('views');
         
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
