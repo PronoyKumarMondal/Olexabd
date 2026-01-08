@@ -20,6 +20,9 @@ class AdminMiddleware
             return redirect()->route('admin.login');
         }
 
+        // Set default guard to 'admin' so Gate/Policies work automatically
+        \Illuminate\Support\Facades\Config::set('auth.defaults.guard', 'admin');
+
         return $next($request);
     }
 }
