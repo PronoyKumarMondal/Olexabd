@@ -17,8 +17,11 @@
                 <label class="form-label">Category</label>
                 <select name="category_id" class="form-select" required>
                     <option value="">Select Category</option>
-                    @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                    @foreach($categories as $parent)
+                        <option value="{{ $parent->id }}" class="fw-bold">{{ $parent->name }}</option>
+                        @foreach($parent->children as $child)
+                            <option value="{{ $child->id }}">&nbsp;&nbsp;&nbsp;&nbsp;-- {{ $child->name }}</option>
+                        @endforeach
                     @endforeach
                 </select>
             </div>

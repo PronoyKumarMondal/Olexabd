@@ -18,8 +18,11 @@
                 <label class="form-label">Category</label>
                 <select name="category_id" class="form-select" required>
                     <option value="">Select Category</option>
-                    @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}" {{ $product->category_id == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                    @foreach($categories as $parent)
+                        <option value="{{ $parent->id }}" class="fw-bold" {{ $product->category_id == $parent->id ? 'selected' : '' }}>{{ $parent->name }}</option>
+                        @foreach($parent->children as $child)
+                            <option value="{{ $child->id }}" {{ $product->category_id == $child->id ? 'selected' : '' }}>&nbsp;&nbsp;&nbsp;&nbsp;-- {{ $child->name }}</option>
+                        @endforeach
                     @endforeach
                 </select>
             </div>

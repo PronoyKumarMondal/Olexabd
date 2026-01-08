@@ -46,7 +46,7 @@ class ProductController extends Controller
     public function create()
     {
         $this->authorize('create', Product::class);
-        $categories = Category::all();
+        $categories = Category::whereNull('parent_id')->with('children')->orderBy('name')->get();
         return view('admin.products.create', compact('categories'));
     }
 
@@ -83,7 +83,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $this->authorize('update', $product);
-        $categories = Category::all();
+        $categories = Category::whereNull('parent_id')->with('children')->orderBy('name')->get();
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
