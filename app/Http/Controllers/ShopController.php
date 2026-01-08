@@ -11,7 +11,7 @@ class ShopController extends Controller
     public function index()
     {
         $banners = \App\Models\Banner::where('is_active', true)->orderBy('order')->get();
-        $categories = Category::where('is_active', true)->withCount('products')->get();
+        $categories = Category::where('is_active', true)->whereNull('parent_id')->withCount('products')->get();
         
         // Featured: 8 items
         $featuredProducts = Product::where('is_active', true)
@@ -46,12 +46,14 @@ class ShopController extends Controller
     public function category(Category $category)
     {
         $title = $category->name;
+        $children = $category->children()->where('is_active', true)->withCount('products')->get();
+        
         $products = $category->products()
             ->where('is_active', true)
             ->latest()
             ->paginate(12);
             
-        return view('shop.listing', compact('title', 'products'));
+        return view('shop.listing', compact('title', 'products', 'children', 'category'));
     }
 
     public function featured()

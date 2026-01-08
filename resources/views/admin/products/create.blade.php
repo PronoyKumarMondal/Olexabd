@@ -20,7 +20,7 @@
                     @foreach($categories as $parent)
                         <option value="{{ $parent->id }}" class="fw-bold">{{ $parent->name }}</option>
                         @foreach($parent->children as $child)
-                            <option value="{{ $child->id }}">&nbsp;&nbsp;&nbsp;&nbsp;-- {{ $child->name }}</option>
+                            <option value="{{ $child->id }}">{{ $parent->name }} / {{ $child->name }}</option>
                         @endforeach
                     @endforeach
                 </select>

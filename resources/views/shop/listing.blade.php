@@ -16,6 +16,27 @@
             </div>
         </div>
 
+        <!-- Subcategories -->
+        @if(isset($children) && $children->count() > 0)
+        <div class="row g-3 mb-5">
+            @foreach($children as $child)
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ route('shop.category', $child) }}" class="card h-100 border-0 shadow-sm text-decoration-none transition-hover text-center py-3 bg-white align-items-center">
+                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mb-2 text-primary" style="width: 50px; height: 50px;">
+                        @if($child->image)
+                            <img src="{{ $child->image }}" class="rounded-circle" width="50" height="50" style="object-fit:cover;">
+                        @else
+                            <i class="bi bi-grid fs-4"></i>
+                        @endif
+                    </div>
+                    <h6 class="text-dark fw-bold mb-0 small">{{ $child->name }}</h6>
+                    <small class="text-muted" style="font-size: 0.75rem;">{{ $child->products_count }} Items</small>
+                </a>
+            </div>
+            @endforeach
+        </div>
+        @endif
+
         <!-- Product Grid -->
         @if($products->count() > 0)
             <div class="row g-4 mb-5">

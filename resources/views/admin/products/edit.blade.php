@@ -21,7 +21,7 @@
                     @foreach($categories as $parent)
                         <option value="{{ $parent->id }}" class="fw-bold" {{ $product->category_id == $parent->id ? 'selected' : '' }}>{{ $parent->name }}</option>
                         @foreach($parent->children as $child)
-                            <option value="{{ $child->id }}" {{ $product->category_id == $child->id ? 'selected' : '' }}>&nbsp;&nbsp;&nbsp;&nbsp;-- {{ $child->name }}</option>
+                            <option value="{{ $child->id }}" {{ $product->category_id == $child->id ? 'selected' : '' }}>{{ $parent->name }} / {{ $child->name }}</option>
                         @endforeach
                     @endforeach
                 </select>
