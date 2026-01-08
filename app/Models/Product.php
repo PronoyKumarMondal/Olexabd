@@ -12,14 +12,55 @@ class Product extends Model
 
     protected $fillable = [
         'category_id', 'name', 'slug', 'description', 'price', 'stock', 
-        'image', 'is_active', 'is_featured', 'specifications', 'code'
+        'image', 'is_active', 'is_featured', 'specifications', 'code',
+        'discount_price', 'discount_start', 'discount_end'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
         'specifications' => 'array',
+        'discount_start' => 'datetime',
+        'discount_end' => 'datetime',
+        'discount_price' => 'decimal:2',
     ];
+
+    // Discount Accessors
+    public function getHasDiscountAttribute()
+    {
+        if (!$this->discount_price) {
+            return false;
+        }
+
+        $now = now();
+        
+        if ($this->discount_start && $now->lt($this->discount_start)) {
+            return false;
+        }
+
+        if ($this->discount_end && $now->gt($this->discount_end)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getEffectivePriceAttribute()
+    {
+        if ($this->has_discount) {
+            return $this->discount_price;
+        }
+        return $this->price;
+    }
+
+    public function getDiscountPercentageAttribute()
+    {
+        if (!$this->has_discount || $this->price <= 0) {
+            return 0;
+        }
+        
+        return round((($this->price - $this->effective_price) / $this->price) * 100);
+    }
 
     public static function boot()
     {
