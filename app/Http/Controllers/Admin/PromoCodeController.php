@@ -8,6 +8,26 @@ use Illuminate\Http\Request;
 
 class PromoCodeController extends Controller
 {
+    public function __construct()
+    {
+        // Enforce 'manage_promos' permission on all actions
+        // But allow Super Admin to bypass via the 'admin' middleware logic or Policy
+        // Using a closure or Gate check. 
+        // Best approach: Use middleware that checks permission.
+        // Assuming we have a 'can' middleware or we check in method.
+        // Let's use simple logic: Abort if not Super Admin AND no permission.
+        $this->middleware(function ($request, $next) {
+            $admin = auth('admin')->user();
+            if (!$admin) {
+                return redirect()->route('admin.login');
+            }
+            if ($admin->role !== 'super_admin' && !in_array('manage_promos', $admin->permissions ?? [])) {
+                abort(403, 'Unauthorized action.');
+            }
+            return $next($request);
+        });
+    }
+
     public function index()
     {
         $promos = PromoCode::latest()->get();
