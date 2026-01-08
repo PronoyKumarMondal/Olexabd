@@ -85,7 +85,6 @@ class PromoCodeController extends Controller
 
         return redirect()->route('admin.promos.index')->with('success', 'Promo Code updated successfully.');
     }
-}
     public function destroy(PromoCode $promo)
     {
         $promo->delete();
