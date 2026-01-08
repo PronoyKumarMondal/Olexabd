@@ -37,6 +37,8 @@
                         <th>Order Code</th>
                         <th>Customer</th>
                         <th>Total</th>
+                        <th>Last Updated</th>
+                        <th>Updated By</th>
                         <th>Status</th>
                         <th class="text-end pe-4">Actions</th>
                     </tr>
@@ -61,11 +63,18 @@
                         </td>
                         <td>
                             ৳{{ $order->total_amount }}
-                            <div class="small text-muted mt-1" style="font-size: 0.7em;">
-                                @if($order->updated_by)
-                                <div title="Updated by {{ $order->updater->name ?? 'Admin' }}"><i class="bi bi-pencil"></i> {{ $order->updated_at->format('M d, H:i') }}</div>
-                                @endif
-                            </div>
+                        </td>
+                        <td>
+                            <span class="small text-muted">{{ $order->updated_at->format('M d, Y h:i A') }}</span>
+                        </td>
+                        <td>
+                            @if($order->updated_by)
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">
+                                    <i class="bi bi-person-circle me-1"></i> {{ $order->updater->name ?? 'Admin' }}
+                                </span>
+                            @else
+                                <span class="text-muted small">-</span>
+                            @endif
                         </td>
                         <td>
                             @if($order->status == 'completed')
