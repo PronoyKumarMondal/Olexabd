@@ -132,7 +132,9 @@
 
     // Simple Drag & Drop & Preview Script
     const dropZone = document.querySelector('.image-upload-zone');
+    const input = document.getElementById('imageInput');
 
+    dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropZone.style.borderColor = '#4f46e5';
         dropZone.style.backgroundColor = '#eef2ff';
