@@ -26,8 +26,27 @@ if (file_exists($shortcut)) {
 
 if (symlink($target, $shortcut)) {
     echo "<h2 style='color:green'>Success! Symlink created.</h2>";
-    echo "Images should work now.";
 } else {
     echo "<h2 style='color:red'>Failed to create symlink.</h2>";
-    echo "Check permissions or strictly allow symlinks in configuration.";
+}
+
+// Ensure Directories Exist
+$dirs = [
+    $target . '/products',
+    $target . '/products/featured',
+    $target . '/banners'
+];
+
+echo "<h3>Checking Directories:</h3>";
+foreach ($dirs as $dir) {
+    if (!file_exists($dir)) {
+        echo "Creating $dir ... ";
+        if (mkdir($dir, 0755, true)) {
+            echo "<span style='color:green'>Created.</span><br>";
+        } else {
+            echo "<span style='color:red'>Failed (Check Permissions).</span><br>";
+        }
+    } else {
+        echo "Exists: $dir<br>";
+    }
 }
