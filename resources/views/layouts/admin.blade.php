@@ -251,6 +251,11 @@
                 <i class="bi bi-cart4"></i> Cart History
             </a>
             @endif
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('view_search_history'))
+            <a class="nav-link {{ request()->routeIs('admin.search_history.*') ? 'active' : '' }}" href="{{ route('admin.search_history.index') }}">
+                <i class="bi bi-search"></i> Search History
+            </a>
+            @endif
 
             @if(Auth::guard('admin')->user()->isSuperAdmin())
                 <div class="sidebar-heading mt-3">Administration</div>

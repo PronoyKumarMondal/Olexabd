@@ -99,10 +99,18 @@ class ShopController extends Controller
             ->latest()
             ->paginate(12);
             
-        $recommendedProducts = Product::where('is_active', true)
-            ->inRandomOrder()
             ->take(4)
             ->get();
+
+        // Log Search History
+        if (!empty($query)) {
+            \App\Models\SearchHistory::create([
+                'user_id' => auth()->id(), // Null if guest
+                'query' => $query,
+                'ip_address' => $request->ip(),
+                'results_count' => $products->total(),
+            ]);
+        }
 
         return view('shop.search', compact('products', 'query', 'recommendedProducts'));
     }

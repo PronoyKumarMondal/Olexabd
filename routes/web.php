@@ -94,6 +94,7 @@ Route::domain(env('APP_ADMIN_DOMAIN', 'admin.olexabd.com'))->name('admin.')->gro
         Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
         Route::resource('promos', \App\Http\Controllers\Admin\PromoCodeController::class);
         Route::get('/cart-history', [\App\Http\Controllers\Admin\CartHistoryController::class, 'index'])->name('cart_history.index');
+        Route::get('/search-history', [\App\Http\Controllers\Admin\SearchHistoryController::class, 'index'])->name('search_history.index');
         Route::get('/customers', [\App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('customers.index');
 
         // Super Admin Only
