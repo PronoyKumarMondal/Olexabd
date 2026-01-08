@@ -12,9 +12,7 @@ class BannerController extends Controller
     public function index()
     {
         $banners = Banner::orderBy('order')->get();
-        // Allow adding if less than 5 active banners (or total banners, user requirement said "add up to five banner")
-        // Interpretation: Total banners should be limited to 5 to keep it simple, or active ones.
-        // Let's limit total banners to 5 for now as requested "add up to five".
+        // Allow adding if less than 5 active banners
         $canAdd = $banners->count() < 5;
         
         return view('admin.banners.index', compact('banners', 'canAdd'));
@@ -36,16 +34,23 @@ class BannerController extends Controller
 
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:10240', // 10MB Max (Compressed later)
+            'mobile_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:10240', // Required
             'title' => 'nullable|string|max:255',
             'badge_text' => 'nullable|string|max:50',
             'link' => 'nullable|url',
             'order' => 'integer',
         ]);
 
-        $data = $request->except('image');
+        $data = $request->except(['image', 'mobile_image']);
 
+        // Desktop Image
         if ($request->hasFile('image')) {
-            $data['image'] = $this->compressAndStore($request->file('image'));
+            $data['image'] = $this->compressAndStore($request->file('image'), 1920, 450);
+        }
+
+        // Mobile Image
+        if ($request->hasFile('mobile_image')) {
+            $data['mobile_image'] = $this->compressAndStore($request->file('mobile_image'), 800, 600);
         }
 
         Banner::create($data);
@@ -63,24 +68,31 @@ class BannerController extends Controller
     {
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240', // 10MB Max
+            'mobile_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'title' => 'nullable|string|max:255',
             'badge_text' => 'nullable|string|max:50',
             'link' => 'nullable|url',
             'order' => 'integer',
         ]);
 
-        $data = $request->except('image');
+        $data = $request->except(['image', 'mobile_image']);
 
+        // Desktop Image
         if ($request->hasFile('image')) {
-            // Delete old image if it exists
              if ($banner->image) {
                  $oldPath = str_replace('/storage/', 'public/', $banner->image);
-                 if (Storage::exists($oldPath)) {
-                     Storage::delete($oldPath);
-                 }
+                 if (Storage::exists($oldPath)) { Storage::delete($oldPath); }
              }
-            
-            $data['image'] = $this->compressAndStore($request->file('image'));
+            $data['image'] = $this->compressAndStore($request->file('image'), 1920, 450);
+        }
+        
+        // Mobile Image
+        if ($request->hasFile('mobile_image')) {
+             if ($banner->mobile_image) {
+                 $oldPath = str_replace('/storage/', 'public/', $banner->mobile_image);
+                 if (Storage::exists($oldPath)) { Storage::delete($oldPath); }
+             }
+            $data['mobile_image'] = $this->compressAndStore($request->file('mobile_image'), 800, 600);
         }
 
         $banner->update($data);
@@ -97,6 +109,12 @@ class BannerController extends Controller
                  Storage::delete($oldPath);
              }
          }
+        if ($banner->mobile_image) {
+             $oldPath = str_replace('/storage/', 'public/', $banner->mobile_image);
+             if (Storage::exists($oldPath)) {
+                 Storage::delete($oldPath);
+             }
+        }
         $banner->delete();
         \Illuminate\Support\Facades\Cache::forget('home_banners');
         return redirect()->route('admin.banners.index')->with('success', 'Banner deleted successfully.');
@@ -106,7 +124,7 @@ class BannerController extends Controller
      * Compress and Store Image
      * Automatically compresses if size > 5MB. But effectively optimizes all images.
      */
-    private function compressAndStore($file)
+    private function compressAndStore($file, $targetWidth = 1920, $targetHeight = 450)
     {
         // Generate name
         $extension = strtolower($file->guessExtension());
@@ -149,27 +167,31 @@ class BannerController extends Controller
         
         // Calculate dimensions to FIT inside target
         if ($srcRatio > $targetRatio) {
-            // Wider
+            // Wider than target: Limit by Width
             $newW = $targetWidth;
             $newH = $targetWidth / $srcRatio;
         } else {
-            // Taller
+            // Taller than target: Limit by Height
             $newH = $targetHeight;
             $newW = $targetHeight * $srcRatio;
         }
 
+        // Calculate Centering Offsets
         $dstX = ($targetWidth - $newW) / 2;
         $dstY = ($targetHeight - $newH) / 2;
 
+        // Create Canvas (White Background)
         $finalImage = imagecreatetruecolor($targetWidth, $targetHeight);
         $white = imagecolorallocate($finalImage, 255, 255, 255);
         imagefill($finalImage, 0, 0, $white);
 
+        // Preserve Transparency
         if ($extension == 'png' || $extension == 'webp') {
             imagealphablending($finalImage, false);
             imagesavealpha($finalImage, true);
         }
 
+        // Resample (Resize & Center)
         imagecopyresampled(
             $finalImage, $sourceImage, 
             $dstX, $dstY, 
@@ -181,11 +203,16 @@ class BannerController extends Controller
         imagedestroy($sourceImage);
         $sourceImage = $finalImage;
 
-        // Save
-        $quality = 80; 
-        if ($file->getSize() > 2097152) { $quality = 60; }
+        // Save Compressed
+        $quality = 80; // Default good quality
+        
+        // Aggressive compression if original file > 2MB (2097152 bytes)
+        if ($file->getSize() > 2097152) {
+            $quality = 60; 
+        }
 
         if ($extension == 'png') {
+            // PNG Quality is 0-9 (inverted scaling of compression)
             $pngQuality = ($quality > 70) ? 6 : 8; 
             imagepng($sourceImage, $fullPath, $pngQuality);
         } elseif ($extension == 'webp') {
