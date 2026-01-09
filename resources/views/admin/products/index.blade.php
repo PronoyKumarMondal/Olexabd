@@ -100,18 +100,20 @@
                                 <span class="text-muted small">-</span>
                             @endif
                         </td>
-                        <td class="text-end pe-4">
-                            @can('update', $product)
-                            <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
-                            @endcan
-                            
-                            @can('delete', $product)
-                            <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </form>
-                            @endcan
+                        <td class="text-end pe-4 text-nowrap">
+                            <div class="d-flex justify-content-end gap-2">
+                                @can('update', $product)
+                                <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                @endcan
+                                
+                                @can('delete', $product)
+                                <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                                @endcan
+                            </div>
                         </td>
 
                     </tr>
