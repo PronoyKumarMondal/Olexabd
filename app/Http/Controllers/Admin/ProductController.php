@@ -52,6 +52,9 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        \Illuminate\Support\Facades\Log::info("Product Store Hit. Content-Length: " . $request->header('Content-Length'));
+        \Illuminate\Support\Facades\Log::info("Files Count: " . count($request->allFiles()));
+
         $this->authorize('create', Product::class);
         $request->validate([
             'name' => 'required',
