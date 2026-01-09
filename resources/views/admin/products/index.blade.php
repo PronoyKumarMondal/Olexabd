@@ -66,7 +66,6 @@
                         <td class="text-primary font-monospace">{{ $product->code }}</td>
                         <td>
                             <div class="fw-bold">{{ $product->name }}</div>
-                            <small class="text-muted d-block">{{ Str::limit($product->description, 30) }}</small>
                         </td>
                         <td>{{ $product->category->name ?? '-' }}</td>
                         <td class="fw-bold">৳{{ $product->price }}</td>
