@@ -250,20 +250,28 @@ class ProductController extends Controller
             \Illuminate\Support\Facades\Log::info("Applying Aggressive Compression (Quality 60) for: " . $filename);
         }
 
+        $saved = false;
         if ($extension == 'png') {
             $pngQuality = ($quality > 70) ? 6 : 8; 
-            imagepng($sourceImage, $fullPath, $pngQuality);
+            $saved = imagepng($sourceImage, $fullPath, $pngQuality);
         } elseif ($extension == 'webp') {
-            imagewebp($sourceImage, $fullPath, $quality);
+            $saved = imagewebp($sourceImage, $fullPath, $quality);
         } else {
-            imagejpeg($sourceImage, $fullPath, $quality);
+            $saved = imagejpeg($sourceImage, $fullPath, $quality);
+        }
+
+        imagedestroy($sourceImage);
+
+        if (!$saved) {
+            \Illuminate\Support\Facades\Log::error("Failed to save compressed image to: " . $fullPath);
+            // Fallback to simple move if compression saving failed
+            $file->move(dirname($fullPath), basename($fullPath));
+            return '/storage/' . $path;
         }
 
         if (file_exists($fullPath)) {
             \Illuminate\Support\Facades\Log::info("Saved Compressed: " . $filename . " New Size: " . filesize($fullPath));
         }
-
-        imagedestroy($sourceImage);
 
         return '/storage/' . $path;
     }
