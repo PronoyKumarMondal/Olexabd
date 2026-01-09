@@ -62,75 +62,7 @@
         <span class="visually-hidden">Next</span>
     </button>
 
-    <style>
-        .hero-banner-item {
-            /* height: 450px; Removed fixed height */
-            aspect-ratio: 21/5; /* approx 1920x450 */
-        }
-        .hero-banner-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .carousel-item.active .hero-banner-img {
-            transform: scale(1.05); /* Subtle zoom effect on active */
-        }
-        .hero-title {
-            font-size: 4rem; /* Desktop size */
-            font-family: 'Outfit', sans-serif;
-            letter-spacing: -0.02em;
-        }
-        .hero-nav-btn {
-            width: 50px; height: 50px;
-        }
-        .ls-wide { letter-spacing: 2px; }
-        .text-shadow-lg { text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
-        .hover-lift { transition: all 0.3s ease; }
-        .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important; }
 
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .hero-banner-item {
-                height: auto;
-                aspect-ratio: 4/3; /* Mobile Ratio */
-                background-color: white;
-            }
-            .hero-banner-item .hero-banner-img {
-                object-fit: contain;
-            }
-            .hero-title {
-                font-size: 2.2rem;
-            }
-            .carousel-caption {
-                max-width: 100% !important;
-                padding-right: 2rem !important;
-                bottom: auto !important;
-                top: 0;
-            }
-            .hero-nav-btn {
-                width: 35px; height: 35px;
-                padding: 0.5rem !important;
-            }
-        }
-
-        #heroCarousel:hover .carousel-control-prev,
-        #heroCarousel:hover .carousel-control-next {
-            opacity: 1 !important;
-        }
-        .backdrop-blur { backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
-        
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        .fade-in-delay { animation: fadeIn 1s ease-out 0.3s backwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-    </style>
 </div>
 @else
 <!-- Fallback Hero -->
