@@ -134,14 +134,25 @@
 </div>
 @else
 <!-- Fallback Hero -->
-<!-- Default Water Theme Banner -->
-<div class="container mb-5">
-    <div class="rounded-4 overflow-hidden shadow-lg position-relative">
-        <div class="ratio ratio-21x9">
-            <img src="{{ asset('images/default-banner.png') }}" class="w-100 h-100 object-fit-cover" alt="OlexaBD Default Banner">
+<!-- Fallback Hero -->
+<div class="container my-4">
+    <div class="rounded-4 overflow-hidden position-relative p-4 p-md-5" style="background: linear-gradient(120deg, var(--primary-color) 0%, var(--secondary-color) 100%); min-height: 400px; display: flex; align-items: center;">
+        <div class="row align-items-center w-100 position-relative z-1">
+            <div class="col-lg-6 text-white">
+                <span class="badge bg-white text-primary mb-3 px-3 py-2 rounded-pill fw-bold">Starting at ৳4,999</span>
+                <h1 class="display-3 fw-bold mb-3 ls-tight">Smart Living,<br>Elevated.</h1>
+                <p class="lead opacity-90 mb-4 h5 fw-normal">Discover premium appliances that blend style with performance. Upgrade your home today.</p>
+                <div class="d-flex gap-3">
+                    <a href="#all-products" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary">Shop Now</a>
+                    <a href="#featured" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-bold">Featured</a>
+                </div>
+            </div>
+            <!-- Decorative Circle (Desktop) -->
+            <div class="col-lg-6 d-none d-lg-block position-relative">
+                <div class="position-absolute start-50 top-50 translate-middle bg-white opacity-10 rounded-circle" style="width: 400px; height: 400px; filter: blur(40px);"></div>
+                <img src="https://cdn-icons-png.flaticon.com/512/3659/3659898.png" alt="Appliances" class="img-fluid position-relative" style="transform: scale(1.1) rotate(-5deg); filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));">
+            </div>
         </div>
-        <!-- Optional Overlay if text needed, but image has text 'OlexaBD' baked in -->
-        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 100%); pointer-events: none;"></div>
     </div>
 </div>
 @endif
