@@ -52,9 +52,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        \Illuminate\Support\Facades\Log::info("Product Store Hit. Content-Length: " . $request->header('Content-Length'));
-        \Illuminate\Support\Facades\Log::info("Files Count: " . count($request->allFiles()));
-
         $this->authorize('create', Product::class);
         $request->validate([
             'name' => 'required',
@@ -72,13 +69,6 @@ class ProductController extends Controller
         $data = $request->except(['image_file', 'image_url']);
         $data['slug'] = Str::slug($request->name);
         
-        // Debug Logging
-        if ($request->hasFile('image_file')) {
-             \Illuminate\Support\Facades\Log::info('MAIN IMAGE RECEIVED: ' . $request->file('image_file')->getClientOriginalName());
-        } else {
-             \Illuminate\Support\Facades\Log::warning('NO MAIN IMAGE IN REQUEST');
-        }
-
         // Handle Main Image (Compress > 2MB)
         if ($request->hasFile('image_file')) {
             $data['image'] = $this->compressAndStore($request->file('image_file'), 'products', 2097152, 1200);
