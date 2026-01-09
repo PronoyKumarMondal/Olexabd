@@ -83,7 +83,7 @@
                     <i class="bi bi-cloud-arrow-up fs-2 text-primary"></i>
                     <p class="mb-0 text-muted mt-2"><strong>Click to upload</strong> or drag and drop</p>
                     <p class="small text-muted mb-0">SVG, PNG, JPG or GIF (MAX. 2MB)</p>
-                    <input type="file" name="image" id="imageInput" class="d-none" accept="image/*" onchange="previewImage(this)">
+                    <input type="file" name="image_file" id="imageInput" class="d-none" accept="image/*" onchange="previewImage(this)">
                 </div>
                 <div id="preview-area" class="mt-2 d-none">
                     <p class="small text-success mb-1"><i class="bi bi-check-circle"></i> File selected:</p>
