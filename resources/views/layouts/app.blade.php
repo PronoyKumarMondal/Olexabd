@@ -66,7 +66,7 @@
     <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
         <div class="container gap-3">
             <!-- 1. Logo -->
-            <a class="navbar-brand d-flex align-items-center gap-2 me-auto" href="{{ route('shop.index') }}">
+            <a class="navbar-brand d-flex align-items-center me-auto" href="{{ route('shop.index') }}">
                 <div class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
                     <i class="bi bi-box-seam-fill fs-5"></i>
                 </div>
