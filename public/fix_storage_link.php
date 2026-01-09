@@ -50,3 +50,18 @@ foreach ($dirs as $dir) {
         echo "Exists: $dir<br>";
     }
 }
+
+echo "<h3>Diagnostic: Contents of Target Folder ($target)</h3>";
+if (is_dir($target)) {
+    $files = scandir($target);
+    echo "<ul>";
+    foreach ($files as $file) {
+        if ($file != '.' && $file != '..') {
+            echo "<li>" . $file . (is_dir($target . '/' . $file) ? ' (DIR)' : '') . "</li>";
+        }
+    }
+    echo "</ul>";
+} else {
+    echo "<h3 style='color:red'>CRITICAL: Target directory does not exist!</h3>";
+}
+
