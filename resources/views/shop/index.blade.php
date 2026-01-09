@@ -65,26 +65,29 @@
 
 </div>
 @else
-<!-- Fallback Hero -->
 <!-- Water Theme Fallback Hero -->
-<div class="container my-4">
-    <div class="rounded-4 overflow-hidden position-relative p-4 p-md-5" style="background: linear-gradient(120deg, #00c6ff 0%, #0072ff 100%); min-height: 400px; display: flex; align-items: center;">
-        <!-- Water Ripple Effect Overlay (CSS only if possible, or simple opacity layer) -->
-        <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); opacity: 0.1;"></div>
+<div class="container mb-5">
+    <!-- Reusing hero-banner-item class for identical shape -->
+    <div class="hero-banner-item rounded-4 overflow-hidden position-relative shadow-lg" style="background: linear-gradient(120deg, #00c6ff 0%, #0072ff 100%); width: 100%;">
         
-        <div class="row align-items-center w-100 position-relative z-1">
-            <div class="col-lg-6 text-white">
-                <h1 class="display-3 fw-bold mb-3 ls-tight">OlexaBD</h1>
-                <p class="lead opacity-90 mb-4 h5 fw-normal">Premium Appliances for a Pure & Refreshing Lifestyle.</p>
-                <div class="d-flex gap-3">
-                    <a href="#all-products" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary">Shop Now</a>
-                    <a href="#featured" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-bold">Featured</a>
+        <!-- Water Pattern Overlay -->
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); opacity: 0.1;"></div>
+
+        <!-- Content Container (Absolute to center it within the aspect-ratio box) -->
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center p-4 p-md-5">
+            <div class="row align-items-center w-100 position-relative z-1 m-0">
+                <div class="col-lg-6 text-white ps-lg-5">
+                    <h1 class="display-3 fw-bold mb-2 ls-tight">OlexaBD</h1>
+                    <p class="lead opacity-90 mb-4 h5 fw-normal">Premium Appliances for a Pure & Refreshing Lifestyle.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#all-products" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow-sm">Shop Now</a>
+                    </div>
                 </div>
-            </div>
-            <!-- Decorative Circle (Desktop) -->
-            <div class="col-lg-6 d-none d-lg-block position-relative">
-                <div class="position-absolute start-50 top-50 translate-middle bg-white opacity-20 rounded-circle" style="width: 400px; height: 400px; filter: blur(40px);"></div>
-                <img src="https://cdn-icons-png.flaticon.com/512/3659/3659898.png" alt="Appliances" class="img-fluid position-relative" style="transform: scale(1.1) rotate(-5deg); filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));">
+                <!-- Decorative Circle & Image (Desktop) -->
+                <div class="col-lg-6 d-none d-lg-block position-relative text-center">
+                    <div class="position-absolute start-50 top-50 translate-middle bg-white opacity-20 rounded-circle" style="width: 350px; height: 350px; filter: blur(40px);"></div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/3659/3659898.png" alt="Appliances" class="img-fluid position-relative" style="max-height: 350px; transform: rotate(-5deg); filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));">
+                </div>
             </div>
         </div>
     </div>
