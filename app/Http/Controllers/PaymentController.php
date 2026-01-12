@@ -50,6 +50,7 @@ class PaymentController extends Controller
             'shipping_address' => 'Dhaka, Bangladesh', // Placeholder until address form is added
             'source' => 'web', 
             'traffic_source' => session('order_source'),
+            'order_portal' => 'Customer Portal - Web',
         ]);
 
         // Create Order Items

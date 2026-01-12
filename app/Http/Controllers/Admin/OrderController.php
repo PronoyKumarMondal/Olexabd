@@ -69,12 +69,15 @@ class OrderController extends Controller
                 $product->decrement('stock', $item['quantity']);
             }
 
-            // Determine Source String
-            $source = 'admin_create'; 
+            // Determine Attribution
+            $source = 'web'; // Admin uses the web portal
+            $trafficSource = null;
+            $orderPortal = 'Admin Portal';
+
             if ($request->channel_id) {
                 $channel = Channel::find($request->channel_id);
                 if ($channel) {
-                    $source = $channel->slug; // or $channel->name
+                    $trafficSource = $channel->slug; // e.g. 'phone-call', 'whatsapp'
                 }
             }
 
@@ -87,6 +90,8 @@ class OrderController extends Controller
                 'payment_method' => $request->payment_method,
                 'shipping_address' => $request->shipping_address,
                 'source' => $source,
+                'traffic_source' => $trafficSource,
+                'order_portal' => $orderPortal,
                 // 'updated_by' handled by Observer
             ]);
 

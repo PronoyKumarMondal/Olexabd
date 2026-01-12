@@ -35,8 +35,9 @@
                     <tr>
                         <th class="ps-4">ID</th>
                         <th>Order Code</th>
-                        <th>Portal</th>
-                        <th>Traffic</th>
+                        <th>Order Portal</th>
+                        <th>Traff. Source</th>
+                        <th>Platform</th>
                         <th>Customer</th>
                         <th>Total</th>
                         <th>Last Updated</th>
@@ -54,19 +55,24 @@
                             <small class="text-muted">{{ $order->created_at->format('M d, H:i') }}</small>
                         </td>
                         <td>
-                            @if($order->source === 'app')
-                                <span class="badge bg-info text-dark" style="font-size: 0.75em;">APP</span>
-                            @elseif($order->source === 'fb_app')
-                                <span class="badge bg-primary" style="font-size: 0.65em;">FB APP</span>
-                            @else
-                                <span class="badge bg-light text-dark border" style="font-size: 0.75em;">WEB</span>
-                            @endif
+                            <span class="badge bg-secondary-subtle text-secondary border" style="font-size: 0.7em;">
+                                {{ $order->order_portal ?? 'Unknown' }}
+                            </span>
                         </td>
                          <td>
                             @if($order->traffic_source)
                                 <span class="badge bg-success bg-opacity-75" style="font-size: 0.75em; text-transform: uppercase;">{{ $order->traffic_source }}</span>
                             @else
                                 <span class="text-muted small">-</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($order->source === 'app')
+                                <span class="badge bg-info text-dark" style="font-size: 0.75em;">APP</span>
+                            @elseif($order->source === 'fb_app')
+                                <span class="badge bg-primary" style="font-size: 0.65em;">FB APP</span>
+                            @else
+                                <span class="badge bg-light text-dark border" style="font-size: 0.75em;">WEB</span>
                             @endif
                         </td>
                         <td>
