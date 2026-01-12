@@ -9,29 +9,34 @@ This guide explains how your store tracks sales, attributes them to ads, and sen
 
 ---
 
-## 🚀 1. Setup Instructions (Required)
+## 🚀 1. Setup Instructions (Start Here)
 
-To enable these features, you must add your Meta credentials to the `.env` file on your server.
+### Step 1: Create a Pixel (Get Pixel ID)
+1.  Go to [Facebook Business Settings](https://business.facebook.com/settings/).
+2.  Select your Business Account.
+3.  On the left menu, go to **Data Sources** -> **Pixels** (or **Datasets** in newer interfaces).
+4.  Click **Add** -> Name it "Olexa Store" -> Click Continue.
+5.  Once created, click on the ID at the top to copy it (e.g., `123456789012345`).
 
-**Step 1: Get Pixel ID**
-1.  Go to Facebook Events Manager -> Data Sources.
-2.  Copy your ID (e.g., `123456789`).
+### Step 2: Get CAPI Access Token
+1.  In the same **Data Sources** menu, click **Open in Events Manager**.
+2.  Go to the **Settings** tab.
+3.  Scroll down to the **Conversions API** section.
+4.  Look for "Set up manually" and click **Generate Access Token**.
+5.  Copy the very long text string.
 
-**Step 2: Get Access Token (For CAPI)**
-1.  Go to Events Manager -> Settings.
-2.  Scroll down to **Conversions API**.
-3.  Click **Generate Access Token**.
-4.  Copy the long string.
+### Step 3: Connect it to Your Website
+1.  Open your **Hostinger File Manager** (or SSH).
+2.  Edit the `.env` file in `public_html`.
+3.  Add these two lines at the bottom:
 
-**Step 3: Update Server Config**
-Open your `.env` file on Hostinger and add:
 ```env
-META_PIXEL_ID=your_pixel_id_here
-META_ACCESS_TOKEN=your_long_token_here
+META_PIXEL_ID=paste_pixel_id_here
+META_ACCESS_TOKEN=paste_long_token_here
 ```
 
-**Step 4: Clear Cache**
-Run this command in the terminal to apply changes:
+4.  **Save** the file.
+5.  Run this command in terminal to activate it:
 ```bash
 php artisan config:clear
 ```
