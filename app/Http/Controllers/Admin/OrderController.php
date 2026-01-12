@@ -133,14 +133,14 @@ class OrderController extends Controller
     
     public function show(Order $order)
     {
-        $this->authorize('view', $order);
+        $this->authorizeAdmin('order_edit');
         // Simple view for logic, in real view we might skip or use modal
         return view('admin.orders.show', compact('order'));
     }
 
     public function update(Request $request, Order $order)
     {
-        $this->authorize('update', $order);
+        $this->authorizeAdmin('order_edit');
         
         $request->validate([
             'status' => 'required|in:pending,processing,shipped,delivered,completed,cancelled'
