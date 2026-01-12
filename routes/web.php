@@ -6,14 +6,53 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Main Site Routes (Dynamic Domain)
-Route::domain(env('APP_FRONTEND_DOMAIN', 'www.olexabd.com'))->group(function () {
+// ADMIN ROUTES (Must be first to capture subdomain)
+Route::domain(env('APP_ADMIN_DOMAIN', 'admin.olexabd.com'))->name('admin.')->group(function () {
     
-    // Front-end Storage Proxy (Bypass Symlinks)
+    // Admin Auth
+    Route::get('/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'create'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'store'])->name('login.store');
+    Route::post('/logout', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'destroy'])->name('logout');
+
+    // Storage Proxy
+    Route::get('/storage/{path}', [\App\Http\Controllers\Admin\DashboardController::class, 'serveStorage'])
+        ->where('path', '.*')
+        ->name('storage.proxy');
+
+    // Admin Protected Routes
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+        
+        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+        Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+        Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
+        Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+        Route::resource('promos', \App\Http\Controllers\Admin\PromoCodeController::class);
+        Route::get('/cart-history', [\App\Http\Controllers\Admin\CartHistoryController::class, 'index'])->name('cart_history.index');
+        Route::get('/search-history', [\App\Http\Controllers\Admin\SearchHistoryController::class, 'index'])->name('search_history.index');
+        Route::get('/customers', [\App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('customers.index');
+        Route::resource('channels', \App\Http\Controllers\Admin\ChannelController::class);
+
+        // Super Admin Only
+        Route::get('/super', [App\Http\Controllers\Admin\SuperAdminController::class, 'index'])->name('super.index');
+        Route::post('/super/store', [App\Http\Controllers\Admin\SuperAdminController::class, 'store'])->name('super.store');
+        Route::put('/super/{user}/role', [App\Http\Controllers\Admin\SuperAdminController::class, 'updateRole'])->name('super.update_role');
+        Route::get('/super/health', [App\Http\Controllers\Admin\SuperAdminController::class, 'health'])->name('super.health');
+    });
+});
+
+
+// FRONTEND ROUTES (Catch-all for main domain)
+// Route::domain(env('APP_FRONTEND_DOMAIN', 'www.olexabd.com'))->group(function () {
+Route::group([], function () {
+    
+    // Front-end Storage Proxy
     Route::get('/storage/{path}', [\App\Http\Controllers\ShopController::class, 'serveStorage'])
         ->where('path', '.*')
         ->name('shop.storage.proxy');
 
+    // Remove conflicting Welcome route
+    /*
     Route::get('/', function () {
         return Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
@@ -22,13 +61,14 @@ Route::domain(env('APP_FRONTEND_DOMAIN', 'www.olexabd.com'))->group(function () 
             'phpVersion' => PHP_VERSION,
         ]);
     });
+    */
 
-    // Dashboard (Redirect to Profile or Home)
+    // Dashboard
     Route::get('/dashboard', function () {
         return redirect()->route('shop.index');
     })->middleware(['auth', 'verified'])->name('dashboard');
 
-    // Tracking (Public)
+    // Tracking
     Route::get('/track-order', [OrderController::class, 'track'])->name('orders.track');
     Route::post('/track-order', [OrderController::class, 'trackOrder'])->name('orders.track.submit');
 
@@ -37,12 +77,11 @@ Route::domain(env('APP_FRONTEND_DOMAIN', 'www.olexabd.com'))->group(function () 
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-        // Order History
         Route::get('/account/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/account/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     });
 
-    // Shop Routes
+    // Shop Routes (Notice: This defines '/' so it must be careful)
     Route::controller(\App\Http\Controllers\ShopController::class)->group(function () {
         Route::get('/', 'index')->name('shop.index');
         Route::get('/product/{product:slug}', 'show')->name('shop.show');
@@ -69,41 +108,6 @@ Route::domain(env('APP_FRONTEND_DOMAIN', 'www.olexabd.com'))->group(function () 
     });
 
     require __DIR__.'/auth.php';
-});
-
-// Admin Routes (Dynamic Domain)
-Route::domain(env('APP_ADMIN_DOMAIN', 'admin.olexabd.com'))->name('admin.')->group(function () {
-    
-    // Admin Auth
-    Route::get('/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'create'])->name('login');
-    Route::post('/login', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'store'])->name('login.store');
-    Route::post('/logout', [\App\Http\Controllers\Admin\Auth\AdminLoginController::class, 'destroy'])->name('logout');
-
-    // Storage Proxy (Bypasses Symlink Issues)
-    Route::get('/storage/{path}', [\App\Http\Controllers\Admin\DashboardController::class, 'serveStorage'])
-        ->where('path', '.*')
-        ->name('storage.proxy');
-
-    // Admin Protected Routes
-    Route::middleware(['admin'])->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-        
-        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-        Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
-        Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
-        Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
-        Route::resource('promos', \App\Http\Controllers\Admin\PromoCodeController::class);
-        Route::get('/cart-history', [\App\Http\Controllers\Admin\CartHistoryController::class, 'index'])->name('cart_history.index');
-        Route::get('/search-history', [\App\Http\Controllers\Admin\SearchHistoryController::class, 'index'])->name('search_history.index');
-        Route::get('/customers', [\App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('customers.index');
-        Route::resource('channels', \App\Http\Controllers\Admin\ChannelController::class);
-
-        // Super Admin Only
-        Route::get('/super', [App\Http\Controllers\Admin\SuperAdminController::class, 'index'])->name('super.index');
-        Route::post('/super/store', [App\Http\Controllers\Admin\SuperAdminController::class, 'store'])->name('super.store');
-        Route::put('/super/{user}/role', [App\Http\Controllers\Admin\SuperAdminController::class, 'updateRole'])->name('super.update_role');
-        Route::get('/super/health', [App\Http\Controllers\Admin\SuperAdminController::class, 'health'])->name('super.health');
-    });
 });
 
 // 4. Link Storage (For Images)
