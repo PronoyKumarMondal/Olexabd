@@ -60,5 +60,5 @@ When running Facebook Ads or posting on Social Media, add `?source=facebook` to 
 The Pixel code is added to `resources/views/layouts/app.blade.php`. It automatically reads `META_PIXEL_ID` from your configuration.
 
 ### B. Backend (Source Tracking)
-A Middleware or Logic in `ShopController` captures the `source` parameter and stores it in the Session (`session()->put('order_source', $request->source)`).
-The `PaymentController` and `OrderController` then read this session value when creating the order.
+A Middleware `TrackSource` captures the `source` parameter and stores it in the Session (`session()->put('order_source', $request->source)`).
+The `PaymentController` reads this session value and saves it to the `traffic_source` column in the database (while `source` column remains 'web' or 'app').
