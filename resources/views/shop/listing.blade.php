@@ -68,10 +68,10 @@
                                         <i class="bi bi-cart-plus"></i> Add
                                     </button>
                                 </form>
-                                <form action="{{ route('checkout.init') }}" method="POST" class="w-100">
+                                <form action="{{ route('cart.add') }}" method="POST" class="w-100">
                                     @csrf
-                                    <input type="hidden" name="amount" value="{{ $product->price }}">
-                                    <input type="hidden" name="order_id" value="ORD-{{ rand(1000,9999) }}">
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <input type="hidden" name="buy_now" value="1">
                                     <button type="submit" class="btn btn-primary w-100 rounded-pill btn-sm fw-bold">
                                         Buy
                                     </button>
