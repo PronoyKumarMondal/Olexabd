@@ -80,6 +80,10 @@
                             <!-- Order Permissions -->
                             <hr class="my-2">
                             <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="permissions[]" value="order_create" id="new_perm_order_create">
+                                <label class="form-check-label" for="new_perm_order_create">Create Orders</label>
+                            </div>
+                            <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" name="permissions[]" value="order_edit" id="new_perm_order_edit">
                                 <label class="form-check-label" for="new_perm_order_edit">Manage Order Status</label>
                             </div>
@@ -111,6 +115,11 @@
                             </div>
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" name="permissions[]" value="view_search_history" id="new_perm_view_search_history">
+                                <label class="form-label text-muted d-block mt-2 small">Channels</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="permissions[]" value="manage_channels" id="new_perm_manage_channels">
+                                <label class="form-check-label" for="new_perm_manage_channels">Manage Channels</label>
+                            </div>
                                 <label class="form-check-label" for="new_perm_view_search_history">View Search History</label>
                             </div>
                         </div>
@@ -232,6 +241,11 @@
 
                                             <label class="form-label fw-bold mt-2">Order Permissions</label>
                                             <div class="card p-3 bg-light border-0">
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="order_create" id="perm_order_create_{{ $user->id }}"
+                                                        {{ in_array('order_create', $user->permissions ?? []) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="perm_order_create_{{ $user->id }}">Create Orders</label>
+                                                </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" name="permissions[]" value="order_edit" id="perm_order_edit_{{ $user->id }}"
                                                         {{ in_array('order_edit', $user->permissions ?? []) ? 'checked' : '' }}>
@@ -274,6 +288,13 @@
                                                     <input class="form-check-input" type="checkbox" name="permissions[]" value="view_search_history" id="perm_view_search_history_{{ $user->id }}"
                                                         {{ in_array('view_search_history', $user->permissions ?? []) ? 'checked' : '' }}>
                                                     <label class="form-check-label" for="perm_view_search_history_{{ $user->id }}">View Search History</label>
+                                                </div>
+
+                                                <div class="form-check mt-2 border-top pt-2">
+                                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="manage_channels" id="perm_manage_channels_{{ $user->id }}"
+                                                        {{ in_array('manage_channels', $user->permissions ?? []) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="perm_manage_channels_{{ $user->id }}">Manage Channels</label>
+                                                </div>
                                                 </div>
                                             </div>
                                             <small class="text-muted">Super Admins have all permissions by default.</small>
