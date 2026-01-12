@@ -35,7 +35,7 @@
                         <div class="mb-3">
                             <div class="d-flex justify-content-between">
                                 <label class="form-label fw-bold">Customer <span class="text-danger">*</span></label>
-                                <a href="{{ route('admin.customers.index') }}" class="small text-decoration-none" target="_blank">+ Add New</a>
+                                <a href="#" class="small text-decoration-none" data-bs-toggle="modal" data-bs-target="#addCustomerModal">+ Add New (Popup)</a>
                             </div>
                             <select name="user_id" class="form-select select2" required style="width: 100%;">
                                 <option value="">Select Customer (Search Name/Phone)</option>
@@ -139,10 +139,51 @@
 </div>
 
 <!-- Template for JS Item -->
+@endsection
+
+@section('scripts')
+<!-- Add Customer Modal -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addCustomerForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" required placeholder="Name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone <span class="text-danger">*</span></label>
+                        <input type="text" name="phone" id="modalPhone" class="form-control" required placeholder="017xxxxxxxx">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" id="modalEmail" class="form-control" required placeholder="email@example.com">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="text" name="password" class="form-control" value="12345678" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary" id="saveCustomerBtn">Save Customer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const products = @json($products);
 
+    // ... (Existing Item Logic) ...
     function addItem() {
+        // ... (Keep existing item logic) ...
         const index = document.querySelectorAll('.item-row').length;
         const row = `
             <tr class="item-row" id="row_${index}">
@@ -195,13 +236,61 @@
         calculateTotal();
     }
 
-    function calculateTotal() {
-        // Simple sum logic here if needed for display
-    }
+    function calculateTotal() {}
 
     // Add one empty row on load
     document.addEventListener('DOMContentLoaded', () => {
         addItem();
+    });
+
+    // AJAX Customer Creation
+    $(document).ready(function() {
+        $('#addCustomerForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            let btn = $('#saveCustomerBtn');
+            btn.prop('disabled', true).text('Saving...');
+
+            $.ajax({
+                url: "{{ route('admin.customers.store') }}",
+                method: "POST",
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if(response.success) {
+                        // 1. Close Modal
+                        var myModal = bootstrap.Modal.getInstance(document.getElementById('addCustomerModal'));
+                        myModal.hide();
+                        
+                        // 2. Add to Select2 and Select it
+                        let customer = response.customer;
+                        let newOption = new Option(`${customer.name} - ${customer.phone ?? 'No Phone'} (${customer.email})`, customer.id, true, true);
+                        $('.select2').append(newOption).trigger('change');
+
+                        // 3. Reset form
+                        $('#addCustomerForm')[0].reset();
+                        
+                        alert('Customer Added Successfully!');
+                    }
+                },
+                error: function(xhr) {
+                    alert('Error: ' + xhr.responseText);
+                },
+                complete: function() {
+                    btn.prop('disabled', false).text('Save Customer');
+                }
+            });
+        });
+
+        // Quick Phone/Email filler logic
+        // If user typed in modal phone, use it for email prefix if email is empty
+        $('#modalPhone').on('blur', function() {
+            let phone = $(this).val();
+            let email = $('#modalEmail').val();
+            if(phone && !email) {
+                $('#modalEmail').val(phone + '@placeholder.com');
+            }
+        });
     });
 </script>
 @endsection

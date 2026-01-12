@@ -58,7 +58,7 @@ class CustomerController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -66,6 +66,14 @@ class CustomerController extends Controller
             'role' => 'customer',
             'source' => 'web' // Created by admin, but account is web-compatible
         ]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Customer created successfully.',
+                'customer' => $user
+            ]);
+        }
 
         return redirect()->route('admin.customers.index')->with('success', 'Customer created successfully.');
     }
