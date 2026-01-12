@@ -90,8 +90,21 @@ If Facebook doesn't see the sale, it can't optimize your ads, and you might pay 
     *   **Server** event (from the CAPI).
     *   Facebook will say "Deduplicating..." which means it's working perfectly!
 
-### Method C: Admin Panel
-1.  Go to **Admin -> Orders**.
-2.  Look at the columns:
-    *   **Portal:** Shows `WEB` or `APP` (Where the order happened).
-    *   **Traffic:** Shows `facebook`, `google`, or custom source (Where the user came from).
+### Method C: Admin Panel (3-Layer Tracking)
+Go to **Admin -> Orders**. We now track 3 distinct layers for every order:
+
+| Column | Description | Examples |
+| :--- | :--- | :--- |
+| **Order Portal** | **Who** placed the order and **Where**? | `Customer Portal - Web`, `Admin Portal`, `Customer App` |
+| **Traff. Source** | **Marketing Origin** (How they found us) | `facebook`, `instagram_bio`, `google_ads` |
+| **Platform** | **Device Environment** | `WEB` (Browser), `APP` (Mobile App), `FB APP` |
+
+*   **Example 1:** You create an order for a client who called you.
+    *   Portal: `Admin Portal`
+    *   Traffic: `Phone Call` (if selected)
+    *   Platform: `WEB`
+
+*   **Example 2:** A customer clicks a Facebook Ad and buys on the website.
+    *   Portal: `Customer Portal - Web`
+    *   Traffic: `facebook`
+    *   Platform: `WEB`
