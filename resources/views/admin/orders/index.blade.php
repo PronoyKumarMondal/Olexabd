@@ -57,8 +57,10 @@
                                 <span class="badge bg-info text-dark" style="font-size: 0.65em;">APP</span>
                             @elseif($order->source === 'fb_app')
                                 <span class="badge bg-primary" style="font-size: 0.65em;">FB</span>
-                            @else
+                            @elseif($order->source === 'web' || empty($order->source))
                                 <span class="badge bg-light text-dark border" style="font-size: 0.65em;">WEB</span>
+                            @else
+                                <span class="badge bg-primary bg-opacity-75" style="font-size: 0.65em; text-transform: uppercase;">{{ $order->source }}</span>
                             @endif
                         </td>
                         <td>
