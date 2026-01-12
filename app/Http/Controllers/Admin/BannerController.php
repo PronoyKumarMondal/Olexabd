@@ -11,6 +11,10 @@ class BannerController extends Controller
 {
     public function index()
     {
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('manage_banners')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $banners = Banner::orderBy('order')->get();
         // Allow adding if less than 5 active banners
         $canAdd = $banners->count() < 5;
@@ -20,6 +24,10 @@ class BannerController extends Controller
 
     public function create()
     {
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('manage_banners')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         if (Banner::count() >= 5) {
             return redirect()->route('admin.banners.index')->with('error', 'Maximum 5 banners allowed.');
         }
@@ -28,6 +36,10 @@ class BannerController extends Controller
 
     public function store(Request $request)
     {
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('manage_banners')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         if (Banner::count() >= 5) {
             return redirect()->route('admin.banners.index')->with('error', 'Maximum 5 banners allowed.');
         }
@@ -61,11 +73,18 @@ class BannerController extends Controller
 
     public function edit(Banner $banner)
     {
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('manage_banners')) {
+            abort(403, 'Unauthorized action.');
+        }
         return view('admin.banners.edit', compact('banner'));
     }
 
     public function update(Request $request, Banner $banner)
     {
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('manage_banners')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240', // 10MB Max
             'mobile_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
@@ -103,6 +122,10 @@ class BannerController extends Controller
 
     public function destroy(Banner $banner)
     {
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('manage_banners')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         if ($banner->image) {
              $oldPath = str_replace('/storage/', 'public/', $banner->image);
              if (Storage::exists($oldPath)) {

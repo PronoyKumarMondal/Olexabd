@@ -45,14 +45,18 @@ class ProductController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Product::class);
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('product_create')) {
+            abort(403, 'Unauthorized action.');
+        }
         $categories = Category::whereNull('parent_id')->with('children')->orderBy('name')->get();
         return view('admin.products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        $this->authorize('create', Product::class);
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('product_create')) {
+            abort(403, 'Unauthorized action.');
+        }
         $request->validate([
             'name' => 'required',
             'category_id' => 'required|exists:categories,id',
@@ -102,14 +106,18 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $this->authorize('update', $product);
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('product_edit')) {
+            abort(403, 'Unauthorized action.');
+        }
         $categories = Category::whereNull('parent_id')->with('children')->orderBy('name')->get();
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product)
     {
-        $this->authorize('update', $product);
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('product_edit')) {
+            abort(403, 'Unauthorized action.');
+        }
         
         $request->validate([
             'name' => 'required',
@@ -175,7 +183,9 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        $this->authorize('delete', $product);
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('product_delete')) {
+            abort(403, 'Unauthorized action.');
+        }
         $product->delete();
         \Illuminate\Support\Facades\Cache::forget('home_featured');
         \Illuminate\Support\Facades\Cache::forget('home_recent');
