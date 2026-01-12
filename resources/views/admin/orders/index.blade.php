@@ -55,9 +55,14 @@
                             <small class="text-muted">{{ $order->created_at->format('M d, H:i') }}</small>
                         </td>
                         <td>
+                            {{-- Logic: Show Traffic Source (Campaign) if exists, OR Source (Platform) if it's marketing-related --}}
                             @if($order->traffic_source)
-                                <span class="badge bg-success" style="font-size: 0.8em; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <span class="badge bg-success" style="font-size: 0.8em; text-transform: uppercase;">
                                     <i class="bi bi-megaphone-fill me-1"></i> {{ $order->traffic_source }}
+                                </span>
+                            @elseif($order->source && $order->source !== 'web' && $order->source !== 'app')
+                                <span class="badge bg-primary bg-opacity-75" style="font-size: 0.8em; text-transform: uppercase;">
+                                    {{ $order->source }}
                                 </span>
                             @else
                                 <span class="badge bg-light text-secondary border" style="font-size: 0.7em;">Direct / Organic</span>
@@ -69,12 +74,14 @@
                             </span>
                         </td>
                         <td>
-                            @if($order->source === 'app')
+                            {{-- Device/Platform Column --}}
+                            @if($order->source === 'app' || $order->source === 'android' || $order->source === 'ios')
                                 <span class="badge bg-info text-dark" style="font-size: 0.7em;">APP</span>
-                            @elseif($order->source === 'fb_app')
-                                <span class="badge bg-primary" style="font-size: 0.7em;">FB APP</span>
-                            @else
+                            @elseif($order->source === 'web' || empty($order->source))
                                 <span class="badge bg-light text-dark border" style="font-size: 0.7em;">WEB</span>
+                            @else
+                                {{-- It's a specific platform like Facebook, displayed as WEB since it's likely a browser view --}}
+                                <span class="badge bg-light text-dark border" style="font-size: 0.7em;">WEB ({{ ucfirst($order->source) }})</span>
                             @endif
                         </td>
                         <td>
