@@ -20,7 +20,8 @@ class CustomerController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
@@ -35,5 +36,37 @@ class CustomerController extends Controller
         $customers = $query->latest()->paginate(8);
 
         return view('admin.customers.index', compact('customers'));
+    }
+    public function create()
+    {
+        if (!auth('admin')->user()->hasPermission('view_customers')) { // Re-using permission, or could add 'manage_customers'
+            abort(403, 'Unauthorized action.');
+        }
+        return view('admin.customers.create');
+    }
+
+    public function store(Request $request)
+    {
+        if (!auth('admin')->user()->hasPermission('view_customers')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|string|max:20',
+            'password' => 'required|string|min:8',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => \Hash::make($request->password),
+            'role' => 'customer',
+            'source' => 'web' // Created by admin, but account is web-compatible
+        ]);
+
+        return redirect()->route('admin.customers.index')->with('success', 'Customer created successfully.');
     }
 }

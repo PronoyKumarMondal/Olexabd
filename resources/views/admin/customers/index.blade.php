@@ -10,9 +10,9 @@
                 <input type="text" name="id" class="form-control" placeholder="ID" value="{{ request('id') }}">
             </div>
             <div class="col-md-3">
-                <input type="text" name="search" class="form-control" placeholder="Name or Email" value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control" placeholder="Name, Email or Phone" value="{{ request('search') }}">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <select name="source" class="form-select">
                     <option value="">All Sources</option>
                     <option value="web" {{ request('source') === 'web' ? 'selected' : '' }}>Web</option>
@@ -22,6 +22,11 @@
             </div>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
+            </div>
+            <div class="col-md-2">
+                <a href="{{ route('admin.customers.create') }}" class="btn btn-success w-100">
+                    <i class="bi bi-person-plus-fill"></i> Add New
+                </a>
             </div>
         </form>
     </div>
