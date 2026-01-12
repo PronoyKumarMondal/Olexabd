@@ -48,8 +48,8 @@ class PaymentController extends Controller
             'status' => 'pending',
             'payment_status' => 'unpaid',
             'shipping_address' => 'Dhaka, Bangladesh', // Placeholder until address form is added
-            'source' => 'web', 
-            'traffic_source' => session('order_source'),
+            'source' => session('order_platform', 'web'), // Default to 'web' if no platform detected
+            'traffic_source' => session('order_campaign'), // Nullable
             'order_portal' => 'Customer Portal - Web',
         ]);
 
