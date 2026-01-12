@@ -20,7 +20,7 @@ class OrderController extends Controller
         $channels = Channel::where('is_active', true)->get();
         // Limit products/users for performance in MVP view, ideally this uses AJAX search
         $products = Product::select('id', 'name', 'price', 'code', 'stock')->where('stock', '>', 0)->get();
-        $customers = User::where('role', 'customer')->select('id', 'name', 'email')->get();
+        $customers = User::where('role', 'customer')->select('id', 'name', 'email', 'phone')->get();
         
         return view('admin.orders.create', compact('channels', 'products', 'customers'));
     }

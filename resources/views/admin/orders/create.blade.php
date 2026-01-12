@@ -33,16 +33,18 @@
                     <div class="card-body">
                         <!-- Customer -->
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Customer <span class="text-danger">*</span></label>
-                            <select name="user_id" class="form-select" required>
-                                <option value="">Select Customer</option>
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label fw-bold">Customer <span class="text-danger">*</span></label>
+                                <a href="{{ route('admin.customers.index') }}" class="small text-decoration-none" target="_blank">+ Add New</a>
+                            </div>
+                            <select name="user_id" class="form-select select2" required style="width: 100%;">
+                                <option value="">Select Customer (Search Name/Phone)</option>
                                 @foreach($customers as $customer)
                                     <option value="{{ $customer->id }}" {{ old('user_id') == $customer->id ? 'selected' : '' }}>
-                                        {{ $customer->name }} ({{ $customer->email }})
+                                        {{ $customer->name }} - {{ $customer->phone ?? 'No Phone' }} ({{ $customer->email }})
                                     </option>
                                 @endforeach
                             </select>
-                            <small class="text-muted"><a href="{{ route('admin.customers.index') }}" target="_blank">Add new customer</a> if not exists.</small>
                         </div>
 
                         <!-- Channel -->
