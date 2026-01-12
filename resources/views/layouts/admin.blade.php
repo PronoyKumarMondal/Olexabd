@@ -229,6 +229,12 @@
                 <i class="bi bi-bag-check-fill"></i> Orders
             </a>
             @endif
+
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('order_create'))
+            <a class="nav-link {{ request()->routeIs('admin.orders.create') ? 'active' : '' }}" href="{{ route('admin.orders.create') }}">
+                <i class="bi bi-plus-circle-dotted"></i> Create Order
+            </a>
+            @endif
             @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('view_customers'))
             <a class="nav-link {{ request()->routeIs('admin.customers.*') ? 'active' : '' }}" href="{{ route('admin.customers.index') }}">
                 <i class="bi bi-people-fill"></i> Customers
