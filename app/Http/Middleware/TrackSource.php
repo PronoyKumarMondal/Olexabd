@@ -20,7 +20,13 @@ class TrackSource
             if (preg_match('/^[a-zA-Z0-9_\-]+$/', $request->source)) {
                 // Store in session for attribution
                 session(['order_source' => $request->source]);
+                \Illuminate\Support\Facades\Log::info("TrackSource: Captured source '{$request->source}' for session " . session()->getId());
             }
+        } else {
+             // Log if we already have it
+             if (session()->has('order_source')) {
+                 // \Illuminate\Support\Facades\Log::info("TrackSource: Session retains source '" . session('order_source') . "'");
+             }
         }
 
         return $next($request);
