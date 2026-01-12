@@ -15,24 +15,14 @@ class OrderController extends Controller
 {
     public function create()
     {
-        try {
-            $this->authorizeAdmin('order_create');
-            
-            // Debug Logging
-            \Illuminate\Support\Facades\Log::info('Order Create: Fetching channels');
-            $channels = Channel::where('is_active', true)->get();
-            
-            \Illuminate\Support\Facades\Log::info('Order Create: Fetching products');
-            $products = Product::select('id', 'name', 'price', 'code', 'stock')->where('stock', '>', 0)->get();
-            
-            \Illuminate\Support\Facades\Log::info('Order Create: Fetching customers');
-            $customers = User::where('role', 'customer')->select('id', 'name', 'email', 'phone')->get();
-            
-            return view('admin.orders.create', compact('channels', 'products', 'customers'));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Order Create Failed: ' . $e->getMessage());
-            return response("<h1>Error Loading Page</h1><p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>", 500); 
-        }
+        $this->authorizeAdmin('order_create');
+        
+        $channels = Channel::where('is_active', true)->get();
+        // Limit products/users for performance in MVP view, ideally this uses AJAX search
+        $products = Product::select('id', 'name', 'price', 'code', 'stock')->where('stock', '>', 0)->get();
+        $customers = User::where('role', 'customer')->select('id', 'name', 'email')->get();
+        
+        return view('admin.orders.create', compact('channels', 'products', 'customers'));
     }
 
     public function store(Request $request)
