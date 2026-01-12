@@ -157,10 +157,8 @@
                         <td>
                             @if($user->role === 'super_admin')
                                 <span class="badge bg-danger">Super Admin</span>
-                            @elseif($user->role === 'admin')
-                                <span class="badge bg-primary">Admin</span>
                             @else
-                                <span class="badge bg-secondary">Customer</span>
+                                <span class="badge bg-primary">Admin</span>
                             @endif
                         </td>
                         <td>
@@ -196,7 +194,6 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Role</label>
                                             <select name="role" class="form-select" onchange="togglePermissions(this, {{ $user->id }})">
-                                                <option value="customer" {{ $user->role === 'customer' ? 'selected' : '' }}>Customer</option>
                                                 <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin (Staff)</option>
                                                 <option value="super_admin" {{ $user->role === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                                             </select>

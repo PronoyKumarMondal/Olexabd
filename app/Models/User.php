@@ -23,9 +23,7 @@ class User extends Authenticatable
         'phone',
         'password',
         'role',
-        'permissions',
-        'is_admin',
-        'source', // Good to have just in case
+        'source', 
     ];
 
     /**
@@ -46,8 +44,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'is_admin' => 'boolean',
-        'permissions' => 'array',
     ];
 
     public function orders()
@@ -59,26 +55,5 @@ class User extends Authenticatable
     public function hasRole($role)
     {
         return $this->role === $role;
-    }
-
-    public function isSuperAdmin()
-    {
-        return $this->role === 'super_admin';
-    }
-
-    // Check specific permission
-    public function hasPermission($permission)
-    {
-        if ($this->isSuperAdmin()) {
-            return true;
-        }
-        
-        return in_array($permission, $this->permissions ?? []);
-    }
-
-    // Generic admin check (super_admin is also an admin)
-    public function isAdmin()
-    {
-        return $this->role === 'admin' || $this->role === 'super_admin' || $this->is_admin;
     }
 }
