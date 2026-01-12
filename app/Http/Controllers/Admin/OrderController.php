@@ -101,7 +101,7 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.orders.show', $order)->with('success', 'Order created successfully.');
+            return redirect()->route('admin.orders.create')->with('success', 'Order created successfully. You can create another one.');
 
         } catch (\Exception $e) {
             DB::rollBack();

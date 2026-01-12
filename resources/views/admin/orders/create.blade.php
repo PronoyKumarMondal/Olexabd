@@ -34,7 +34,7 @@
                         <!-- Customer -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Customer <span class="text-danger">*</span></label>
-                            <select name="user_id" class="form-select select2" required>
+                            <select name="user_id" class="form-select" required>
                                 <option value="">Select Customer</option>
                                 @foreach($customers as $customer)
                                     <option value="{{ $customer->id }}" {{ old('user_id') == $customer->id ? 'selected' : '' }}>
