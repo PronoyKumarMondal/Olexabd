@@ -31,8 +31,7 @@ class OrderController extends Controller
             return view('admin.orders.create', compact('channels', 'products', 'customers'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Order Create Failed: ' . $e->getMessage());
-            // Return text response temporarily to see error on screen if debug off
-            return response()->div("<h1>Error Loading Page</h1><p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>"); 
+            return response("<h1>Error Loading Page</h1><p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>", 500); 
         }
     }
 
