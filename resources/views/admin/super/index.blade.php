@@ -115,12 +115,13 @@
                             </div>
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" name="permissions[]" value="view_search_history" id="new_perm_view_search_history">
-                                <label class="form-label text-muted d-block mt-2 small">Channels</label>
+                                <label class="form-check-label" for="new_perm_view_search_history">View Search History</label>
+                            </div>
+
+                            <label class="form-label text-muted d-block mt-2 small">Channels</label>
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" name="permissions[]" value="manage_channels" id="new_perm_manage_channels">
                                 <label class="form-check-label" for="new_perm_manage_channels">Manage Channels</label>
-                            </div>
-                                <label class="form-check-label" for="new_perm_view_search_history">View Search History</label>
                             </div>
                         </div>
                         <small class="text-muted d-block mt-1">Super Admins have all permissions automatically.</small>

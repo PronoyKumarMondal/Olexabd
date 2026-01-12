@@ -118,6 +118,8 @@ class OrderController extends Controller
     }
     public function index(Request $request)
     {
+        $this->authorizeAdmin('order_edit'); // Restrict view to those who can manage orders
+
         $query = Order::with('user');
 
         // Professional Filters
