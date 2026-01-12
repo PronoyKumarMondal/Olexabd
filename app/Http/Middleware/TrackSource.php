@@ -13,6 +13,8 @@ class TrackSource
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
+    public function handle(Request $request, Closure $next): Response
+    {
         $source = $request->get('source');
         $utmSource = $request->get('utm_source');
         $utmMedium = $request->get('utm_medium');
