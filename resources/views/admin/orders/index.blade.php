@@ -35,6 +35,7 @@
                     <tr>
                         <th class="ps-4">ID</th>
                         <th>Order Code</th>
+                        <th>Source</th>
                         <th>Customer</th>
                         <th>Total</th>
                         <th>Last Updated</th>
@@ -52,16 +53,18 @@
                             <small class="text-muted">{{ $order->created_at->format('M d, H:i') }}</small>
                         </td>
                         <td>
-                            <div class="fw-bold">{{ $order->user->name ?? 'Guest' }}</div>
                             @if($order->source === 'app')
-                                <span class="badge bg-info text-dark" style="font-size: 0.65em;">APP</span>
+                                <span class="badge bg-info text-dark" style="font-size: 0.75em;">APP</span>
                             @elseif($order->source === 'fb_app')
-                                <span class="badge bg-primary" style="font-size: 0.65em;">FB</span>
+                                <span class="badge bg-primary" style="font-size: 0.75em;">FB</span>
                             @elseif($order->source === 'web' || empty($order->source))
-                                <span class="badge bg-light text-dark border" style="font-size: 0.65em;">WEB</span>
+                                <span class="badge bg-light text-dark border" style="font-size: 0.75em;">WEB</span>
                             @else
-                                <span class="badge bg-primary bg-opacity-75" style="font-size: 0.65em; text-transform: uppercase;">{{ $order->source }}</span>
+                                <span class="badge bg-primary bg-opacity-75" style="font-size: 0.75em; text-transform: uppercase;">{{ $order->source }}</span>
                             @endif
+                        </td>
+                        <td>
+                            <div class="fw-bold">{{ $order->user->name ?? 'Guest' }}</div>
                         </td>
                         <td>
                             ৳{{ $order->total_amount }}

@@ -112,5 +112,3 @@ Route::group([], function () {
 
 // 4. Link Storage (For Images)
 // \Artisan::call('storage:link');
-
-require __DIR__.'/debug.php';
