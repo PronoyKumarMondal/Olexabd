@@ -101,6 +101,14 @@ class PaymentController extends Controller
                  session()->forget('cart');
                  session()->forget('coupon'); // Also clear coupon
                  
+                 // Trigger Facebook CAPI Purchase Event
+                 try {
+                     $fbMeta = new \App\Services\FacebookMeta();
+                     $fbMeta->sendPurchaseEvent($order);
+                 } catch (\Exception $e) {
+                     // Do not fail the transaction if tracking fails
+                 }
+
                  return redirect()->route('orders.index')->with('success', 'Payment Successful! Your order has been placed.');
              }
         }
