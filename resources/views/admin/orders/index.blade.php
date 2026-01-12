@@ -55,10 +55,13 @@
                             <small class="text-muted">{{ $order->created_at->format('M d, H:i') }}</small>
                         </td>
                         <td>
-                            {{-- Logic: ONLY Show Traffic Source (Campaign) here. --}}
                             @if($order->traffic_source)
                                 <span class="badge bg-success" style="font-size: 0.8em; text-transform: uppercase;">
                                     <i class="bi bi-megaphone-fill me-1"></i> {{ $order->traffic_source }}
+                                </span>
+                            @elseif($order->media && $order->media !== 'web' && $order->media !== 'app')
+                                <span class="badge bg-primary bg-opacity-75" style="font-size: 0.8em; text-transform: uppercase;">
+                                    {{ $order->media }}
                                 </span>
                             @else
                                 <span class="text-muted small">-</span>
@@ -71,13 +74,13 @@
                         </td>
                         <td>
                             {{-- Media/Platform Column --}}
-                            @if($order->source === 'app' || $order->source === 'android' || $order->source === 'ios')
+                            @if($order->media === 'app' || $order->media === 'android' || $order->media === 'ios')
                                 <span class="badge bg-info text-dark" style="font-size: 0.7em;">APP</span>
-                            @elseif($order->source === 'web' || empty($order->source))
+                            @elseif($order->media === 'web' || empty($order->media))
                                 <span class="badge bg-light text-dark border" style="font-size: 0.7em;">WEB</span>
                             @else
                                 {{-- Show 'Facebook', 'Instagram' etc directly --}}
-                                <span class="badge bg-primary" style="font-size: 0.7em; text-transform: uppercase;">{{ $order->source }}</span>
+                                <span class="badge bg-primary" style="font-size: 0.7em; text-transform: uppercase;">{{ $order->media }}</span>
                             @endif
                         </td>
                         <td>

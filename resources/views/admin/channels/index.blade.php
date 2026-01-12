@@ -5,15 +5,15 @@
 @section('content')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Sales Channels</h1>
+        <h1 class="h3 mb-0 text-gray-800">Media Manager</h1>
         <a href="{{ route('admin.channels.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Add New Channel
+            <i class="bi bi-plus-lg"></i> Add New Media
         </a>
     </div>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">All Channels</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Active Media Types</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">

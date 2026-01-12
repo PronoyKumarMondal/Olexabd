@@ -11,7 +11,7 @@ class Order extends Model
 
     protected $fillable = [
         'user_id', 'total_amount', 'status', 'payment_status',
-        'payment_method', 'shipping_address', 'order_code', 'source',
+        'payment_method', 'shipping_address', 'order_code', 'media',
         'coupon_code', 'discount_amount', 'updated_by', 'traffic_source', 'order_portal'
     ];
 
@@ -21,8 +21,8 @@ class Order extends Model
 
         static::creating(function ($model) {
             $model->order_code = strtoupper(substr(md5(uniqid()), 0, 6)); // Random 6 char code
-            if (empty($model->source)) {
-                $model->source = 'web';
+            if (empty($model->media)) {
+                $model->media = 'web';
             }
         });
     }

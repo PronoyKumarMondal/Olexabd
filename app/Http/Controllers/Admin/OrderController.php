@@ -70,14 +70,15 @@ class OrderController extends Controller
             }
 
             // Determine Attribution
-            $source = 'web'; // Admin uses the web portal
+            $media = 'web'; // Admin uses the web portal but we default media to web or admin specific
             $trafficSource = null;
             $orderPortal = 'Admin Portal';
 
             if ($request->channel_id) {
+                // Channel is now conceptually "Media"
                 $channel = Channel::find($request->channel_id);
                 if ($channel) {
-                    $trafficSource = $channel->slug; // e.g. 'phone-call', 'whatsapp'
+                    $media = $channel->slug; // e.g. 'phone-call', 'whatsapp'
                 }
             }
 
@@ -89,7 +90,7 @@ class OrderController extends Controller
                 'payment_status' => $request->payment_status,
                 'payment_method' => $request->payment_method,
                 'shipping_address' => $request->shipping_address,
-                'source' => $source,
+                'media' => $media, // Was source
                 'traffic_source' => $trafficSource,
                 'order_portal' => $orderPortal,
                 // 'updated_by' handled by Observer
