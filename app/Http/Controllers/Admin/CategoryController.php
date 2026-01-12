@@ -40,7 +40,9 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize('create', Category::class);
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('category_create')) {
+            abort(403, 'Unauthorized action.');
+        }
         $request->validate([
             'name' => 'required|unique:categories,name',
             'parent_id' => 'nullable|exists:categories,id',
@@ -71,7 +73,9 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
-        $this->authorize('update', $category);
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('category_edit')) {
+            abort(403, 'Unauthorized action.');
+        }
         $request->validate([
             'name' => 'required|unique:categories,name,' . $category->id,
             'parent_id' => 'nullable|exists:categories,id|not_in:' . $category->id, // Prevent self-parenting
@@ -100,7 +104,9 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        $this->authorize('delete', $category);
+        if (!auth('admin')->user()->isSuperAdmin() && !auth('admin')->user()->hasPermission('category_delete')) {
+            abort(403, 'Unauthorized action.');
+        }
         $category->delete();
         \Illuminate\Support\Facades\Cache::forget('home_categories');
         return redirect()->back()->with('success', 'Category deleted successfully.');
