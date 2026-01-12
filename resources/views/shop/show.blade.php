@@ -86,10 +86,10 @@
                                 <i class="bi bi-cart-plus me-2"></i> Add to Cart
                             </button>
                         </form>
-                        <form action="{{ route('checkout.init') }}" method="POST" class="flex-grow-1">
+                        <form action="{{ route('cart.add') }}" method="POST" class="flex-grow-1">
                             @csrf
-                            <input type="hidden" name="amount" value="{{ $product->effective_price }}">
-                            <input type="hidden" name="order_id" value="ORD-{{ rand(1000,9999) }}">
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="buy_now" value="1">
                             <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow-lg action-btn">
                                 <i class="bi bi-lightning-charge me-2"></i> Buy Now
                             </button>

@@ -64,6 +64,10 @@ class CartController extends Controller
             return response()->json(['success' => 'Product added to cart successfully!', 'count' => count(session()->get('cart'))]);
         }
 
+        if ($request->has('buy_now')) {
+            return redirect()->route('cart.index')->with('success', 'Product added to cart. Ready to checkout!');
+        }
+
         return redirect()->back()->with('success', 'Product added to cart successfully!');
     }
 
