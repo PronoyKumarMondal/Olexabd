@@ -241,6 +241,12 @@
             </a>
             @endif
 
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('manage_channels'))
+            <a class="nav-link {{ request()->routeIs('admin.channels.*') ? 'active' : '' }}" href="{{ route('admin.channels.index') }}">
+                <i class="bi bi-broadcast"></i> Sales Channels
+            </a>
+            @endif
+
             @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('manage_banners'))
             <a class="nav-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}" href="{{ route('admin.banners.index') }}">
                 <i class="bi bi-images"></i> Banners
