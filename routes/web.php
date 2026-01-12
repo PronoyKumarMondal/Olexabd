@@ -108,6 +108,14 @@ Route::group([], function () {
     });
 
     require __DIR__.'/auth.php';
+
+    Route::get('/debug-session', function() {
+        return [
+            'order_platform' => session('order_platform'),
+            'order_campaign' => session('order_campaign'),
+            'all' => session()->all()
+        ];
+    });
 });
 
 // 4. Link Storage (For Images)
