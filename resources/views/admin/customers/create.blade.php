@@ -32,12 +32,6 @@
                         <input type="text" name="phone" class="form-control" value="{{ old('phone') }}" placeholder="e.g. 01700000000">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Password <span class="text-danger">*</span></label>
-                        <input type="text" name="password" class="form-control" value="12345678" required> <!-- Default or Random -->
-                        <small class="text-muted">Default password suggests '12345678'. You can change it.</small>
-                    </div>
-
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Create Customer</button>
                     </div>

@@ -55,16 +55,17 @@ class CustomerController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:20',
-            'password' => 'required|string|min:8',
         ]);
+
+        $password = \Str::random(8); // Auto-generate 8 char password
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => \Hash::make($request->password),
+            'password' => \Hash::make($password),
             'role' => 'customer',
-            'source' => 'web' // Created by admin, but account is web-compatible
+            'source' => 'web' 
         ]);
 
         if ($request->wantsJson()) {

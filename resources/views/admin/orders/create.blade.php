@@ -165,10 +165,7 @@
                         <label class="form-label">Email <span class="text-danger">*</span></label>
                         <input type="email" name="email" id="modalEmail" class="form-control" required placeholder="email@example.com">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="text" name="password" class="form-control" value="12345678" required>
-                    </div>
+                    {{-- Password auto-generated --}}
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary" id="saveCustomerBtn">Save Customer</button>
                     </div>
