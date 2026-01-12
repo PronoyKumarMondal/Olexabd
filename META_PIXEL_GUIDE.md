@@ -28,8 +28,16 @@ When running Facebook Ads or posting on Social Media, add `?source=facebook` to 
 *   **Homepage Ad:** `https://olexabd.com?source=facebook`
 *   **Product Ad:** `https://olexabd.com/product/fridge-123?source=facebook`
 
+### Advanced: Tracking Specific Ads (UTM Parameters)
+You can also use standard UTM parameters. The system will automatically combine them for you.
+
+*   **Example 1:** `https://olexabd.com?utm_source=facebook&utm_campaign=winter_sale`
+    *   **Result in Admin:** `facebook (winter_sale)`
+*   **Example 2:** `https://olexabd.com?source=instagram_bio`
+    *   **Result in Admin:** `instagram_bio`
+
 ### What happens when a user clicks?
-1.  The website detects `source=facebook`.
+1.  The website detects `source` or `utm_source`.
 2.  It saves "facebook" into the customer's **session** (browser memory) for 30 days.
 3.  When they checkout, the order is automatically saved with **Source: facebook** in the database.
 4.  You will see "Facebook" as the Source in your Admin Order List.
