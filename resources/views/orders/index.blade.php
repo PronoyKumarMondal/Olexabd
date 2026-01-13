@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'My Order History | OlexaBD')
+
 @section('content')
 <div class="container py-5">
     <h2 class="fw-bold mb-4">Order History</h2>
