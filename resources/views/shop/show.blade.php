@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $product->name . ' | OlexaBD')
-@section('meta_description', Str::limit(strip_tags($product->description), 155))
+@section('meta_description', \Illuminate\Support\Str::limit(strip_tags($product->description), 155))
 @section('og_image', $product->image)
 
 @section('schema')
@@ -11,7 +11,7 @@
   "@type": "Product",
   "name": "{{ $product->name }}",
   "image": "{{ $product->image }}",
-  "description": "{{ Str::limit(strip_tags($product->description), 155) }}",
+  "description": "{{ \Illuminate\Support\Str::limit(strip_tags($product->description), 155) }}",
   "sku": "{{ $product->code ?? $product->id }}",
   "offers": {
     "@type": "Offer",

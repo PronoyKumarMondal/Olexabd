@@ -13,7 +13,7 @@
     <!-- Open Graph -->
     <meta property="og:title" content="@yield('title', 'OlexaBD')" />
     <meta property="og:description" content="@yield('meta_description', 'Premium Home Appliances')" />
-    <meta property="og:image" content="@yield('og_image', asset('logo.png'))" />
+    <meta property="og:image" content="@yield('og_image', 'https://cdn-icons-png.flaticon.com/512/3081/3081559.png')" />
     <meta property="og:url" content="{{ url()->current() }}" />
 
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3081/3081559.png">
