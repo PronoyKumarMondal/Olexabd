@@ -4,25 +4,7 @@
 @section('meta_description', \Illuminate\Support\Str::limit(strip_tags($product->description), 155))
 @section('og_image', $product->image)
 
-@section('schema')
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  "name": "{{ $product->name }}",
-  "image": "{{ $product->image }}",
-  "description": "{{ \Illuminate\Support\Str::limit(strip_tags($product->description), 155) }}",
-  "sku": "{{ $product->code ?? $product->id }}",
-  "offers": {
-    "@type": "Offer",
-    "url": "{{ route('shop.show', $product->slug) }}",
-    "priceCurrency": "BDT",
-    "price": "{{ $product->effective_price }}",
-    "availability": "{{ $product->stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}"
-  }
-}
-</script>
-@endsection
+@section('og_image', $product->image)
 
 @section('content')
 <div class="bg-light py-5">
