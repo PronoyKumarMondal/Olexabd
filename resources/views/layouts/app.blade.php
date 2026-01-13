@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="google-site-verification" content="IzFKzcNIBbyI0XS9bZUm-JVP018Ad6uC87QhFf8yhRU" />
 
     <title>@yield('title', 'OlexaBD | Premium Appliances')</title>
     <meta name="description" content="@yield('meta_description', 'Shop premium home appliances and electronics at OlexaBD. Best prices, warranty, and fast delivery across Bangladesh.')">
