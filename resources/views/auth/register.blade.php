@@ -23,6 +23,11 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="phone" class="form-control" required placeholder="01712345678">
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label">Password</label>
                             <input type="password" name="password" class="form-control" required>
                         </div>

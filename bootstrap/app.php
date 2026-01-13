@@ -16,11 +16,15 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             \App\Http\Middleware\LogRequestActivity::class,
             \App\Http\Middleware\TrackSource::class,
+            \App\Http\Middleware\SecureHeaders::class,
         ]);
         
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+
+        // Trust Cloudflare & All Proxies (Since we are behind a Load Balancer)
+        $middleware->trustProxies(at: '*');
 
         //
     })
