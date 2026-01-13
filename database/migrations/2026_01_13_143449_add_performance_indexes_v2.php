@@ -11,21 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->index('is_active');
-            $table->index('is_featured');
-            $table->index('slug');
-        });
+        // Products
+        $this->addIndexSafe('products', 'is_active');
+        $this->addIndexSafe('products', 'is_featured');
+        // Slug is already unique (indexed), so skipping
+        
+        // Users
+        // Email is already unique (indexed), so skipping
+        $this->addIndexSafe('users', 'phone');
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->index('email');
-            $table->index('phone');
-        });
-
-        Schema::table('orders', function (Blueprint $table) {
-            $table->index('code'); // order_id
-            $table->index('created_at');
-        });
+        // Orders
+        $this->addIndexSafe('orders', 'code');
+        $this->addIndexSafe('orders', 'created_at');
     }
 
     /**
@@ -33,20 +30,48 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropIndex(['is_active']);
-            $table->dropIndex(['is_featured']);
-            $table->dropIndex(['slug']);
-        });
+        $this->dropIndexSafe('products', 'is_active');
+        $this->dropIndexSafe('products', 'is_featured');
+        // $this->dropIndexSafe('products', 'slug');
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex(['email']);
-            $table->dropIndex(['phone']);
-        });
+        // $this->dropIndexSafe('users', 'email');
+        $this->dropIndexSafe('users', 'phone');
 
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropIndex(['code']);
-            $table->dropIndex(['created_at']);
-        });
+        $this->dropIndexSafe('orders', 'code');
+        $this->dropIndexSafe('orders', 'created_at');
+    }
+
+    protected function addIndexSafe($table, $column)
+    {
+        $indexName = "{$table}_{$column}_index";
+        
+        // Check if index exists using raw SQL for maximum compatibility
+        // This query works on MySQL which matches the user's environment
+        $exists = count(\Illuminate\Support\Facades\DB::select(
+            "SHOW INDEXES FROM {$table} WHERE Key_name = ?", 
+            [$indexName]
+        )) > 0;
+
+        if (!$exists) {
+            Schema::table($table, function (Blueprint $table) use ($column, $indexName) {
+                $table->index($column, $indexName);
+            });
+        }
+    }
+
+    protected function dropIndexSafe($table, $column)
+    {
+        $indexName = "{$table}_{$column}_index";
+        
+        $exists = count(\Illuminate\Support\Facades\DB::select(
+            "SHOW INDEXES FROM {$table} WHERE Key_name = ?", 
+            [$indexName]
+        )) > 0;
+
+        if ($exists) {
+            Schema::table($table, function (Blueprint $table) use ($indexName) {
+                $table->dropIndex($indexName);
+            });
+        }
     }
 };
