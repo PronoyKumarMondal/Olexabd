@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->index('is_active');
-            $table->index('featured');
+            $table->index('is_featured');
             $table->index('slug');
         });
 
@@ -35,7 +35,7 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->dropIndex(['is_active']);
-            $table->dropIndex(['featured']);
+            $table->dropIndex(['is_featured']);
             $table->dropIndex(['slug']);
         });
 
