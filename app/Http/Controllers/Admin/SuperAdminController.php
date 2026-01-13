@@ -181,7 +181,7 @@ class SuperAdminController extends Controller
         $recentLogs = [];
         if (file_exists($logFile)) {
             $logContent = file($logFile);
-            $recentLogs = array_slice($logContent, -20); // Last 20 lines
+            $recentLogs = array_slice($logContent, -100); // Last 100 lines
             $recentLogs = array_reverse($recentLogs); // Newest first
         }
 

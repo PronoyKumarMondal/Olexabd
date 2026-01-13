@@ -26,12 +26,13 @@ class LogRequestActivity
 
         // Log the Request
         Log::info(sprintf(
-            "[%s] %s | User: %s | IP: %s | Status: %s",
+            "[%s] %s | User: %s | IP: %s | Status: %s | Payload: %s",
             $request->method(),
             $request->fullUrl(),
             $user,
             $request->ip(),
-            $response->getStatusCode()
+            $response->getStatusCode(),
+            json_encode($request->except(['password', 'password_confirmation', 'credit_card'])) // Log input safely
         ));
 
         return $response;

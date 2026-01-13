@@ -248,10 +248,10 @@
     <div class="col-12">
         <div class="card border-0 shadow-sm bg-dark text-white">
             <div class="card-header bg-dark border-secondary py-3 d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-bold text-white"><i class="bi bi-terminal-fill"></i> Recent System Logs (Last 20 Lines)</h6>
+                <h6 class="mb-0 fw-bold text-white"><i class="bi bi-terminal-fill"></i> Recent System Logs (Last 100 Lines)</h6>
                 <span class="badge bg-secondary">{{ $logSize }}</span>
             </div>
-            <div class="card-body font-monospace p-0" style="max-height: 400px; overflow-y: auto; background-color: #1e1e1e;">
+            <div class="card-body font-monospace p-0" style="max-height: 600px; overflow-y: auto; background-color: #1e1e1e;">
                 <div class="p-3">
                     @forelse($recentLogs as $log)
                         <div class="text-break border-bottom border-secondary pb-1 mb-1 text-light small" style="opacity: 0.9;">
