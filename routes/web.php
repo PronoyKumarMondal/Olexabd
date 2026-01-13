@@ -110,14 +110,6 @@ Route::group([], function () {
     require __DIR__.'/auth.php';
 
     Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
-
-    Route::get('/fix-site', function() {
-        \Artisan::call('view:clear');
-        \Artisan::call('route:clear');
-        \Artisan::call('config:clear');
-        \Artisan::call('cache:clear');
-        return "Site Fixed! <a href='/'>Go Home</a>";
-    });
 });
 
 // 4. Link Storage (For Images)
