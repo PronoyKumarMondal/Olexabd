@@ -4,41 +4,6 @@
 @section('meta_description', 'Discover premium home appliances, electronics, and gadgets at OlexaBD. Official warranty, fast delivery, and best prices in Bangladesh.')
 @section('meta_keywords', 'olexabd, olexa, olexa bd, home appliances, bangladesh electronics, fridge price bd, tv price bd, ac price bd')
 
-@section('schema')
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "OlexaBD",
-  "url": "{{ url('/') }}",
-  "logo": "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
-  "sameAs": [
-    "https://www.facebook.com/olexabd",
-    "https://www.instagram.com/olexabd"
-  ],
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "telephone": "+8801700000000",
-    "contactType": "customer service",
-    "areaServed": "BD"
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "OlexaBD",
-  "url": "{{ url('/') }}",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "{{ route('shop.search') }}?query={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
-}
-</script>
-@endsection
-
 @section('content')
 <!-- Hero Section -->
 <!-- Hero Section (Carousel) -->
