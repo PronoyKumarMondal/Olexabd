@@ -21,7 +21,7 @@ return new class extends Migration
         $this->addIndexSafe('users', 'phone');
 
         // Orders
-        $this->addIndexSafe('orders', 'code');
+        $this->addIndexSafe('orders', 'order_code');
         $this->addIndexSafe('orders', 'created_at');
     }
 
@@ -37,7 +37,7 @@ return new class extends Migration
         // $this->dropIndexSafe('users', 'email');
         $this->dropIndexSafe('users', 'phone');
 
-        $this->dropIndexSafe('orders', 'code');
+        $this->dropIndexSafe('orders', 'order_code');
         $this->dropIndexSafe('orders', 'created_at');
     }
 
