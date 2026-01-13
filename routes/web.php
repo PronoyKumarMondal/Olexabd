@@ -108,6 +108,8 @@ Route::group([], function () {
     });
 
     require __DIR__.'/auth.php';
+
+    Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 });
 
 // 4. Link Storage (For Images)

@@ -1,5 +1,29 @@
 @extends('layouts.app')
 
+@section('title', $product->name . ' | OlexaBD')
+@section('meta_description', Str::limit(strip_tags($product->description), 155))
+@section('og_image', $product->image)
+
+@section('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ $product->name }}",
+  "image": "{{ $product->image }}",
+  "description": "{{ Str::limit(strip_tags($product->description), 155) }}",
+  "sku": "{{ $product->code ?? $product->id }}",
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ route('shop.show', $product->slug) }}",
+    "priceCurrency": "BDT",
+    "price": "{{ $product->effective_price }}",
+    "availability": "{{ $product->stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}"
+  }
+}
+</script>
+@endsection
+
 @section('content')
 <div class="bg-light py-5">
     <div class="container">

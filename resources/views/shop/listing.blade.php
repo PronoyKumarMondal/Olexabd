@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title', $title . ' | OlexaBD')
+@section('meta_description', 'Shop ' . $title . ' at OlexaBD. Great selection, official warranty, and fast delivery across Bangladesh.')
+
 @section('content')
 <div class="bg-light py-5">
     <div class="container">

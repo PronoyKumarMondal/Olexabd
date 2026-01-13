@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>OlexaBD | Premium Appliances</title>
+    <title>@yield('title', 'OlexaBD | Premium Appliances')</title>
+    <meta name="description" content="@yield('meta_description', 'Shop premium home appliances and electronics at OlexaBD. Best prices, warranty, and fast delivery across Bangladesh.')">
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="@yield('title', 'OlexaBD')" />
+    <meta property="og:description" content="@yield('meta_description', 'Premium Home Appliances')" />
+    <meta property="og:image" content="@yield('og_image', asset('logo.png'))" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3081/3081559.png">
 
     <!-- Fonts -->
@@ -17,6 +26,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Schema -->
+    @yield('schema')
 
     <!-- Meta Pixel Code -->
     @if(env('META_PIXEL_ID'))

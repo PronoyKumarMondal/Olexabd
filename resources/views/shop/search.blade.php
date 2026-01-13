@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title', 'Search results for "' . $query . '" | OlexaBD')
+@section('meta_description', 'Search results for ' . $query . ' at OlexaBD.')
+
 @section('content')
 <div class="container py-5">
     <!-- Search Header -->

@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('title', 'OlexaBD | Best Home Appliances in Bangladesh')
+@section('meta_description', 'Discover premium home appliances, electronics, and gadgets at OlexaBD. Official warranty, fast delivery, and best prices in Bangladesh.')
+@section('meta_keywords', 'home appliances, bangladesh electronics, fridge price bd, tv price bd, olexabd, ac price bd')
+
 @section('content')
 <!-- Hero Section -->
 <!-- Hero Section (Carousel) -->
