@@ -21,6 +21,7 @@ class ShopController extends Controller
         // Featured: 8 items
         $featuredProducts = \Illuminate\Support\Facades\Cache::remember('home_featured', 30*60, function () {
             return Product::where('is_active', true)
+                ->with('category')
                 ->inRandomOrder() 
                 ->take(8)
                 ->get();
@@ -29,6 +30,7 @@ class ShopController extends Controller
         // All/Recent: 11 items
         $products = \Illuminate\Support\Facades\Cache::remember('home_recent', 30*60, function () {
             return Product::where('is_active', true)
+                ->with('category')
                 ->latest()
                 ->take(11)
                 ->get();
@@ -81,6 +83,7 @@ class ShopController extends Controller
     {
         $title = "All Products";
         $products = Product::where('is_active', true)
+            ->with('category')
             ->latest()
             ->paginate(12);
 
@@ -96,6 +99,7 @@ class ShopController extends Controller
                 $q->where('name', 'like', "%{$query}%")
                   ->orWhere('description', 'like', "%{$query}%");
             })
+            ->with('category')
             ->latest()
             ->paginate(12);
             
