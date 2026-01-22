@@ -106,3 +106,19 @@ Go to **Admin -> Orders**. We now track 3 distinct layers for every order:
     *   Portal: `Customer Portal - Web`
     *   Traffic: `facebook`
     *   Platform: `WEB`
+
+That is a very clean strategy! 🏢
+
+If you want your Facebook Page's Ad Account to be the "Boss" that manages everything (Ads, Pixel, Budget):
+
+Go to Business Settings: business.facebook.com/settings
+Go to Accounts > Ad Accounts.
+Find (or Add) the Ad Account that belongs to your Page.
+Connect the Pixel to "The Boss":
+Go to Data Sources > Datasets (Pixel).
+Select your "Olexa Store" pixel.
+Click Connected Assets > Add Assets.
+✅ Select THAT specific Ad Account.
+Result: Now, whenever you go to your Facebook Page > Ad Center (or Ads Manager) and create a campaign, it will automatically have permission to use the "Olexa Store" pixel to track sales. You don't need to do anything else!
+
+Tip: Make sure your personal profile is added as a "Person" to both the Ad Account and the Pixel in those same settings menus.
