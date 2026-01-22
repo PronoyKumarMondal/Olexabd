@@ -25,11 +25,9 @@ class FacebookMeta
         try {
             $userData = [
                 'em' => hash('sha256', strtolower($order->user->email ?? '')),
+                'client_user_agent' => request()->userAgent(),
+                'client_ip_address' => request()->ip(),
             ];
-
-            // If we had phone, we would hash it too: 'ph' => hash('sha256', ...)
-            'client_user_agent' => request()->userAgent(),
-            'client_ip_address' => request()->ip(),
             // 'fbc' => cookie('_fbc'),
             // 'fbp' => cookie('_fbp'),
 

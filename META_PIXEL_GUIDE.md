@@ -31,8 +31,6 @@ This guide explains how your store tracks sales, attributes them to ads, and sen
 3.  Add these two lines at the bottom:
 
 ```env
-META_PIXEL_ID=paste_pixel_id_here
-META_ACCESS_TOKEN=paste_long_token_here
 ```
 
 4.  **Save** the file.
