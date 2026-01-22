@@ -28,8 +28,8 @@ class FacebookMeta
             ];
 
             // If we had phone, we would hash it too: 'ph' => hash('sha256', ...)
-            // 'client_user_agent' => request()->userAgent(),
-            // 'client_ip_address' => request()->ip(),
+            'client_user_agent' => request()->userAgent(),
+            'client_ip_address' => request()->ip(),
             // 'fbc' => cookie('_fbc'),
             // 'fbp' => cookie('_fbp'),
 
