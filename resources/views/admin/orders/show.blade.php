@@ -101,7 +101,7 @@
                     
                     <div class="mb-3">
                         <label class="form-label text-muted small">Update Order Status</label>
-                        <select name="status" class="form-select form-select-lg mb-3" @cannot('update', $order) disabled @endcannot>
+                        <select name="status" class="form-select form-select-lg mb-3" @if(!Auth::guard('admin')->user()->isSuperAdmin() && !Auth::guard('admin')->user()->hasPermission('order_edit')) disabled @endif>
                             <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending Payment</option>
                             <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>Processing</option>
                             <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Shipped</option>
@@ -115,13 +115,13 @@
                         </div>
                     </div>
 
-                    @can('update', $order)
+                    @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('order_edit'))
                         <button type="submit" class="btn btn-primary w-100">Update Status</button>
                     @else
                         <div class="alert alert-warning small">
                             You do not have permission to update orders.
                         </div>
-                    @endcan
+                    @endif
                 </form>
             </div>
         </div>

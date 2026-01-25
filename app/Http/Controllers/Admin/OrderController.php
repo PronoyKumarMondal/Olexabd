@@ -61,8 +61,8 @@ class OrderController extends Controller
                 $orderItems[] = [
                     'product_id' => $product->id,
                     'quantity' => $item['quantity'],
-                    'price' => $price,
-                    'total' => $subtotal
+                    'unit_price' => $price,
+                    // 'total' is calculated dynamically or ignored if not in fillable
                 ];
                 
                 // Decrement Stock
