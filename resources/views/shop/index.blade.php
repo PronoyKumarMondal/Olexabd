@@ -140,12 +140,12 @@
                     <!-- View All Card -->
                     <div class="col-lg-3 col-md-4 col-6">
                         <a href="{{ route('shop.products') }}" class="card h-100 border-0 shadow-lg position-relative overflow-hidden text-decoration-none transition-hover group" 
-                           style="background: #0f172a;">
+                           style="background: var(--secondary-color);">
                             
                             <!-- Tech Background Pattern (CSS Radial) -->
                             <div class="position-absolute top-0 start-0 w-100 h-100" 
-                                 style="background: radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.4) 0%, transparent 50%),
-                                            radial-gradient(circle at 0% 100%, rgba(6, 182, 212, 0.2) 0%, transparent 50%); opacity: 0.8;"></div>
+                                 style="background: radial-gradient(circle at 100% 0%, rgba(2, 62, 138, 0.4) 0%, transparent 50%),
+                                            radial-gradient(circle at 0% 100%, rgba(0, 150, 199, 0.2) 0%, transparent 50%); opacity: 0.8;"></div>
                             
                             <!-- Glowing Border Effect -->
                             <div class="position-absolute top-0 start-0 w-100 h-100 border border-white border-opacity-10 rounded" style="pointer-events: none;"></div>
@@ -153,7 +153,7 @@
                             <div class="card-body d-flex flex-column align-items-center justify-content-center text-center p-4 position-relative z-1 text-white">
                                 <!-- Icon Container -->
                                 <div class="rounded-circle d-flex align-items-center justify-content-center mb-3 shadow-lg position-relative" 
-                                     style="width: 60px; height: 60px; background: linear-gradient(135deg, #4f46e5, #06b6d4);">
+                                     style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));">
                                     <!-- Pulse Ring -->
                                     <div class="position-absolute w-100 h-100 rounded-circle" 
                                          style="border: 2px solid rgba(255,255,255,0.3); animation: pulse 2s infinite;"></div>
