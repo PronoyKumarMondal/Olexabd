@@ -64,14 +64,14 @@
                             </div>
 
                             <div class="d-flex gap-2 mt-auto position-relative" style="z-index: 2;">
-                                <form action="{{ route('cart.add') }}" method="POST" class="w-100">
+                                <form action="{{ route('cart.add') }}" method="POST" class="flex-fill">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                                     <button type="submit" class="btn btn-outline-primary w-100 rounded-pill btn-sm fw-bold" title="Add to Cart">
                                         <i class="bi bi-cart-plus"></i> Add
                                     </button>
                                 </form>
-                                <form action="{{ route('cart.add') }}" method="POST" class="w-100">
+                                <form action="{{ route('cart.add') }}" method="POST" class="flex-fill">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                                     <input type="hidden" name="buy_now" value="1">
