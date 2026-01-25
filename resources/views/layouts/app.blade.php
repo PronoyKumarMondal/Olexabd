@@ -188,7 +188,9 @@
     <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
         <div class="offcanvas-header border-bottom">
             <h5 class="offcanvas-title fw-bold text-primary" id="mobileMenuLabel">
-                <i class="bi bi-box-seam-fill me-2"></i>OlexaBD
+                <a href="{{ route('shop.index') }}" class="text-decoration-none text-primary d-flex align-items-center">
+                    <i class="bi bi-box-seam-fill me-2"></i>OlexaBD
+                </a>
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
