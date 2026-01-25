@@ -116,7 +116,7 @@
 
                 <div class="row g-3">
                     @foreach($featuredProducts as $product)
-                    <div class="col-md-4 col-6">
+                    <div class="col-lg-3 col-md-4 col-6">
                         @include('partials.product-card', ['product' => $product])
                     </div>
                     @endforeach
@@ -132,13 +132,13 @@
 
                 <div class="row g-3">
                     @foreach($products as $product)
-                    <div class="col-md-4 col-6">
+                    <div class="col-lg-3 col-md-4 col-6">
                         @include('partials.product-card', ['product' => $product])
                     </div>
                     @endforeach
                     
                     <!-- View All Card -->
-                    <div class="col-md-4 col-6">
+                    <div class="col-lg-3 col-md-4 col-6">
                         <a href="{{ route('shop.products') }}" class="card h-100 border-0 shadow-lg position-relative overflow-hidden text-decoration-none transition-hover group" 
                            style="background: #0f172a;">
                             
