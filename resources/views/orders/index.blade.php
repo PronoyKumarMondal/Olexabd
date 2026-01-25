@@ -12,7 +12,7 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th class="ps-4 py-3">Order ID</th>
+                            <th class="ps-4 py-3">Order Code</th>
                             <th class="py-3">Date</th>
                             <th class="py-3">Total</th>
                             <th class="py-3">Status</th>
@@ -22,7 +22,7 @@
                     <tbody>
                         @foreach($orders as $order)
                         <tr>
-                            <td class="ps-4 fw-bold">#{{ $order->id }}</td>
+                            <td class="ps-4 fw-bold">#{{ $order->order_code }}</td>
                             <td class="text-muted">{{ $order->created_at->format('d M Y') }}</td>
                             <td class="fw-bold">৳{{ $order->total_amount }}</td>
                             <td>

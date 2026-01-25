@@ -14,8 +14,8 @@
                     <form action="{{ route('orders.track.submit') }}" method="POST">
                         @csrf
                         <div class="mb-4">
-                            <label class="form-label fw-bold">Order ID</label>
-                            <input type="number" name="order_id" class="form-control form-control-lg rounded-pill px-4" placeholder="e.g. 1024" required>
+                            <label class="form-label fw-bold">Order Code</label>
+                            <input type="text" name="order_code" class="form-control form-control-lg rounded-pill px-4" placeholder="e.g. A1B2C3" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100 rounded-pill py-3 fw-bold fs-5 shadow-sm">
                             Track Order <i class="bi bi-arrow-right ms-2"></i>

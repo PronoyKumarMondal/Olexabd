@@ -4,7 +4,7 @@
 <div class="container py-5">
     <div class="d-flex align-items-center justify-content-between mb-4">
         <div>
-            <h2 class="fw-bold mb-0">Order #{{ $order->id }}</h2>
+            <h2 class="fw-bold mb-0">Order #{{ $order->order_code }}</h2>
             <p class="text-muted">Placed on {{ $order->created_at->format('d M Y, h:i A') }}</p>
         </div>
         <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary rounded-pill px-4">

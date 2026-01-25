@@ -47,13 +47,13 @@ class OrderController extends Controller
     public function trackOrder(Request $request)
     {
         $request->validate([
-            'order_id' => 'required|numeric'
+            'order_code' => 'required|string'
         ]);
 
-        $order = Order::find($request->order_id);
+        $order = Order::where('order_code', $request->order_code)->first();
 
         if (!$order) {
-            return back()->with('error', 'Order not found. Please check your Order ID.');
+            return back()->with('error', 'Order not found. Please check your Order Code.');
         }
 
         return view('orders.track_result', compact('order'));

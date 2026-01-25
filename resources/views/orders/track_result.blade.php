@@ -13,7 +13,7 @@
 
             <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5">
                 <div class="card-header bg-primary text-white p-4 text-center">
-                    <h5 class="mb-0 opacity-75 text-uppercase ls-1" style="letter-spacing: 2px;">Order #{{ $order->id }}</h5>
+                    <h5 class="mb-0 opacity-75 text-uppercase ls-1" style="letter-spacing: 2px;">Order #{{ $order->order_code }}</h5>
                     <h2 class="fw-bold mt-2 display-6">{{ ucfirst($order->status) }}</h2>
                 </div>
                 <div class="card-body p-5">
