@@ -101,36 +101,8 @@
 <!-- Main Content Layout (Sidebar + Products) -->
 <div class="container mb-5">
     <div class="row g-4">
-        <!-- Sidebar (Desktop Only) -->
-        <div class="col-lg-3 d-none d-lg-block">
-            <div class="sticky-top" style="top: 80px; z-index: 10;">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="fw-bold mb-0"><i class="bi bi-grid-fill text-primary me-2"></i>Categories</h5>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        @foreach($globalCategories as $cat)
-                        <a href="{{ route('shop.category', $cat->slug) }}" class="list-group-item list-group-item-action py-3 d-flex align-items-center justify-content-between border-bottom-0">
-                            <div class="d-flex align-items-center gap-3">
-                                @if($cat->image)
-                                    <img src="{{ $cat->image }}" class="rounded-circle bg-light" width="30" height="30" style="object-fit:cover;">
-                                @else
-                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-primary" style="width: 30px; height: 30px;">
-                                        <i class="bi bi-grid small"></i>
-                                    </div>
-                                @endif
-                                <span class="fw-semibold text-dark">{{ $cat->name }}</span>
-                            </div>
-                            <i class="bi bi-chevron-right text-muted small"></i>
-                        </a>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Main Content (Products) -->
-        <div class="col-lg-9">
+        <div class="col-12">
             
             <!-- Featured Products -->
             <div id="featured" class="mb-5">
