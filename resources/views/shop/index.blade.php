@@ -167,12 +167,20 @@
                     
                     <!-- View All Card -->
                     <div class="col-md-4 col-6">
-                        <a href="{{ route('shop.products') }}" class="card h-100 border-0 shadow-sm bg-primary text-white text-decoration-none d-flex align-items-center justify-content-center text-center transition-hover">
-                            <div class="p-4">
-                                <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 50px; height: 50px;">
-                                    <i class="bi bi-arrow-right fs-4 text-white"></i>
+                        <a href="{{ route('shop.products') }}" class="card h-100 border-0 shadow-lg position-relative overflow-hidden text-decoration-none transition-hover" 
+                           style="background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%);">
+                            <!-- Decorative Circle 1 -->
+                            <div class="position-absolute top-0 end-0 bg-white opacity-10 rounded-circle" style="width: 120px; height: 120px; margin-right: -30px; margin-top: -30px;"></div>
+                            <!-- Decorative Circle 2 -->
+                            <div class="position-absolute bottom-0 start-0 bg-white opacity-05 rounded-circle" style="width: 80px; height: 80px; margin-left: -20px; margin-bottom: -20px;"></div>
+                            
+                            <div class="card-body d-flex flex-column align-items-center justify-content-center text-center p-4 position-relative z-1 text-white">
+                                <div class="bg-white bg-opacity-20 backdrop-blur rounded-circle d-flex align-items-center justify-content-center mb-3 shadow-sm border border-white border-opacity-25" 
+                                     style="width: 55px; height: 55px;">
+                                    <i class="bi bi-arrow-right fs-3"></i>
                                 </div>
-                                <h6 class="fw-bold mb-0">View All Products</h6>
+                                <h6 class="fw-bold mb-1 fs-5">View All</h6>
+                                <p class="small text-white-50 mb-0" style="font-size: 0.75rem;">Browse full catalog</p>
                             </div>
                         </a>
                     </div>
