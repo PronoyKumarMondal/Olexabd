@@ -56,10 +56,10 @@ class AppServiceProvider extends ServiceProvider
         
         // Vite::prefetch(concurrency: 3);
 
-        // Share Categories with ALL views (for Mobile Menu & Sidebar)
         \Illuminate\Support\Facades\View::composer('*', function ($view) {
             $view->with('globalCategories', \Illuminate\Support\Facades\Cache::remember('global_categories', 3600, function () {
-                return \App\Models\Category::where('is_active', true)->whereNull('parent_id')->orderBy('order')->get();
+                // Fixed: Remove 'order' column sort as it doesn't exist
+                return \App\Models\Category::where('is_active', true)->whereNull('parent_id')->orderBy('name')->get();
             }));
         });
     }
