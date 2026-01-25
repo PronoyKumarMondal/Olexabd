@@ -63,22 +63,26 @@
                                 <span class="fs-5 fw-bold text-primary">৳{{ $product->price }}</span>
                             </div>
 
-                            <div class="d-flex gap-2 mt-auto position-relative" style="z-index: 2;">
-                                <form action="{{ route('cart.add') }}" method="POST" class="flex-fill">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <button type="submit" class="btn btn-outline-primary w-100 rounded-pill btn-sm fw-bold" title="Add to Cart">
-                                        <i class="bi bi-cart-plus"></i> Add
-                                    </button>
-                                </form>
-                                <form action="{{ route('cart.add') }}" method="POST" class="flex-fill">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <input type="hidden" name="buy_now" value="1">
-                                    <button type="submit" class="btn btn-primary w-100 rounded-pill btn-sm fw-bold">
-                                        Buy
-                                    </button>
-                                </form>
+                            <div class="row g-2 mt-auto position-relative" style="z-index: 2;">
+                                <div class="col-6">
+                                    <form action="{{ route('cart.add') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <button type="submit" class="btn btn-outline-primary w-100 rounded-pill btn-sm fw-bold ps-0 pe-0" title="Add to Cart">
+                                            Add
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-6">
+                                    <form action="{{ route('cart.add') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <input type="hidden" name="buy_now" value="1">
+                                        <button type="submit" class="btn btn-primary w-100 rounded-pill btn-sm fw-bold ps-0 pe-0">
+                                            Buy
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                         <a href="{{ route('shop.show', $product->slug) }}" class="stretched-link"></a>
