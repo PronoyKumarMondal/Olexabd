@@ -106,10 +106,10 @@
                 Olexa<span class="text-primary">BD</span>
             </a>
 
-            <!-- Mobile Search Icon (visible on mobile, toggles search or just links to search) -->
+            <!-- Mobile Menu Toggle (Hamburger) -->
             <div class="d-lg-none">
-                 <button class="btn btn-light rounded-circle text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearch" aria-expanded="false" aria-controls="mobileSearch">
-                    <i class="bi bi-search fs-5"></i>
+                 <button class="btn btn-light rounded-circle text-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+                    <i class="bi bi-list fs-4"></i>
                 </button>
             </div>
 
@@ -166,12 +166,60 @@
     </nav>
     
     <!-- Mobile Search Bar (Collapsible) -->
-    <div class="collapse bg-white border-bottom shadow-sm d-lg-none fixed-top" id="mobileSearch" style="top: 70px; z-index: 1020;">
-        <div class="container py-3">
-             <form action="{{ route('shop.search') }}" method="GET" class="search-group w-100">
-                <input type="text" name="query" class="form-control form-control-lg search-input w-100" placeholder="Search for appliances..." value="{{ request('query') }}">
-                <button type="submit" class="search-btn"><i class="bi bi-search"></i></button>
-            </form>
+    <!-- Mobile Offcanvas Menu (Left Side) -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title fw-bold text-primary" id="mobileMenuLabel">
+                <i class="bi bi-box-seam-fill me-2"></i>OlexaBD
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <!-- Mobile Search -->
+             <div class="p-3 bg-light border-bottom">
+                <form action="{{ route('shop.search') }}" method="GET" class="search-group w-100">
+                    <input type="text" name="query" class="form-control rounded-pill border-0 shadow-sm" placeholder="Search products..." value="{{ request('query') }}">
+                </form>
+            </div>
+
+            <!-- Mobile Category List -->
+            <div class="p-3">
+                <h6 class="text-uppercase text-muted small fw-bold mb-3 ls-1">Categories</h6>
+                <div class="list-group list-group-flush">
+                    @if(isset($globalCategories))
+                        @foreach($globalCategories as $cat)
+                        <a href="{{ route('shop.category', $cat->slug) }}" class="list-group-item list-group-item-action py-2 px-0 border-0 d-flex align-items-center justify-content-between">
+                            <span class="d-flex align-items-center gap-3">
+                                @if($cat->image)
+                                    <img src="{{ $cat->image }}" class="rounded-circle bg-light border" width="35" height="35" style="object-fit:cover;">
+                                @else
+                                    <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center text-primary" style="width: 35px; height: 35px;">
+                                        <i class="bi bi-grid small"></i>
+                                    </div>
+                                @endif
+                                <span class="fw-medium">{{ $cat->name }}</span>
+                            </span>
+                            <i class="bi bi-chevron-right text-muted small"></i>
+                        </a>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
+            
+            <div class="p-3 border-top mt-auto">
+                <a href="{{ route('orders.track') }}" class="btn btn-light w-100 fw-bold mb-2"><i class="bi bi-truck me-2"></i>Track Order</a>
+                @auth
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-danger w-100 fw-bold"><i class="bi bi-box-arrow-right me-2"></i>Log Out</button>
+                    </form>
+                @else
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('login') }}" class="btn btn-outline-primary w-50 fw-bold">Log In</a>
+                        <a href="{{ route('register') }}" class="btn btn-primary w-50 fw-bold">Sign Up</a>
+                    </div>
+                @endauth
+            </div>
         </div>
     </div>
 
