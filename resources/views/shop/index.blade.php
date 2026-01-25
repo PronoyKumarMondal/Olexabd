@@ -225,7 +225,7 @@
                                         <form action="{{ route('cart.add') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <button type="submit" class="btn btn-outline-primary w-100 rounded-pill btn-sm fw-bold ps-0 pe-0" title="Add to Cart">
+                                            <button type="submit" class="btn btn-outline-primary rounded-pill fw-bold btn-equal" title="Add to Cart">
                                                 Add
                                             </button>
                                         </form>
@@ -235,7 +235,7 @@
                                             @csrf
                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
                                             <input type="hidden" name="buy_now" value="1">
-                                            <button type="submit" class="btn btn-primary w-100 rounded-pill btn-sm fw-bold ps-0 pe-0">
+                                            <button type="submit" class="btn btn-primary rounded-pill fw-bold btn-equal">
                                                 Buy
                                             </button>
                                         </form>
