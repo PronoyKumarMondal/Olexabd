@@ -68,7 +68,7 @@
                                     <form action="{{ route('cart.add') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <button type="submit" class="btn btn-outline-primary w-100 rounded-pill btn-sm fw-bold ps-0 pe-0 d-flex align-items-center justify-content-center" style="height: 32px;" title="Add to Cart">
+                                        <button type="submit" class="btn btn-outline-primary rounded-pill fw-bold btn-equal" title="Add to Cart">
                                             Add
                                         </button>
                                     </form>
@@ -78,7 +78,7 @@
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <input type="hidden" name="buy_now" value="1">
-                                        <button type="submit" class="btn btn-primary w-100 rounded-pill btn-sm fw-bold ps-0 pe-0 d-flex align-items-center justify-content-center" style="height: 32px;">
+                                        <button type="submit" class="btn btn-primary rounded-pill fw-bold btn-equal">
                                             Buy
                                         </button>
                                     </form>
@@ -109,5 +109,16 @@
     .object-fit-cover { object-fit: cover; }
     .transition-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
     .transition-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
+    .btn-equal {
+        height: 36px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        border-width: 1px !important;
+        border-style: solid !important;
+        font-size: 0.85rem !important;
+    }
 </style>
 @endsection
