@@ -51,16 +51,22 @@
     @endif
     <!-- End Meta Pixel Code -->
 
-    <style>
         :root {
-            --primary-color: #4f46e5;
-            --secondary-color: #1e1b4b;
-            --accent-color: #f59e0b;
+            --primary-color: #0096c7; /* Ocean Blue */
+            --secondary-color: #023e8a; /* Deep Ocean */
+            --accent-color: #ffb703; /* Sun Gold */
         }
-        body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; color: #334155; }
+        body { font-family: 'Outfit', sans-serif; background-color: #f0f9ff; color: #334155; }
         
+        /* Bootstrap Overrides for Consistency */
+        .text-primary { color: var(--primary-color) !important; }
+        .bg-primary { background-color: var(--primary-color) !important; }
+        .border-primary { border-color: var(--primary-color) !important; }
+        .btn-outline-primary { color: var(--primary-color); border-color: var(--primary-color); }
+        .btn-outline-primary:hover { background-color: var(--primary-color); border-color: var(--primary-color); color: white; }
+
         /* Navbar */
-        .navbar { background: white; padding: 0.75rem 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .navbar { background: white; padding: 0.75rem 0; box-shadow: 0 4px 6px -1px rgba(0, 150, 199, 0.1); }
         .navbar-brand { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; color: var(--secondary-color) !important; }
 
         /* Global Layout */
@@ -75,24 +81,24 @@
             .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
         }
         .search-group { position: relative; max-width: 500px; width: 100%; }
-        .search-input { padding-right: 50px; border-radius: 50px; border: 1px solid #e2e8f0; background: #f8fafc; padding-left: 1.5rem; }
+        .search-input { padding-right: 50px; border-radius: 50px; border: 1px solid #bae6fd; background: #f0f9ff; padding-left: 1.5rem; }
         .search-input:focus { box-shadow: none; border-color: var(--primary-color); background: white; }
         .search-btn { position: absolute; right: 5px; top: 5px; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; background: var(--primary-color); color: white; border: none; }
-        .nav-icon-btn { position: relative; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--secondary-color); background: #f1f5f9; transition: all 0.2s; }
-        .nav-icon-btn:hover { background: #e2e8f0; color: var(--primary-color); }
+        .nav-icon-btn { position: relative; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--secondary-color); background: #e0f2fe; transition: all 0.2s; }
+        .nav-icon-btn:hover { background: #bae6fd; color: var(--primary-color); }
         .cart-badge { position: absolute; top: -2px; right: -2px; background: var(--accent-color); color: white; font-size: 0.7rem; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid white; }
 
         /* Footer */
-        footer { background: #0f172a; color: #94a3b8; padding-top: 4rem; padding-bottom: 2rem; }
+        footer { background: #0c4a6e; color: #bae6fd; padding-top: 4rem; padding-bottom: 2rem; }
         .footer-heading { color: white; font-weight: 700; margin-bottom: 1.5rem; }
-        .footer-link { color: #94a3b8; text-decoration: none; display: block; margin-bottom: 0.75rem; transition: color 0.2s; }
+        .footer-link { color: #bae6fd; text-decoration: none; display: block; margin-bottom: 0.75rem; transition: color 0.2s; }
         .footer-link:hover { color: white; }
         .social-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: white; transition: all 0.2s; }
         .social-btn:hover { background: var(--primary-color); transform: translateY(-3px); }
         
         /* Utils */
         .btn-primary { background-color: var(--primary-color); border: none; padding: 0.6rem 1.5rem; font-weight: 600; }
-        .btn-primary:hover { background-color: #4338ca; }
+        .btn-primary:hover { background-color: #023e8a; }
         
         /* Global Product Card Button Standardization */
         .btn-equal {
@@ -285,7 +291,7 @@
     </main>
 
     <!-- Mobile Bottom Nav -->
-    <nav class="navbar navbar-dark fixed-bottom d-lg-none pb-safe border-top border-white border-opacity-10" style="background-color: rgba(30, 27, 75, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+    <nav class="navbar navbar-dark fixed-bottom d-lg-none pb-safe border-top border-white border-opacity-10" style="background-color: rgba(2, 62, 138, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
         <div class="container-fluid d-flex justify-content-around">
             <a href="{{ route('shop.index') }}" class="nav-link text-center {{ request()->routeIs('shop.index') ? 'text-white' : 'text-white-50' }}">
                 <i class="bi bi-house-door fs-4 d-block mb-1"></i>
