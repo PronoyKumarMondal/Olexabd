@@ -112,12 +112,18 @@
     <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
         <div class="container gap-3">
             <!-- 1. Logo -->
-            <a class="navbar-brand d-flex align-items-center me-auto" href="{{ route('shop.index') }}">
+            <a class="navbar-brand d-flex align-items-center me-auto me-lg-0" href="{{ route('shop.index') }}">
                 <div class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
                     <i class="bi bi-box-seam-fill fs-5"></i>
                 </div>
                 Olexa<span class="text-primary">BD</span>
             </a>
+
+            <!-- Desktop Category Toggle -->
+            <button class="btn btn-light rounded-pill border d-none d-lg-flex align-items-center gap-2 px-3 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                <i class="bi bi-grid-fill text-primary"></i>
+                <span class="fw-bold small">Categories</span>
+            </button>
 
             <!-- Mobile Menu Toggle (Hamburger) -->
             <div class="d-lg-none">
@@ -128,7 +134,6 @@
 
             <!-- Desktop View: Search and Menu -->
             <div class="collapse navbar-collapse" id="navbarContent">
-                <!-- 2. Search Bar (Center) -->
                 <!-- 2. Search Bar (Center) -->
                 <form action="{{ route('shop.search') }}" method="GET" class="mx-lg-auto my-3 my-lg-0 search-group">
                     <input type="text" name="query" class="form-control form-control-lg search-input" placeholder="Search for appliances..." value="{{ request('query') }}">
@@ -188,14 +193,14 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body p-0">
-            <!-- Mobile Search -->
-             <div class="p-3 bg-light border-bottom">
+            <!-- Mobile Search (Hidden on Desktop) -->
+             <div class="p-3 bg-light border-bottom d-lg-none">
                 <form action="{{ route('shop.search') }}" method="GET" class="search-group w-100">
                     <input type="text" name="query" class="form-control rounded-pill border-0 shadow-sm" placeholder="Search products..." value="{{ request('query') }}">
                 </form>
             </div>
 
-            <!-- Mobile Category List -->
+            <!-- Category List -->
             <div class="p-3">
                 <h6 class="text-uppercase text-muted small fw-bold mb-3 ls-1">Categories</h6>
                 <div class="list-group list-group-flush">
@@ -219,7 +224,8 @@
                 </div>
             </div>
             
-            <div class="p-3 border-top mt-auto">
+            <!-- Bottom Actions (Hidden on Desktop) -->
+            <div class="p-3 border-top mt-auto d-lg-none">
                 <a href="{{ route('orders.track') }}" class="btn btn-light w-100 fw-bold mb-2"><i class="bi bi-truck me-2"></i>Track Order</a>
                 @auth
                     <form method="POST" action="{{ route('logout') }}">
