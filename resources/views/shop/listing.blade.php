@@ -45,48 +45,7 @@
             <div class="row g-4 mb-5">
                 @foreach($products as $product)
                 <div class="col-md-3 col-6">
-                    <div class="card h-100 border-0 shadow-sm transition-hover">
-                        <div class="position-relative bg-white rounded-top" style="height: 220px;">
-                            @if($product->image)
-                                <img src="{{ $product->image }}" class="w-100 h-100 object-fit-cover" alt="{{ $product->name }}">
-                            @else
-                                <div class="d-flex align-items-center justify-content-center h-100 text-muted bg-light">
-                                    <i class="bi bi-box fs-1 opacity-25"></i>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <small class="text-muted mb-1">{{ $product->category->name ?? 'Product' }}</small>
-                            <h6 class="fw-bold mb-3 text-truncate">{{ $product->name }}</h6>
-                            
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="fs-5 fw-bold text-primary">৳{{ $product->price }}</span>
-                            </div>
-
-                            <div class="row g-2 mt-auto position-relative" style="z-index: 2;">
-                                <div class="col-6">
-                                    <form action="{{ route('cart.add') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <button type="submit" class="btn btn-outline-primary rounded-pill fw-bold btn-equal" title="Add to Cart">
-                                            <i class="bi bi-cart-plus me-1"></i> Add
-                                        </button>
-                                    </form>
-                                </div>
-                                <div class="col-6">
-                                    <form action="{{ route('cart.add') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <input type="hidden" name="buy_now" value="1">
-                                        <button type="submit" class="btn btn-primary rounded-pill fw-bold btn-equal">
-                                            Buy
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="{{ route('shop.show', $product->slug) }}" class="stretched-link"></a>
-                    </div>
+                    @include('partials.product-card', ['product' => $product])
                 </div>
                 @endforeach
             </div>
@@ -109,16 +68,5 @@
     .object-fit-cover { object-fit: cover; }
     .transition-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
     .transition-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
-    .btn-equal {
-        height: 36px !important;
-        padding: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-        border-width: 1px !important;
-        border-style: solid !important;
-        font-size: 0.85rem !important;
-    }
 </style>
 @endsection

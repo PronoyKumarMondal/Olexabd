@@ -93,6 +93,19 @@
         /* Utils */
         .btn-primary { background-color: var(--primary-color); border: none; padding: 0.6rem 1.5rem; font-weight: 600; }
         .btn-primary:hover { background-color: #4338ca; }
+        
+        /* Global Product Card Button Standardization */
+        .btn-equal {
+            height: 36px !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            border-width: 1px !important;
+            border-style: solid !important;
+            font-size: 0.85rem !important;
+        }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
