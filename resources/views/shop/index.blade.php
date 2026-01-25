@@ -98,155 +98,138 @@
 </div>
 @endif
 
-<!-- Categories Section -->
+<!-- Main Content Layout (Sidebar + Products) -->
 <div class="container mb-5">
-    <h4 class="fw-bold mb-4">Shop by Category</h4>
-    <div class="row g-3">
-        @foreach($categories as $category)
-        <div class="col-6 col-md-4 col-lg-2">
-            <a href="{{ route('shop.category', $category) }}" class="card h-100 border-0 shadow-sm text-decoration-none transition-hover text-center py-4 bg-white align-items-center">
-                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mb-3 text-primary" style="width: 60px; height: 60px;">
-                    @if($category->image)
-                        <img src="{{ $category->image }}" class="rounded-circle" width="60" height="60" style="object-fit:cover;">
-                    @else
-                        <i class="bi bi-grid fs-3"></i>
-                    @endif
-                </div>
-                <h6 class="text-dark fw-bold mb-1">{{ $category->name }}</h6>
-                <small class="text-muted">{{ $category->products_count }} Items</small>
-            </a>
-        </div>
-        @endforeach
-    </div>
-</div>
-
-<!-- Featured Products -->
-<div id="featured" class="container mb-5">
-    <div class="d-flex justify-content-between align-items-end mb-4">
-        <div>
-            <span class="text-primary fw-bold text-uppercase small ls-1">Recommended</span>
-            <h3 class="fw-bold mb-0">Featured Products</h3>
-        </div>
-        <a href="{{ route('shop.featured') }}" class="btn btn-outline-dark rounded-pill btn-sm px-3">View All</a>
-    </div>
-
     <div class="row g-4">
-        @foreach($featuredProducts as $product)
-        <div class="col-md-3 col-6">
-            <div class="card h-100 border-0 shadow-sm product-card">
-                <div class="position-relative overflow-hidden bg-light rounded-top-3" style="height: 240px;">
-                    <span class="badge bg-danger position-absolute top-0 start-0 m-3 shadow-sm rounded-pill px-3">Hot</span>
-                    @if($product->image)
-                        <img src="{{ $product->image }}" class="w-100 h-100 object-fit-cover transition-transform" alt="{{ $product->name }}">
-                    @else
-                        <div class="d-flex align-items-center justify-content-center h-100 text-muted">
-                            <i class="bi bi-image fs-1 opacity-50"></i>
-                        </div>
-                    @endif
-                </div>
-                <div class="card-body d-flex flex-column">
-                    <div class="small text-muted mb-1">{{ $product->category->name ?? 'Appliance' }}</div>
-                    <h6 class="card-title fw-bold text-truncate mb-2">{{ $product->name }}</h6>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="text-primary fw-bold mb-0">৳{{ $product->price }}</h5>
-                        <div class="text-warning small">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                        </div>
+        <!-- Sidebar (Desktop Only) -->
+        <div class="col-lg-3 d-none d-lg-block">
+            <div class="sticky-top" style="top: 80px; z-index: 10;">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="fw-bold mb-0"><i class="bi bi-grid-fill text-primary me-2"></i>Categories</h5>
                     </div>
-                    
-                    <div class="d-flex gap-2 mt-auto position-relative" style="z-index: 2;">
-                        <form action="{{ route('cart.add') }}" method="POST" class="w-100">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <button class="btn btn-outline-primary w-100 rounded-pill btn-sm fw-bold" title="Add to Cart">
-                                <i class="bi bi-cart-plus"></i> Add
-                            </button>
-                        </form>
-                        <form action="{{ route('cart.add') }}" method="POST" class="w-100">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <input type="hidden" name="buy_now" value="1">
-                            <button class="btn btn-primary w-100 rounded-pill btn-sm fw-bold" title="Buy Now">
-                                Buy
-                            </button>
-                        </form>
-                    </div>
-                    <a href="{{ route('shop.show', $product->slug) }}" class="stretched-link"></a>
-                </div>
-            </div>
-        </div>
-        @endforeach
-    </div>
-</div>
-
-<!-- All Products Section -->
-<div id="all-products" class="bg-white py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">All Products</h2>
-            <p class="text-muted">Browse our complete collection of home essentials.</p>
-        </div>
-
-        <div class="row g-4 mb-5">
-            @foreach($products as $product)
-            <div class="col-md-3 col-6">
-                <div class="card h-100 border border-light shadow-hover transition-all">
-                    <div class="position-relative bg-light rounded-top" style="height: 200px;">
-                        @if($product->image)
-                            <img src="{{ $product->image }}" class="w-100 h-100 object-fit-cover" alt="{{ $product->name }}">
-                        @else
-                            <div class="d-flex align-items-center justify-content-center h-100 text-muted">
-                                <i class="bi bi-box fs-1 opacity-25"></i>
+                    <div class="list-group list-group-flush">
+                        @foreach($globalCategories as $cat)
+                        <a href="{{ route('shop.category', $cat->slug) }}" class="list-group-item list-group-item-action py-3 d-flex align-items-center justify-content-between border-bottom-0">
+                            <div class="d-flex align-items-center gap-3">
+                                @if($cat->image)
+                                    <img src="{{ $cat->image }}" class="rounded-circle bg-light" width="30" height="30" style="object-fit:cover;">
+                                @else
+                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-primary" style="width: 30px; height: 30px;">
+                                        <i class="bi bi-grid small"></i>
+                                    </div>
+                                @endif
+                                <span class="fw-semibold text-dark">{{ $cat->name }}</span>
                             </div>
-                        @endif
+                            <i class="bi bi-chevron-right text-muted small"></i>
+                        </a>
+                        @endforeach
                     </div>
-                    <div class="card-body d-flex flex-column">
-                        <small class="text-muted mb-1">{{ $product->category->name ?? 'General' }}</small>
-                        <h6 class="fw-bold mb-3 text-truncate">{{ $product->name }}</h6>
-                        
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="fs-5 fw-bold text-dark">৳{{ $product->price }}</span>
-                        </div>
-                        
-                        <div class="d-flex gap-2 mt-auto position-relative" style="z-index: 2;">
-                            <form action="{{ route('cart.add') }}" method="POST" class="w-100">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <button type="submit" class="btn btn-outline-primary w-100 rounded-pill btn-sm fw-bold" title="Add to Cart">
-                                    <i class="bi bi-cart-plus"></i> Add
-                                </button>
-                            </form>
-                            <form action="{{ route('cart.add') }}" method="POST" class="w-100">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <input type="hidden" name="buy_now" value="1">
-                                <button type="submit" class="btn btn-primary w-100 rounded-pill btn-sm fw-bold">
-                                    Buy
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                     <a href="{{ route('shop.show', $product->slug) }}" class="stretched-link"></a>
                 </div>
             </div>
-            @endforeach
+        </div>
 
-            <!-- View All Card (12th Slot) -->
-            <div class="col-md-3 col-6">
-                <a href="{{ route('shop.products') }}" class="card h-100 border-0 shadow-sm bg-primary text-white text-decoration-none d-flex align-items-center justify-content-center text-center transition-hover">
-                    <div class="p-4">
-                        <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
-                            <i class="bi bi-arrow-right fs-3 text-white"></i>
-                        </div>
-                        <h5 class="fw-bold mb-1">View All</h5>
-                        <p class="small opacity-75 mb-0">Browse full catalog</p>
+        <!-- Main Content (Products) -->
+        <div class="col-lg-9">
+            
+            <!-- Featured Products -->
+            <div id="featured" class="mb-5">
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <div>
+                        <span class="text-primary fw-bold text-uppercase small ls-1">Recommended</span>
+                        <h3 class="fw-bold mb-0">Featured Products</h3>
                     </div>
-                </a>
+                    <a href="{{ route('shop.featured') }}" class="btn btn-outline-dark rounded-pill btn-sm px-3">View All</a>
+                </div>
+
+                <div class="row g-3">
+                    @foreach($featuredProducts as $product)
+                    <div class="col-md-4 col-6">
+                        <div class="card h-100 border-0 shadow-sm product-card">
+                            <div class="position-relative overflow-hidden bg-light rounded-top-3" style="height: 220px;">
+                                <span class="badge bg-danger position-absolute top-0 start-0 m-3 shadow-sm rounded-pill px-3">Hot</span>
+                                @if($product->image)
+                                    <img src="{{ $product->image }}" class="w-100 h-100 object-fit-cover transition-transform" alt="{{ $product->name }}">
+                                @else
+                                    <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                        <i class="bi bi-image fs-1 opacity-50"></i>
+                                    </div>
+                                @endif
+                                <!-- Quick Actions Overlay -->
+                                <div class="position-absolute bottom-0 start-0 w-100 p-2 bg-dark bg-opacity-10 backdrop-blur d-flex gap-2 hover-visible opacity-0 transition-opacity">
+                                    <form action="{{ route('cart.add') }}" method="POST" class="w-100">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <button class="btn btn-light w-100 rounded-pill btn-sm fw-bold text-primary shadow-sm" title="Add to Cart">
+                                            <i class="bi bi-cart-plus"></i> Add
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="card-body p-3 d-flex flex-column">
+                                <div class="small text-muted mb-1">{{ $product->category->name ?? 'Appliance' }}</div>
+                                <h6 class="card-title fw-bold text-truncate mb-2" style="font-size: 0.95rem;">{{ $product->name }}</h6>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <h5 class="text-primary fw-bold mb-0 fs-6">৳{{ $product->price }}</h5>
+                                    <a href="{{ route('shop.show', $product->slug) }}" class="btn btn-sm btn-primary rounded-circle" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <a href="{{ route('shop.show', $product->slug) }}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
+
+            <!-- All Products -->
+            <div id="all-products" class="mb-5">
+                <div class="text-start mb-4">
+                    <h3 class="fw-bold">All Products</h3>
+                    <p class="text-muted small">Latest additions to our collection.</p>
+                </div>
+
+                <div class="row g-3">
+                    @foreach($products as $product)
+                    <div class="col-md-4 col-6">
+                        <div class="card h-100 border border-light shadow-hover transition-all product-card">
+                            <div class="position-relative bg-light rounded-top" style="height: 200px;">
+                                @if($product->image)
+                                    <img src="{{ $product->image }}" class="w-100 h-100 object-fit-cover transition-transform" alt="{{ $product->name }}">
+                                @endif
+                            </div>
+                            <div class="card-body p-3 d-flex flex-column">
+                                <small class="text-muted mb-1">{{ $product->category->name ?? 'General' }}</small>
+                                <h6 class="fw-bold mb-2 text-truncate" style="font-size: 0.95rem;">{{ $product->name }}</h6>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <span class="fw-bold text-dark">৳{{ $product->price }}</span>
+                                    <form action="{{ route('cart.add') }}" method="POST" class="position-relative" style="z-index: 5;">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <button class="btn btn-outline-primary rounded-circle btn-sm" style="width: 32px; height: 32px;"><i class="bi bi-cart-plus"></i></button>
+                                    </form>
+                                 </div>
+                            </div>
+                            <a href="{{ route('shop.show', $product->slug) }}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                    @endforeach
+                    
+                    <!-- View All Card -->
+                    <div class="col-md-4 col-6">
+                        <a href="{{ route('shop.products') }}" class="card h-100 border-0 shadow-sm bg-primary text-white text-decoration-none d-flex align-items-center justify-content-center text-center transition-hover">
+                            <div class="p-4">
+                                <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-arrow-right fs-4 text-white"></i>
+                                </div>
+                                <h6 class="fw-bold mb-0">View All Products</h6>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
