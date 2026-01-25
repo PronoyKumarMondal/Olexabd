@@ -69,7 +69,7 @@
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <button type="submit" class="btn btn-outline-primary rounded-pill fw-bold btn-equal" title="Add to Cart">
-                                            Add
+                                            <i class="bi bi-cart-plus me-1"></i> Add
                                         </button>
                                     </form>
                                 </div>
