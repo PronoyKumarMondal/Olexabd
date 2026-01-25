@@ -51,6 +51,7 @@
     @endif
     <!-- End Meta Pixel Code -->
 
+    <style>
         :root {
             --primary-color: #0096c7; /* Ocean Blue */
             --secondary-color: #023e8a; /* Deep Ocean */
