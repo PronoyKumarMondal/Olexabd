@@ -83,11 +83,16 @@ class LocationsSeeder extends Seeder
         // 5. Postcodes
         $postcodes = json_decode(File::get('D:/Personal/Ecommerce appliance/Location json/bd-postcodes.json'), true)['postcodes'];
         foreach ($postcodes as $pc) {
+            // Validate keys exist
+            if (!isset($pc['division_id']) || !isset($pc['district_id']) || !isset($pc['postCode'])) {
+                continue; // Skip invalid entries
+            }
+
             DB::table('postcodes')->insertOrIgnore([
                 'division_id' => $pc['division_id'],
                 'district_id' => $pc['district_id'],
-                'upazila' => $pc['upazila'], // Storing Name
-                'postOffice' => $pc['postOffice'],
+                'upazila' => $pc['upazila'] ?? '', // Default to empty string if missing
+                'postOffice' => $pc['postOffice'] ?? '',
                 'postCode' => $pc['postCode'],
                 'created_at' => now(),
                 'updated_at' => now(),

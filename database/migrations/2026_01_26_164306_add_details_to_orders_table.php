@@ -12,12 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->foreignId('delivery_division_id')->nullable()->constrained('divisions');
-            $table->foreignId('delivery_district_id')->nullable()->constrained('districts');
-            $table->foreignId('delivery_upazila_id')->nullable()->constrained('upazilas');
-            $table->string('delivery_postcode')->nullable();
-            $table->text('delivery_address')->nullable(); // Detailed address (Road, House, etc.)
-            $table->string('delivery_phone')->nullable();
+            if (!Schema::hasColumn('orders', 'delivery_division_id')) {
+                $table->foreignId('delivery_division_id')->nullable()->constrained('divisions');
+            }
+            if (!Schema::hasColumn('orders', 'delivery_district_id')) {
+                $table->foreignId('delivery_district_id')->nullable()->constrained('districts');
+            }
+            if (!Schema::hasColumn('orders', 'delivery_upazila_id')) {
+                $table->foreignId('delivery_upazila_id')->nullable()->constrained('upazilas');
+            }
+            if (!Schema::hasColumn('orders', 'delivery_postcode')) {
+                $table->string('delivery_postcode')->nullable();
+            }
+            if (!Schema::hasColumn('orders', 'delivery_address')) {
+                $table->text('delivery_address')->nullable();
+            }
+            if (!Schema::hasColumn('orders', 'delivery_phone')) {
+                $table->string('delivery_phone')->nullable();
+            }
         });
     }
 
