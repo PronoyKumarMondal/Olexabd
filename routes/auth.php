@@ -35,18 +35,20 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
+Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
+
+
+
+Route::get('verify-email', EmailVerificationPromptController::class)
+    ->name('verification.notice');
+
+Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+    ->middleware('throttle:1,5') // 1 attempt per 5 minutes
+    ->name('verification.send');
+
 Route::middleware('auth')->group(function () {
-    Route::get('verify-email', EmailVerificationPromptController::class)
-        ->name('verification.notice');
-
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
-
-    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-        ->middleware('throttle:1,5') // 1 attempt per 5 minutes
-        ->name('verification.send');
-
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
         ->name('password.confirm');
 
