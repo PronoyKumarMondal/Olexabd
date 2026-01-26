@@ -111,6 +111,19 @@ Route::group([], function () {
     Route::get('/api/locations/upazilas/{district_id}', [\App\Http\Controllers\LocationsController::class, 'getUpazilas']);
     Route::get('/api/locations/postcode/{upazila_id}', [\App\Http\Controllers\LocationsController::class, 'getPostcode']);
 
+    // Debug SMTP
+    Route::get('/test/email', function() {
+        try {
+            \Illuminate\Support\Facades\Mail::raw('SMTP Test Success!', function($msg) {
+                $msg->to('office.pronoy@gmail.com')
+                    ->subject('Test Email');
+            });
+            return 'Email Sent Successfully!';
+        } catch (\Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
+    });
+
     // Google Auth Routes
     Route::get('/auth/google', [\App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\SocialAuthController::class, 'handleGoogleCallback']);

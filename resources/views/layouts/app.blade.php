@@ -116,6 +116,13 @@
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
+    @if(Auth::check() && !Auth::user()->hasVerifiedEmail())
+        <div class="bg-warning text-dark text-center py-2 fw-bold">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            Your email address is not verified. 
+            <a href="{{ route('verification.notice') }}" class="text-dark text-decoration-underline">Click here to verify</a>
+        </div>
+    @endif
     <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
         <div class="container gap-3">
             <!-- 1. Logo -->
