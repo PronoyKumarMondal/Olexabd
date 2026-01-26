@@ -17,32 +17,31 @@
                             <!-- Name & Phone -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Full Name</label>
+                                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
                                     <input type="text" name="name" class="form-control" value="{{ auth()->user()->name }}" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Phone Number</label>
+                                    <label class="form-label">Phone Number <span class="text-danger">*</span></label>
                                     <input type="tel" name="phone" class="form-control" placeholder="01XXXXXXXXX" pattern="(01)[0-9]{9}" required>
                                 </div>
                             </div>
                             
                             <!-- Location Dropdowns -->
-                            <!-- Location Dropdowns -->
                             <div class="row g-3 mb-3"> <!-- Added g-3 for consistent gap -->
                                 <div class="col-12 col-md-4"> <!-- Ensure full width on mobile -->
-                                    <label class="form-label">Division</label>
+                                    <label class="form-label">Division <span class="text-danger">*</span></label>
                                     <select name="division" id="division" class="form-select w-100" required onchange="loadDistricts()">
                                         <option value="">Select Division</option>
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <label class="form-label">District</label>
+                                    <label class="form-label">District <span class="text-danger">*</span></label>
                                     <select name="district" id="district" class="form-select w-100" required disabled onchange="loadUpazilas()">
                                         <option value="">Select District</option>
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <label class="form-label">Upazila / Area</label>
+                                    <label class="form-label">Upazila / Area <span class="text-danger">*</span></label>
                                     <select name="upazila" id="upazila" class="form-select w-100" required disabled onchange="calculateShipping()">
                                         <option value="">Select Area</option>
                                     </select>
@@ -51,12 +50,12 @@
 
                             <!-- Postcode & Detailed Address -->
                              <div class="mb-3">
-                                <label class="form-label">Post Code</label>
+                                <label class="form-label">Post Code <span class="text-danger">*</span></label>
                                 <input type="text" name="postcode" class="form-control" placeholder="e.g. 1230" required>
                              </div>
 
                             <div class="mb-4">
-                                <label class="form-label">Detailed Address</label>
+                                <label class="form-label">Detailed Address <span class="text-danger">*</span></label>
                                 <textarea name="address" class="form-control" rows="3" placeholder="House #, Road #, Block/Sector, Ward No, etc." required></textarea>
                             </div>
 
