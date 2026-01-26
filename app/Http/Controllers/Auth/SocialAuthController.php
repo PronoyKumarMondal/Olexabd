@@ -22,9 +22,9 @@ class SocialAuthController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')->stateless()->user();
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Google Login Failed');
+            return redirect()->route('login')->with('error', 'Google Login Failed: ' . $e->getMessage());
         }
 
         // Check if user exists
