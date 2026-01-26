@@ -274,6 +274,12 @@
                 <i class="bi bi-search"></i> Search History
             </a>
             @endif
+            
+            @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('manage_settings'))
+            <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
+                <i class="bi bi-gear-fill"></i> Delivery Settings
+            </a>
+            @endif
 
             @if(Auth::guard('admin')->user()->isSuperAdmin())
                 <div class="sidebar-heading mt-3">Administration</div>
