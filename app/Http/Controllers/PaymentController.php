@@ -43,21 +43,26 @@ class PaymentController extends Controller
         
         $hasFreeDelivery = false;
         
-        // Check for Free Delivery Items (Product or Category level)
-        // Optimization: Use whereIn to fetch all product rules at once if needed, 
-        // but since we loop cart later, we can do it here or optimizing.
-        // Let's optimize by fetching product details with categories.
-        $productIds = array_keys($cart);
-        $products = \App\Models\Product::whereIn('id', $productIds)->with('category')->get();
-        
-        foreach($products as $product) {
-            if ($product->is_free_delivery) {
-                $hasFreeDelivery = true;
-                break;
-            }
-            if ($product->category && $product->category->is_free_delivery) {
-                $hasFreeDelivery = true;
-                break;
+        // Check Global Free Delivery Rules
+        if (\App\Models\Setting::get('free_delivery_all')) {
+            $hasFreeDelivery = true;
+        }
+
+        $minOrderFree = \App\Models\Setting::get('free_delivery_over');
+        if ($minOrderFree && $subtotal >= $minOrderFree) {
+             $hasFreeDelivery = true;
+        }
+
+        if (!$hasFreeDelivery) {
+            foreach($products as $product) {
+                if ($product->is_free_delivery) {
+                    $hasFreeDelivery = true;
+                    break;
+                }
+                if ($product->category && $product->category->is_free_delivery) {
+                    $hasFreeDelivery = true;
+                    break;
+                }
             }
         }
         

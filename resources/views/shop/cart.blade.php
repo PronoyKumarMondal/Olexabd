@@ -114,13 +114,27 @@
                                     $insideCharge = \App\Models\Setting::get('delivery_charge_inside_dhaka', 60);
                                     $outsideCharge = \App\Models\Setting::get('delivery_charge_outside_dhaka', 120);
                                     
-                                    // Check Free Delivery in View for Display
+                                    // Check Rules
                                     $hasFree = false;
-                                    $productIds = array_keys(session('cart'));
-                                    $products = \App\Models\Product::whereIn('id', $productIds)->with('category')->get();
-                                    foreach($products as $p) {
-                                        if($p->is_free_delivery || ($p->category && $p->category->is_free_delivery)) {
-                                            $hasFree = true; break;
+                                    
+                                    // 1. Global Free
+                                    if(\App\Models\Setting::get('free_delivery_all')) $hasFree = true;
+                                    
+                                    // 2. Min Order
+                                    $minOrder = \App\Models\Setting::get('free_delivery_over');
+                                    // Recalculate subtotal here just to be safe or use variable if available. 
+                                    // $total variable passed to view is actually subtotal in CartController loop but discounted later? Use View's $total + coupon amount to get true subtotal?
+                                    // Cart View loop calculates $total.
+                                    if(!$hasFree && $minOrder && $total >= $minOrder) $hasFree = true;
+
+                                    // 3. Product Rules
+                                    if(!$hasFree) {
+                                        $productIds = array_keys(session('cart'));
+                                        $products = \App\Models\Product::whereIn('id', $productIds)->with('category')->get();
+                                        foreach($products as $p) {
+                                            if($p->is_free_delivery || ($p->category && $p->category->is_free_delivery)) {
+                                                $hasFree = true; break;
+                                            }
                                         }
                                     }
                                 @endphp
