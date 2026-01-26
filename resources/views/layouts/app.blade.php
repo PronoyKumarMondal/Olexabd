@@ -182,8 +182,8 @@
                         </div>
                     @endauth
                     @guest
-                        <a href="{{ route('login') }}" class="btn btn-outline-primary rounded-pill px-4">Log In</a>
-                        <a href="{{ route('register') }}" class="btn btn-primary rounded-pill px-4">Sign Up</a>
+                        <a href="{{ route('login') }}" class="btn btn-primary rounded-pill px-4">Log In</a>
+                        <!-- <a href="{{ route('register') }}" class="btn btn-primary rounded-pill px-4">Sign Up</a> -->
                     @endguest
                 </div>
             </div>
