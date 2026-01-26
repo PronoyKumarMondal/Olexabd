@@ -27,22 +27,23 @@
                             </div>
                             
                             <!-- Location Dropdowns -->
-                            <div class="row mb-3">
-                                <div class="col-md-4">
+                            <!-- Location Dropdowns -->
+                            <div class="row g-3 mb-3"> <!-- Added g-3 for consistent gap -->
+                                <div class="col-12 col-md-4"> <!-- Ensure full width on mobile -->
                                     <label class="form-label">Division</label>
-                                    <select name="division" id="division" class="form-select" required onchange="loadDistricts()">
+                                    <select name="division" id="division" class="form-select w-100" required onchange="loadDistricts()">
                                         <option value="">Select Division</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-12 col-md-4">
                                     <label class="form-label">District</label>
-                                    <select name="district" id="district" class="form-select" required disabled onchange="loadUpazilas()">
+                                    <select name="district" id="district" class="form-select w-100" required disabled onchange="loadUpazilas()">
                                         <option value="">Select District</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-12 col-md-4">
                                     <label class="form-label">Upazila / Area</label>
-                                    <select name="upazila" id="upazila" class="form-select" required disabled onchange="calculateShipping()">
+                                    <select name="upazila" id="upazila" class="form-select w-100" required disabled onchange="calculateShipping()">
                                         <option value="">Select Area</option>
                                     </select>
                                 </div>
@@ -214,11 +215,26 @@
         const totalDisplay = document.getElementById('final-total');
         const infoBox = document.getElementById('shipping-info-box');
         const infoText = document.getElementById('shipping-info-text');
+        const postcodeField = document.querySelector('input[name="postcode"]');
         
         // Check selection
         const upSelect = document.getElementById('upazila');
         const selectedOption = upSelect.options[upSelect.selectedIndex];
         
+        // --- Auto Fill Postcode ---
+        if (selectedOption && selectedOption.value) {
+             fetch('/api/locations/postcode/' + selectedOption.value)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.postCode) {
+                        postcodeField.value = data.postCode; 
+                        // Flash effect to show it updated
+                        postcodeField.classList.add('bg-light');
+                        setTimeout(() => postcodeField.classList.remove('bg-light'), 500);
+                    }
+                });
+        }
+
         if (isFreeShipping) {
              display.innerText = "Free";
              display.classList.add('text-success');

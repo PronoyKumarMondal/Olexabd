@@ -109,6 +109,7 @@ Route::group([], function () {
     Route::get('/api/locations/divisions', [\App\Http\Controllers\LocationsController::class, 'getDivisions']);
     Route::get('/api/locations/districts/{division_id}', [\App\Http\Controllers\LocationsController::class, 'getDistricts']);
     Route::get('/api/locations/upazilas/{district_id}', [\App\Http\Controllers\LocationsController::class, 'getUpazilas']);
+    Route::get('/api/locations/postcode/{upazila_id}', [\App\Http\Controllers\LocationsController::class, 'getPostcode']);
 
     Route::middleware('auth')->group(function() {
         // Checkout Routes
