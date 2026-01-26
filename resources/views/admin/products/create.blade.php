@@ -114,13 +114,17 @@
             </div>
 
             <div class="mb-4 d-flex gap-4">
-                <div class="form-check">
-                    <input type="checkbox" name="is_active" class="form-check-input" id="activeCheck" checked value="1">
-                    <label class="form-check-label" for="activeCheck">Active</label>
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" name="is_featured" id="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="is_featured">Featured Product</label>
                 </div>
-                <div class="form-check">
-                    <input type="checkbox" name="is_featured" class="form-check-input" id="featCheck" value="1">
-                    <label class="form-check-label" for="featCheck">Featured</label>
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', 1) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="is_active">Active (Visible)</label>
+                </div>
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" name="is_free_delivery" id="is_free_delivery" value="1" {{ old('is_free_delivery') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="is_free_delivery">Free Delivery</label>
                 </div>
             </div>
 

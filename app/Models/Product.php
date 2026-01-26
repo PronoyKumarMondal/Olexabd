@@ -13,8 +13,8 @@ class Product extends Model
     protected $fillable = [
         'category_id', 'name', 'slug', 'description', 'price', 'stock', 
         'image', 'is_active', 'is_featured', 'specifications', 'code',
-        'discount_price', 'discount_start', 'discount_end'
-    ];
+        'discount_price', 'discount_percentage', 'is_active', 'is_featured', 
+        'views', 'is_free_delivery'];
 
     protected $casts = [
         'is_active' => 'boolean',

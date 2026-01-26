@@ -70,6 +70,10 @@
                         <input type="checkbox" name="is_active" class="form-check-input" id="activeCheck" checked value="1">
                         <label class="form-check-label" for="activeCheck">Active</label>
                     </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" name="is_free_delivery" class="form-check-input" id="freeCheck" value="1">
+                        <label class="form-check-label" for="freeCheck">Free Delivery</label>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -111,9 +115,12 @@
                             <input type="file" name="image_file" class="form-control" accept="image/*">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">OR Image URL</label>
                             <input type="url" name="image_url" id="editImageUrl" class="form-control" placeholder="https://">
                         </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" name="is_free_delivery" class="form-check-input" id="editFreeCheck" value="1">
+                        <label class="form-check-label" for="editFreeCheck">Free Delivery</label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -186,7 +193,7 @@
                         </td>
                         <td class="text-end pe-4">
                              @can('update', $category)
-                            <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditModal('{{ $category->code }}', '{{ addslashes($category->name) }}', '{{ $category->image }}', '{{ $category->parent_id }}')">
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditModal('{{ $category->code }}', '{{ addslashes($category->name) }}', '{{ $category->image }}', '{{ $category->parent_id }}', '{{ $category->is_free_delivery }}')">
                                 Edit
                             </button>
                             @endcan
@@ -211,11 +218,11 @@
 </div>
 
 <script>
-    function openEditModal(code, name, imageUrl, parentId) {
+    function openEditModal(code, name, imageUrl, parentId, isFreeDelivery) {
         document.getElementById('editName').value = name;
         document.getElementById('editImageUrl').value = imageUrl;
         document.getElementById('editParentId').value = parentId || "";
-        
+        document.getElementById('editFreeCheck').checked = isFreeDelivery == 1;
         
         // Construct the URL using the code
         let url = "{{ route('admin.categories.update', ':code') }}";

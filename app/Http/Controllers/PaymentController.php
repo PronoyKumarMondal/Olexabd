@@ -37,12 +37,45 @@ class PaymentController extends Controller
              if($discount > $subtotal) $discount = $subtotal;
         }
 
-        $total = $subtotal - $discount;
+        // Calculate Delivery Charge
+        $deliveryCharge = 0;
+        $deliveryLocation = $request->input('delivery_location', 'outside'); // Default to outside if not provided
+        
+        $hasFreeDelivery = false;
+        
+        // Check for Free Delivery Items (Product or Category level)
+        // Optimization: Use whereIn to fetch all product rules at once if needed, 
+        // but since we loop cart later, we can do it here or optimizing.
+        // Let's optimize by fetching product details with categories.
+        $productIds = array_keys($cart);
+        $products = \App\Models\Product::whereIn('id', $productIds)->with('category')->get();
+        
+        foreach($products as $product) {
+            if ($product->is_free_delivery) {
+                $hasFreeDelivery = true;
+                break;
+            }
+            if ($product->category && $product->category->is_free_delivery) {
+                $hasFreeDelivery = true;
+                break;
+            }
+        }
+        
+        if (!$hasFreeDelivery) {
+            if ($deliveryLocation === 'inside') {
+                $deliveryCharge = \App\Models\Setting::get('delivery_charge_inside_dhaka', 60);
+            } else {
+                $deliveryCharge = \App\Models\Setting::get('delivery_charge_outside_dhaka', 120);
+            }
+        }
+
+        $total = $subtotal + $deliveryCharge - $discount;
 
         // Create Order
         $order = Order::create([
             'user_id' => auth()->id(), // Ensure user is logged in
             'total_amount' => $total,
+            'delivery_charge' => $deliveryCharge,
             'coupon_code' => $couponCode,
             'discount_amount' => $discount,
             'status' => 'pending',

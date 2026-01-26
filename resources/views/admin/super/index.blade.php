@@ -117,6 +117,12 @@
                                 <input class="form-check-input" type="checkbox" name="permissions[]" value="view_search_history" id="new_perm_view_search_history">
                                 <label class="form-check-label" for="new_perm_view_search_history">View Search History</label>
                             </div>
+                            
+                            <hr class="my-2">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="permissions[]" value="manage_settings" id="new_perm_manage_settings">
+                                <label class="form-check-label" for="new_perm_manage_settings">Manage System Settings (Delivery Charge)</label>
+                            </div>
 
                             <label class="form-label text-muted d-block mt-2 small">Channels</label>
                             <div class="form-check mb-2">
@@ -286,6 +292,12 @@
                                                     <input class="form-check-input" type="checkbox" name="permissions[]" value="view_search_history" id="perm_view_search_history_{{ $user->id }}"
                                                         {{ in_array('view_search_history', $user->permissions ?? []) ? 'checked' : '' }}>
                                                     <label class="form-check-label" for="perm_view_search_history_{{ $user->id }}">View Search History</label>
+                                                </div>
+
+                                                <div class="form-check mt-2 border-top pt-2">
+                                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="manage_settings" id="perm_manage_settings_{{ $user->id }}"
+                                                        {{ in_array('manage_settings', $user->permissions ?? []) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="perm_manage_settings_{{ $user->id }}">Manage System Settings (Delivery Charge)</label>
                                                 </div>
 
                                                 <div class="form-check mt-2 border-top pt-2">
