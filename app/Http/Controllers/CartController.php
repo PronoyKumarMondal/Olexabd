@@ -23,6 +23,23 @@ class CartController extends Controller
     {
         $id = $request->product_id;
         $product = Product::findOrFail($id);
+        // Check direct Buy Now request
+        if ($request->has('buy_now')) {
+            // Store separate session for direct checkout
+            $directItem = [
+                $id => [
+                    "name" => $product->name,
+                    "quantity" => 1,
+                    "price" => $product->effective_price,
+                    "image" => $product->image
+                ]
+            ];
+            session()->put('direct_checkout_item', $directItem);
+            
+            return redirect()->route('checkout.page', ['mode' => 'buy_now']);
+        }
+
+        // Standard Add to Cart Logic
         $cart = session()->get('cart', []);
 
         if(isset($cart[$id])) {
@@ -62,10 +79,6 @@ class CartController extends Controller
         // Return JSON for AJAX or Redirect back
         if ($request->wantsJson()) {
             return response()->json(['success' => 'Product added to cart successfully!', 'count' => count(session()->get('cart'))]);
-        }
-
-        if ($request->has('buy_now')) {
-            return redirect()->route('checkout.page')->with('success', 'Product added to cart. Ready to checkout!');
         }
 
         return redirect()->back()->with('success', 'Product added to cart successfully!');

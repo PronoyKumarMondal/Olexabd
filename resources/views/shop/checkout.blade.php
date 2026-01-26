@@ -13,6 +13,7 @@
                         <h5 class="fw-bold mb-4">Shipping Information</h5>
                         <form action="{{ route('checkout.place') }}" method="POST" id="checkoutForm">
                             @csrf
+                            <input type="hidden" name="mode" value="{{ $mode }}">
                             
                             <!-- Name & Phone -->
                             <div class="row mb-3">

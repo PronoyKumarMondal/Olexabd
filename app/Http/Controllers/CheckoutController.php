@@ -10,10 +10,21 @@ use App\Models\Product;
 
 class CheckoutController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $cart = session('cart');
+        $mode = $request->query('mode', 'cart');
+        
+        if ($mode == 'buy_now') {
+            $cart = session('direct_checkout_item');
+        } else {
+            $cart = session('cart');
+        }
+
         if(!$cart || count($cart) == 0) {
+            // Fallback: If buy now session expired or manipulated, check main cart
+            if ($mode == 'buy_now' && session()->has('cart') && count(session('cart')) > 0) {
+                return redirect()->route('checkout.page'); // Redirect to normal checkout
+            }
             return redirect()->route('shop.index')->with('error', 'Your cart is empty!');
         }
         
@@ -27,7 +38,7 @@ class CheckoutController extends Controller
         
         $total = $subtotal - $discount;
 
-        return view('shop.checkout', compact('cart', 'subtotal', 'discount', 'total'));
+        return view('shop.checkout', compact('cart', 'subtotal', 'discount', 'total', 'mode'));
     }
 
     public function placeOrder(Request $request)
@@ -42,7 +53,13 @@ class CheckoutController extends Controller
             'postcode' => 'required|string' // Mandatory now
         ]);
 
-        $cart = session('cart');
+        $mode = $request->input('mode', 'cart');
+        if ($mode == 'buy_now') {
+            $cart = session('direct_checkout_item');
+        } else {
+            $cart = session('cart');
+        }
+
         if(!$cart || count($cart) == 0) {
             return redirect()->route('shop.index')->with('error', 'Cart is empty');
         }
@@ -151,6 +168,20 @@ class CheckoutController extends Controller
                 'quantity' => $item['quantity'],
                 'unit_price' => $item['price']
             ]);
+        }
+        
+        // Clear appropriate session
+        if ($mode == 'buy_now') {
+            session()->forget('direct_checkout_item');
+        } else {
+            session()->forget('cart');
+            // Also update persistent logic? 
+            // If user cleared main cart, we mark DB items as ordered/inactive?
+            // Usually we mark them as 'ordered' if we track that. 
+            // For now, removing session is key.
+            if(auth()->check()) {
+                \App\Models\CartItem::where('user_id', auth()->id())->where('status', 'active')->update(['status' => 'ordered']);
+            }
         }
         
         return redirect()->route('bkash.mock_page', [
