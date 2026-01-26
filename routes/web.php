@@ -111,6 +111,14 @@ Route::group([], function () {
     Route::get('/api/locations/upazilas/{district_id}', [\App\Http\Controllers\LocationsController::class, 'getUpazilas']);
     Route::get('/api/locations/postcode/{upazila_id}', [\App\Http\Controllers\LocationsController::class, 'getPostcode']);
 
+    // Google Auth Routes
+    Route::get('/auth/google', [\App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\SocialAuthController::class, 'handleGoogleCallback']);
+    
+    // Phone Verification Routes
+    Route::get('/auth/phone/verify', [\App\Http\Controllers\Auth\SocialAuthController::class, 'showPhoneForm'])->name('auth.phone.form');
+    Route::post('/auth/phone/save', [\App\Http\Controllers\Auth\SocialAuthController::class, 'savePhone'])->name('auth.phone.save');
+
     Route::middleware('auth')->group(function() {
         // Checkout Routes
         Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.page');

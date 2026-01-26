@@ -29,6 +29,9 @@
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg">Log In</button>
+                            <a href="{{ route('auth.google') }}" class="btn btn-outline-dark btn-lg">
+                                <i class="bi bi-google me-2"></i> Continue with Google
+                            </a>
                         </div>
 
                         <div class="text-center mt-3">

@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\LogRequestActivity::class,
             \App\Http\Middleware\TrackSource::class,
             \App\Http\Middleware\SecureHeaders::class,
+            \App\Http\Middleware\EnsurePhoneIsFilled::class, // Force Phone Check
         ]);
         
         $middleware->alias([

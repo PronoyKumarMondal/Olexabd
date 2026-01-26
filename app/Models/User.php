@@ -24,6 +24,7 @@ class User extends Authenticatable
         'address', // Added for registration
         'password',
         'role',
+        'google_id', // Added
         'source', 
     ];
 
