@@ -23,8 +23,8 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label">Address (Optional for now)</label>
-                            <textarea name="address" class="form-control" rows="2" placeholder="You can add address now or later"></textarea>
+                            <label class="form-label">Address / Location <span class="text-danger">*</span></label>
+                            <textarea name="address" class="form-control" rows="2" required placeholder="House No, Road No, Area, City" ></textarea>
                         </div>
 
                         <div class="d-grid gap-2">
