@@ -48,8 +48,9 @@ class RegisteredUserController extends Controller
         try {
             event(new Registered($user));
         } catch (\Exception $e) {
-            // Log error but assume success so user isn't stuck
             \Illuminate\Support\Facades\Log::error('Registration Email Failed: ' . $e->getMessage());
+            // Flash a warning to the session so the user/admin knows
+            session()->flash('error', 'Account created, but Verification Email failed to send. Please check SMTP settings.');
         }
 
         Auth::login($user);
