@@ -108,67 +108,6 @@
                                 <span class="fw-bold">৳{{ $total }}</span>
                             </div>
                             
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-muted small text-uppercase">Shipping Location</label>
-                                @php
-                                    $insideCharge = \App\Models\Setting::get('delivery_charge_inside_dhaka', 60);
-                                    $outsideCharge = \App\Models\Setting::get('delivery_charge_outside_dhaka', 120);
-                                    
-                                    // Check Rules
-                                    $hasFree = false;
-                                    
-                                    // 1. Global Free
-                                    if(\App\Models\Setting::get('free_delivery_all')) $hasFree = true;
-                                    
-                                    // 2. Min Order
-                                    $minOrder = \App\Models\Setting::get('free_delivery_over');
-                                    // Recalculate subtotal here just to be safe or use variable if available. 
-                                    // $total variable passed to view is actually subtotal in CartController loop but discounted later? Use View's $total + coupon amount to get true subtotal?
-                                    // Cart View loop calculates $total.
-                                    if(!$hasFree && $minOrder && $total >= $minOrder) $hasFree = true;
-
-                                    // 3. Product Rules
-                                    if(!$hasFree) {
-                                        $productIds = array_keys(session('cart'));
-                                        $products = \App\Models\Product::whereIn('id', $productIds)->with('category')->get();
-                                        foreach($products as $p) {
-                                            if($p->is_free_delivery || ($p->category && $p->category->is_free_delivery)) {
-                                                $hasFree = true; break;
-                                            }
-                                        }
-                                    }
-                                @endphp
-
-                                @if($hasFree)
-                                    <div class="alert alert-success py-2 small mb-2">
-                                        <i class="bi bi-gift-fill me-1"></i> Free Delivery Applied!
-                                    </div>
-                                    <input type="hidden" name="delivery_location" value="inside"> 
-                                    <!-- Value doesn't matter for cost, but backend expects input -->
-                                @else
-                                    <div class="d-flex flex-column gap-2" id="delivery-options">
-                                        <label class="card p-3 border shadow-sm cursor-pointer delivery-option selected-option">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <input type="radio" name="delivery_radio" value="inside" class="form-check-input" checked onchange="updateTotal()">
-                                                    <span>Inside Dhaka</span>
-                                                </div>
-                                                <span class="fw-bold">৳{{ $insideCharge }}</span>
-                                            </div>
-                                        </label>
-                                        <label class="card p-3 border shadow-sm cursor-pointer delivery-option">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <input type="radio" name="delivery_radio" value="outside" class="form-check-input" onchange="updateTotal()">
-                                                    <span>Outside Dhaka</span>
-                                                </div>
-                                                <span class="fw-bold">৳{{ $outsideCharge }}</span>
-                                            </div>
-                                        </label>
-                                    </div>
-                                @endif
-                            </div>
-
                             <div class="d-flex justify-content-between mb-4">
                                 <span class="text-muted">Subtotal</span>
                                 <span class="fw-bold">৳{{ $total }}</span>
@@ -199,58 +138,22 @@
 
                             <div class="d-flex justify-content-between mb-4">
                                 <span class="text-muted">Shipping</span>
-                                <span class="text-dark fw-bold" id="shipping-display">
-                                    @if($hasFree) Free @else ৳{{ $insideCharge }} @endif
-                                </span>
+                                <span class="text-muted small">Calculated at checkout</span>
                             </div>
                             <hr class="border-secondary opacity-25">
                             <div class="d-flex justify-content-between mb-4">
                                 <span class="h5 fw-bold mb-0">Total</span>
-                                <span class="h5 fw-bold mb-0 text-primary" id="final-total">
-                                    ৳{{ max(0, $total + ($hasFree ? 0 : $insideCharge)) }}
+                                <span class="h5 fw-bold mb-0 text-primary">
+                                    ৳{{ max(0, $total) }} <span class="text-muted fs-6 fw-normal">+ Shipping</span>
                                 </span>
                             </div>
 
-                            <form action="{{ route('checkout.init') }}" method="POST" id="checkout-form">
+                            <form action="{{ route('checkout.init') }}" method="POST">
                                 @csrf
-                                <input type="hidden" name="amount" value="{{ $total }}">
-                                <input type="hidden" name="order_id" value="ORD-{{ rand(1000,9999) }}">
-                                <input type="hidden" name="delivery_location" id="delivery-location-input" value="inside">
                                 <button type="submit" class="btn btn-dark w-100 rounded-pill py-3 fw-bold shadow-lg">
                                     Proceed to Checkout
                                 </button>
                             </form>
-                            
-                            @if(!$hasFree)
-                            <script>
-                                const insideCharge = {{ $insideCharge }};
-                                const outsideCharge = {{ $outsideCharge }};
-                                const currentTotal = {{ $total }}; // Subtotal - Discount
-                                
-                                function updateTotal() {
-                                    const location = document.querySelector('input[name="delivery_radio"]:checked').value;
-                                    const charge = location === 'inside' ? insideCharge : outsideCharge;
-                                    
-                                    // Update Hidden Input
-                                    document.getElementById('delivery-location-input').value = location;
-                                    
-                                    // Update Display
-                                    document.getElementById('shipping-display').innerText = '৳' + charge;
-                                    document.getElementById('final-total').innerText = '৳' + (currentTotal + charge);
-                                    
-                                    // Highlight Selection
-                                    document.querySelectorAll('.delivery-option').forEach(el => {
-                                        el.classList.remove('border-primary', 'bg-primary-subtle');
-                                    });
-                                    document.querySelector('input[name="delivery_radio"]:checked').closest('.delivery-option').classList.add('border-primary', 'bg-primary-subtle');
-                                }
-                                
-                                // Init
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    updateTotal();
-                                });
-                            </script>
-                            @endif
                             
                             <a href="{{ route('shop.index') }}" class="btn btn-link w-100 text-decoration-none mt-2 text-muted">
                                 <i class="bi bi-arrow-left me-1"></i> Continue Shopping
