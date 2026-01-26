@@ -11,7 +11,7 @@ class LocationsSeeder extends Seeder
     public function run(): void
     {
         // 1. Divisions
-        $divisions = json_decode(File::get('D:/Personal/Ecommerce appliance/Location json/bd-divisions.json'), true)['divisions'];
+        $divisions = json_decode(File::get(base_path('Location json/bd-divisions.json')), true)['divisions'];
         foreach ($divisions as $div) {
             DB::table('divisions')->updateOrInsert(
                 ['id' => $div['id']],
@@ -27,7 +27,7 @@ class LocationsSeeder extends Seeder
         $this->command->info('Divisions seeded!');
 
         // 2. Districts
-        $districts = json_decode(File::get('D:/Personal/Ecommerce appliance/Location json/bd-districts.json'), true)['districts'];
+        $districts = json_decode(File::get(base_path('Location json/bd-districts.json')), true)['districts'];
         foreach ($districts as $dist) {
             DB::table('districts')->updateOrInsert(
                 ['id' => $dist['id']],
@@ -46,7 +46,7 @@ class LocationsSeeder extends Seeder
         $this->command->info('Districts seeded!');
 
         // 3. Upazilas (Standard)
-        $upazilas = json_decode(File::get('D:/Personal/Ecommerce appliance/Location json/bd-upazilas.json'), true)['upazilas'];
+        $upazilas = json_decode(File::get(base_path('Location json/bd-upazilas.json')), true)['upazilas'];
         foreach ($upazilas as $up) {
             DB::table('upazilas')->updateOrInsert(
                 ['id' => $up['id']],
@@ -64,7 +64,7 @@ class LocationsSeeder extends Seeder
         $this->command->info('Upazilas seeded!');
 
         // 4. Dhaka City Locations (City Corporations) -> Inside Dhaka Rate
-        $dhakaCity = json_decode(File::get('D:/Personal/Ecommerce appliance/Location json/dhaka-city.json'), true)['dhaka'];
+        $dhakaCity = json_decode(File::get(base_path('Location json/dhaka-city.json')), true)['dhaka'];
         $dhakaStartId = 5000;
         foreach ($dhakaCity as $area) {
             DB::table('upazilas')->insertOrIgnore([
@@ -81,7 +81,7 @@ class LocationsSeeder extends Seeder
 
 
         // 5. Postcodes
-        $postcodes = json_decode(File::get('D:/Personal/Ecommerce appliance/Location json/bd-postcodes.json'), true)['postcodes'];
+        $postcodes = json_decode(File::get(base_path('Location json/bd-postcodes.json')), true)['postcodes'];
         foreach ($postcodes as $pc) {
             // Validate keys exist
             if (!isset($pc['division_id']) || !isset($pc['district_id']) || !isset($pc['postCode'])) {
