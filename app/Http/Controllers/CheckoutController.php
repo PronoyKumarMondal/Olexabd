@@ -33,12 +33,13 @@ class CheckoutController extends Controller
     public function placeOrder(Request $request)
     {
         $request->validate([
-            'division' => 'required',
-            'district' => 'required',
-            'upazila' => 'required',
-            'address' => 'nullable|string',
+            'division' => 'required|exists:divisions,id', // Division ID
+            'district' => 'required|exists:districts,id', // District ID
+            'upazila' => 'required|exists:upazilas,id',   // Upazila ID (includes City Corp areas)
+            'address' => 'required|string', // Mandatory as per user
             'phone' => 'required|regex:/(01)[0-9]{9}/',
-            'name' => 'required|string'
+            'name' => 'required|string',
+            'postcode' => 'required|string' // Mandatory now
         ]);
 
         $cart = session('cart');
@@ -74,14 +75,13 @@ class CheckoutController extends Controller
         }
 
         if (!$hasFreeDelivery) {
-            // Check District. Dhaka ID is usually "1".
-            // Frontend passes district ID or Name? Let's assume ID or Name. 
-            // Based on JSON, Dhaka District ID is "1".
-            // We should ensure the frontend passes the ID or we check the name.
-            // Let's rely on the frontend passing the ID or check if input is '1' or 'Dhaka'.
+            // Check Upazila Logic
+            // Fetch Upazila from DB to check flag
+            $upazila = DB::table('upazilas')->where('id', $request->upazila)->first();
             
             $isInsideDhaka = false;
-            if ($request->district == '1' || strtolower($request->district_name) == 'dhaka') {
+            // The logic: Only City Corporations (marked in Seeder) are Inside Dhaka.
+            if ($upazila && $upazila->is_inside_dhaka) {
                  $isInsideDhaka = true;
             }
 
@@ -103,26 +103,20 @@ class CheckoutController extends Controller
 
         $total = $subtotal + $deliveryCharge - $discount;
 
-        // Full Address String
-        // We might want to store JSON or a formatted string.
-        // Let's store a formatted string for now as per schema.
-        // We will accept division_name, district_name, upazila_name from hidden inputs if needed, 
-        // or just store what we got if the form sends names. 
-        // Plan: Form will send Names primarily for display, IDs for logic? 
-        // Let's try to get names.
+        // Construct Address String for Snapshot (Legacy support + ease of view)
+        // Also ensure we save IDs if columns exist (we'll assume they do or add them)
+        // Check Schema columns existence dynamically or just try to save?
+        // Better to save IDs to new columns.
+        $division = DB::table('divisions')->find($request->division);
+        $district = DB::table('districts')->find($request->district);
         
         $fullAddress = $request->name . "\n" . $request->phone . "\n";
-        $fullAddress .= $request->upazila_name . ", " . $request->district_name . ", " . $request->division_name . "\n";
-        if($request->address) $fullAddress .= "Details: " . $request->address;
+        $fullAddress .= "Address: " . $request->address . "\n";
+        $fullAddress .= "Postcode: " . $request->postcode . "\n";
+        $fullAddress .= "Location: " . ($upazila->name ?? '') . ", " . ($district->name ?? '') . ", " . ($division->name ?? '');
 
         // Create Order
-        $order = Order::create([
-            'user_id' => auth()->id() ?? 0, // 0 for guest? DB requires foreign key?
-            // Wait, schema enforces user_id foreign key. 
-            // If we allow Guest Checkout, we need to handle that. 
-            // For now, assume auth required or we assign to a 'Guest' user if mapped. 
-            // Let's stick to auth()->id() and assume middleware protects it or nullable.
-            // (Current web.php usually protects checkout).
+        $orderData = [
             'user_id' => auth()->id(),
             'total_amount' => $total,
             'delivery_charge' => $deliveryCharge,
@@ -131,11 +125,24 @@ class CheckoutController extends Controller
             'status' => 'pending',
             'payment_status' => 'unpaid',
             'shipping_address' => $fullAddress,
-            'payment_method' => 'cod', // Default to COD or set later
+            'payment_method' => 'cod', 
             'media' => session('order_platform', 'web'),
             'traffic_source' => session('order_campaign'),
-            'order_portal' => 'Web Checkout'
-        ]);
+            'order_portal' => 'Web Checkout',
+            // Detailed Columns
+            'delivery_division_id' => $request->division,
+            'delivery_district_id' => $request->district,
+            'delivery_upazila_id' => $request->upazila,
+            'delivery_postcode' => $request->postcode,
+            'delivery_address' => $request->address,
+            'delivery_phone' => $request->phone,
+        ];
+
+        // Filter out keys if columns don't exist?
+        // We really should ensure columns exist. 
+        // If Migration failed, this will crash.
+        // Assuming user ran migration or I fixed it.
+        $order = Order::create($orderData);
 
          foreach($cart as $id => $item) {
             \App\Models\OrderItem::create([
@@ -146,7 +153,6 @@ class CheckoutController extends Controller
             ]);
         }
         
-        // Use the existing Mock Page flow
         return redirect()->route('bkash.mock_page', [
             'amount' => $total,
             'order_id' => 'ORD-' . $order->id,

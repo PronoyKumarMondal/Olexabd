@@ -105,16 +105,16 @@ Route::group([], function () {
         Route::post('/cart/remove-promo', 'removePromo')->name('cart.remove_promo');
     });
 
+    // Location API Routes (Public)
+    Route::get('/api/locations/divisions', [\App\Http\Controllers\LocationsController::class, 'getDivisions']);
+    Route::get('/api/locations/districts/{division_id}', [\App\Http\Controllers\LocationsController::class, 'getDistricts']);
+    Route::get('/api/locations/upazilas/{district_id}', [\App\Http\Controllers\LocationsController::class, 'getUpazilas']);
+
     Route::middleware('auth')->group(function() {
         // Checkout Routes
         Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.page');
         Route::post('/checkout/place', [\App\Http\Controllers\CheckoutController::class, 'placeOrder'])->name('checkout.place');
         
-        // Handle Cart "Proceed" button (which posts to checkout.init)
-        // We can redirect the POST to GET checkout page or just handle it.
-        // Let's make the cart button a simple link to /checkout, 
-        // OR keep the POST and redirect to GET in the controller (already handled if we route it there).
-        // For now, let's map the POST name 'checkout.init' to the new controller's index (which shows the page).
         Route::post('/checkout/init', function() {
             return redirect()->route('checkout.page');
         })->name('checkout.init');
