@@ -52,7 +52,7 @@
                             <!-- Postcode & Detailed Address -->
                              <div class="mb-3">
                                 <label class="form-label">Post Code <span class="text-danger">*</span></label>
-                                <input type="text" name="postcode" class="form-control bg-light" placeholder="Auto-filled by Upazila" readonly required>
+                                <input type="text" name="postcode" class="form-control" placeholder="e.g. 1230" required>
                              </div>
 
                             <div class="mb-4">
