@@ -64,6 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new \App\Notifications\QueuedVerifyEmail);
+        // runs after the response is sent to the browser
+        \App\Jobs\SendVerificationEmailJob::dispatch($this)->onConnection('sync')->afterResponse();
     }
 }
