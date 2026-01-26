@@ -13,6 +13,16 @@
                         <i class="bi bi-envelope-check text-warning" style="font-size: 4rem;"></i>
                     </div>
 
+                    {{-- Debug Info --}}
+                    <div class="alert alert-light border border-secondary text-muted small py-1 mb-3 d-inline-block">
+                        Status: 
+                        @if(Auth::user()->fresh()->email_verified_at)
+                            <span class="text-success fw-bold">VERIFIED (Refresh Page)</span>
+                        @else
+                            <span class="text-danger fw-bold">UNVERIFIED</span>
+                        @endif
+                    </div>
+
                     <p class="mb-4 text-muted">
                         Thanks for signing up! Before getting started, you must verify your email address.
                         <br><br>

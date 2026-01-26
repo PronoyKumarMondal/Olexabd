@@ -16,8 +16,8 @@ class ForceEmailVerification
     {
         // Only check if user is logged in
         if (Auth::check()) {
-            // If email is NOT verified
-            if (!Auth::user()->hasVerifiedEmail()) {
+            // Check FRESH user from DB (in case they verified in another tab)
+            if (!Auth::user()->fresh()->hasVerifiedEmail()) {
                 // Allow access only to verification routes and logout
                 if (!$request->routeIs('verification.*') && 
                     !$request->routeIs('logout')) {

@@ -15,7 +15,8 @@ class EmailVerificationPromptController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return $request->user()->hasVerifiedEmail()
+        // Force refresh user from DB to ensure we see the verification
+        return $request->user()->fresh()->hasVerifiedEmail()
                     ? redirect()->route('shop.index')
                     : view('auth.verify-email', ['status' => session('status')]);
     }
