@@ -14,9 +14,9 @@
                     </div>
 
                     <p class="mb-4 text-muted">
-                        Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? 
+                        Thanks for signing up! Before getting started, you must verify your email address.
                         <br><br>
-                        If you didn't receive the email, we will gladly send you another.
+                        <strong>Note:</strong> You can request a new link once every 5 minutes.
                     </p>
 
                     @if (session('status') == 'verification-link-sent')
