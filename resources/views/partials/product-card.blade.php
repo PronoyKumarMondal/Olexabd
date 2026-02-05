@@ -19,10 +19,10 @@
         <small class="text-muted mb-1">{{ $product->category->name ?? 'General' }}</small>
         <h6 class="fw-bold mb-3 text-truncate">{{ $product->name }}</h6>
         
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="mb-3">
             @if($product->has_discount)
-                <div class="d-flex align-items-center gap-2">
-                    <span class="fs-5 fw-bold text-danger">৳{{ $product->effective_price }}</span>
+                <div class="d-flex flex-wrap align-items-baseline gap-1">
+                    <span class="fw-bold text-danger fs-5">৳{{ $product->effective_price }}</span>
                     <span class="text-muted text-decoration-line-through small">৳{{ $product->price }}</span>
                 </div>
             @else
