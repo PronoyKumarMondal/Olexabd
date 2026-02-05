@@ -25,6 +25,8 @@ class Product extends Model
         'discount_price' => 'decimal:2',
     ];
 
+    protected $appends = ['has_discount', 'effective_price', 'discount_percentage'];
+
     // Discount Accessors
     public function getHasDiscountAttribute()
     {
