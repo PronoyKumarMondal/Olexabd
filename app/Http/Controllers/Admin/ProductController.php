@@ -228,7 +228,11 @@ class ProductController extends Controller
      */
     private function compressAndStore($file, $folder, $maxSizeBytes, $maxWidth = 1500)
     {
-        \Illuminate\Support\Facades\Log::info("Compressing: " . $file->getClientOriginalName() . " Size: " . $file->getSize());
+        // Force Strict Dimensions
+        $targetWidth = 800;
+        $targetHeight = 600;
+
+        \Illuminate\Support\Facades\Log::info("Processing Image: " . $file->getClientOriginalName() . " Target: {$targetWidth}x{$targetHeight}");
         
         // Generate name
         $extension = strtolower($file->guessExtension());
@@ -256,63 +260,76 @@ class ProductController extends Controller
         elseif ($extension == 'webp' || $mime == 'image/webp')
              $sourceImage = @imagecreatefromwebp($file->getRealPath());
         
-        // If GD fails or format unsupported, fallback to standard store
+        // If GD fails or format unsupported, fallback to simple resize store (rare)
         if (!$sourceImage) {
-            \Illuminate\Support\Facades\Log::warning("GD Fallback used for: " . $file->getClientOriginalName());
             $storedPath = $file->storeAs($folder, $filename, 'public');
             return '/storage/' . $storedPath;
         }
 
-        // Resize if wider than maxWidth
+        // Get Original Dimensions
         $width = imagesx($sourceImage);
         $height = imagesy($sourceImage);
 
-        if ($width > $maxWidth) {
-            $newWidth = $maxWidth;
-            $newHeight = floor($height * ($maxWidth / $width));
-            $tempImage = imagecreatetruecolor($newWidth, $newHeight);
-            
-            // Preserve Transparency
-            if ($extension == 'png' || $extension == 'webp') {
-                imagealphablending($tempImage, false);
-                imagesavealpha($tempImage, true);
-            }
+        // Calculate Crop to Center-Fill 800x600
+        // We want to cover the 800x600 area.
+        $targetRatio = $targetWidth / $targetHeight;
+        $originalRatio = $width / $height;
 
-            imagecopyresampled($tempImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
-            imagedestroy($sourceImage);
-            $sourceImage = $tempImage;
+        $srcX = 0;
+        $srcY = 0;
+        $srcW = $width;
+        $srcH = $height;
+
+        if ($originalRatio > $targetRatio) {
+            // Original is wider than target. Crop width.
+            // Height matches, calculate new width based on target ratio relative to height
+            $newSrcW = $height * $targetRatio;
+            $srcX = ($width - $newSrcW) / 2;
+            $srcW = $newSrcW;
+        } else {
+            // Original is taller than target. Crop height.
+            // Width matches, calculate new height
+            $newSrcH = $width / $targetRatio;
+            $srcY = ($height - $newSrcH) / 2;
+            $srcH = $newSrcH;
         }
+
+        // Create canvas 800x600
+        $finalImage = imagecreatetruecolor($targetWidth, $targetHeight);
+        
+        // Preserve Transparency
+        if ($extension == 'png' || $extension == 'webp') {
+            imagealphablending($finalImage, false);
+            imagesavealpha($finalImage, true);
+        } else {
+            // Fill white background for JPG
+            $white = imagecolorallocate($finalImage, 255, 255, 255);
+            imagefill($finalImage, 0, 0, $white);
+        }
+
+        // Copy and Resize (Crop & Fill)
+        imagecopyresampled($finalImage, $sourceImage, 0, 0, $srcX, $srcY, $targetWidth, $targetHeight, $srcW, $srcH);
+        
+        imagedestroy($sourceImage);
 
         // Save Compressed
         $quality = 80; 
         
-        // Aggressive compression if original file > maxSizeBytes
-        if ($file->getSize() > $maxSizeBytes) {
-            $quality = 60; 
-            \Illuminate\Support\Facades\Log::info("Applying Aggressive Compression (Quality 60) for: " . $filename);
-        }
-
         $saved = false;
         if ($extension == 'png') {
             $pngQuality = ($quality > 70) ? 6 : 8; 
-            $saved = imagepng($sourceImage, $fullPath, $pngQuality);
+            $saved = imagepng($finalImage, $fullPath, $pngQuality);
         } elseif ($extension == 'webp') {
-            $saved = imagewebp($sourceImage, $fullPath, $quality);
+            $saved = imagewebp($finalImage, $fullPath, $quality);
         } else {
-            $saved = imagejpeg($sourceImage, $fullPath, $quality);
+            $saved = imagejpeg($finalImage, $fullPath, $quality);
         }
 
-        imagedestroy($sourceImage);
+        imagedestroy($finalImage);
 
         if (!$saved) {
-            \Illuminate\Support\Facades\Log::error("Failed to save compressed image to: " . $fullPath);
-            // Fallback to simple move if compression saving failed
+            // Fallback move
             $file->move(dirname($fullPath), basename($fullPath));
-            return '/storage/' . $path;
-        }
-
-        if (file_exists($fullPath)) {
-            \Illuminate\Support\Facades\Log::info("Saved Compressed: " . $filename . " New Size: " . filesize($fullPath));
         }
 
         return '/storage/' . $path;
