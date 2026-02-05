@@ -80,6 +80,16 @@ class ProductController extends Controller
             $data['image'] = $request->image_url;
         }
 
+        // Calculate missing Commission Data for integrity
+        $price = $request->price;
+        if ($price > 0) {
+            if (isset($data['commission_percentage']) && !isset($data['commission_amount'])) {
+                $data['commission_amount'] = ($price * $data['commission_percentage']) / 100;
+            } elseif (isset($data['commission_amount']) && !isset($data['commission_percentage'])) {
+                $data['commission_percentage'] = ($data['commission_amount'] / $price) * 100;
+            }
+        }
+
         $product = Product::create($data);
 
         // Handle Featured Images (Max 3) (Compress > 1MB)
@@ -141,6 +151,25 @@ class ProductController extends Controller
             $data['image'] = $this->compressAndStore($request->file('image_file'), 'products', 2097152, 1200);
         } elseif ($request->filled('image_url')) {
             $data['image'] = $request->image_url;
+        }
+
+        // Calculate missing Commission Data for integrity
+        $price = $request->price;
+        if ($price > 0) {
+            // Check if keys exist in $data (means they were in request)
+            // Note: If user cleared the input, it might be null.
+            // We only calc if one is present and non-null, and other is null/missing?
+            // Actually, best to check if one has value > 0 and other is missing/null.
+            $commP = $data['commission_percentage'] ?? null;
+            $commA = $data['commission_amount'] ?? null;
+
+            if ($commP !== null && $commA === null) {
+                $data['commission_amount'] = ($price * $commP) / 100;
+            } elseif ($commA !== null && $commP === null) {
+                $data['commission_percentage'] = ($commA / $price) * 100;
+            }
+            // If both are set, we assume frontend calc is correct or user intentions.
+            // If both null, nothing to do.
         }
 
         $product->update($data);
