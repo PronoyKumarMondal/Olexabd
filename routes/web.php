@@ -80,6 +80,9 @@ Route::group([], function () {
         Route::get('/privacy-policy', 'privacy')->name('pages.privacy');
     });
 
+    // Newsletter
+    Route::post('/newsletter/subscribe', [\App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+
     // Tracking
     Route::get('/track-order', [OrderController::class, 'track'])->name('orders.track');
     Route::post('/track-order', [OrderController::class, 'trackOrder'])->name('orders.track.submit');

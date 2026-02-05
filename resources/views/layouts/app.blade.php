@@ -370,9 +370,10 @@
                 <div class="col-lg-4 col-md-6">
                     <h6 class="footer-heading">Newsletter</h6>
                     <p class="small opacity-75">Subscribe to get special offers and updates.</p>
-                    <form class="position-relative">
-                        <input type="email" class="form-control rounded-pill bg-white border-0 py-3 ps-4" placeholder="Your email address">
-                        <button class="btn btn-primary rounded-pill position-absolute top-50 end-0 translate-middle-y me-2 px-4 py-2">Join</button>
+                    <form class="position-relative" action="{{ route('newsletter.subscribe') }}" method="POST">
+                        @csrf
+                        <input type="email" name="email" class="form-control rounded-pill bg-white border-0 py-3 ps-4" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary rounded-pill position-absolute top-50 end-0 translate-middle-y me-2 px-4 py-2">Join</button>
                     </form>
                 </div>
             </div>
