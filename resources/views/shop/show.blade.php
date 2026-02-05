@@ -56,7 +56,7 @@
             <!-- Product Details -->
             <div class="col-lg-6">
                 <div class="ps-lg-4">
-                    <span class="badge bg-primary bg-opacity-10 text-primary mb-2 px-3 py-2 rounded-pill">{{ $product->category->name ?? 'General' }}</span>
+                    <span class="badge bg-primary text-white mb-2 px-3 py-2 rounded-pill">{{ $product->category->name ?? 'General' }}</span>
                     <h1 class="fw-bold mb-3 display-6">{{ $product->name }}</h1>
                     
                     <div class="d-flex align-items-center mb-4">
