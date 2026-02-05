@@ -231,8 +231,11 @@
             @endif
 
             @if(Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('order_edit'))
-            <a class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
+            <a class="nav-link {{ request()->routeIs('admin.orders.*') && !request()->has('has_transaction') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
                 <i class="bi bi-bag-check-fill"></i> Orders
+            </a>
+            <a class="nav-link {{ request()->has('has_transaction') ? 'active' : '' }}" href="{{ route('admin.orders.index', ['payment_status' => 'unpaid', 'has_transaction' => 1]) }}">
+                <i class="bi bi-wallet2"></i> Payment Verification
             </a>
             @endif
 

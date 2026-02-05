@@ -135,6 +135,14 @@ class OrderController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+
+        if ($request->has('has_transaction')) {
+            $query->whereNotNull('transaction_id')->where('transaction_id', '!=', '');
+        }
+
         $orders = $query->latest()->paginate(8);
         return view('admin.orders.index', compact('orders'));
     }
@@ -153,6 +161,14 @@ class OrderController extends Controller
         $request->validate([
             'status' => 'required|in:pending,processing,shipped,delivered,completed,cancelled'
         ]);
+
+        if ($request->has('mark_paid') && $request->mark_paid == 1) {
+            $order->update([
+                'payment_status' => 'paid',
+                'status' => $request->status ?? $order->status // Optional status update
+            ]);
+            return redirect()->back()->with('success', "Payment verified and order updated.");
+        }
 
         $order->update(['status' => $request->status]);
 

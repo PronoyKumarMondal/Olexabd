@@ -71,6 +71,15 @@
                             </span>
                         </div>
                     </div>
+                    @if($order->transaction_id)
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small text-uppercase">Manual Payment</label>
+                        <div>
+                            <span class="badge bg-light text-dark border me-1">TrxID: {{ $order->transaction_id }}</span>
+                            <span class="badge bg-light text-dark border">No: {{ $order->payment_number }}</span>
+                        </div>
+                    </div>
+                    @endif
                     <div class="col-md-6 mb-3">
                         <label class="text-muted small text-uppercase">Payment Status</label>
                         <div>
@@ -123,6 +132,23 @@
                         </div>
                     @endif
                 </form>
+
+                @if($order->payment_status === 'unpaid' && $order->transaction_id && (Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('order_edit')))
+                <hr>
+                <form action="{{ route('admin.orders.update', $order) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="mark_paid" value="1">
+                    <input type="hidden" name="status" value="processing"> 
+                    
+                    <div class="d-grid">
+                        <small class="text-muted mb-2 text-center">Verify Transaction: <strong>{{ $order->transaction_id }}</strong></small>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check2-circle"></i> Verify & Mark Paid
+                        </button>
+                    </div>
+                </form>
+                @endif
             </div>
         </div>
 

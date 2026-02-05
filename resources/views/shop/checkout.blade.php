@@ -339,7 +339,11 @@
         numInput.removeAttribute('required');
         trxInput.removeAttribute('required');
 
+        const numLabel = document.querySelector('label[for="payment_number"]');
+
         if (method === 'cod') {
+            numLabel.innerHTML = 'Sender Phone Number <span class="text-danger">*</span>';
+             // ... existing cod logic ...
             if (currentCharge > 0) {
                 section.classList.remove('d-none');
                 section.classList.add('alert-warning');
@@ -361,6 +365,7 @@
                 inputs.classList.add('d-none'); // Hide inputs for free COD
             }
         } else if (method === 'bkash') {
+            numLabel.innerHTML = 'Sender Phone Number <span class="text-danger">*</span>';
             section.classList.remove('d-none');
             section.classList.add('alert-info');
             instruction.innerHTML = `
@@ -372,6 +377,7 @@
             numInput.setAttribute('required', 'required');
             trxInput.setAttribute('required', 'required');
         } else if (method === 'bank') {
+            numLabel.innerHTML = 'Sender Account Number <span class="text-danger">*</span>';
             section.classList.remove('d-none');
             section.classList.add('alert-info');
             instruction.innerHTML = `
