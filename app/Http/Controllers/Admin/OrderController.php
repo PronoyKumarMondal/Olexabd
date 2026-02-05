@@ -178,6 +178,14 @@ class OrderController extends Controller
             return redirect()->back()->with('success', $flashMessage);
         }
 
+        if ($request->has('mark_fully_paid') && $request->mark_fully_paid == 1) {
+            $order->update([
+                'payment_status' => 'paid',
+                'status' => 'completed' // Usually payment collection happens at completion
+            ]);
+            return redirect()->back()->with('success', "Order marked as Fully Paid and Completed.");
+        }
+
         $order->update(['status' => $request->status]);
 
         return redirect()->back()->with('success', "Order #{$order->id} status updated to " . ucfirst($request->status));

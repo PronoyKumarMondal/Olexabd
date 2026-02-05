@@ -160,6 +160,22 @@
                         </button>
                     </div>
                 </form>
+            @endif
+
+                @if($order->payment_status === 'partial' && (Auth::guard('admin')->user()->isSuperAdmin() || Auth::guard('admin')->user()->hasPermission('order_edit')))
+                <hr>
+                <form action="{{ route('admin.orders.update', $order) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="mark_fully_paid" value="1">
+                    
+                    <div class="d-grid">
+                        <small class="text-muted mb-2 text-center">Cash Collected? Clear Due Amount.</small>
+                        <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you have received the full cash amount? This will mark the order as PAID and COMPLETED.')">
+                            <i class="bi bi-cash-stack"></i> Mark as Fully Paid
+                        </button>
+                    </div>
+                </form>
                 @endif
             </div>
         </div>
