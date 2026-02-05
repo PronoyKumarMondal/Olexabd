@@ -42,7 +42,7 @@
                                             </div>
                                         @endif
                                         <div>
-                                            <h6 class="fw-bold mb-0 text-dark">{{ $item->product_name }}</h6>
+                                            <h6 class="fw-bold mb-0 text-dark">{{ $item->product->name ?? 'Product Unavailable' }}</h6>
                                             @if($item->product)
                                             <a href="{{ route('shop.show', $item->product->slug) }}" class="text-decoration-none small">View Product</a>
                                             @endif
@@ -64,7 +64,11 @@
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Shipping</span>
-                        <span class="text-success fw-bold">Free</span>
+                        @if($order->delivery_charge > 0)
+                            <span class="fw-bold">৳{{ $order->delivery_charge }}</span>
+                        @else
+                            <span class="text-success fw-bold">Free</span>
+                        @endif
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between">
