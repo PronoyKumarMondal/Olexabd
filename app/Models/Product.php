@@ -11,7 +11,7 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'category_id', 'name', 'slug', 'description', 'price', 'stock', 
+        'category_id', 'sub_category_id', 'name', 'slug', 'description', 'price', 'stock', 
         'image', 'is_active', 'is_featured', 'specifications', 'code',
         'discount_price', 'discount_percentage', 'is_active', 'is_featured', 
         'views', 'is_free_delivery', 'commission_amount', 'commission_percentage'];
@@ -79,6 +79,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function subCategory()
+    {
+        return $this->belongsTo(Category::class, 'sub_category_id');
     }
     public function images()
     {

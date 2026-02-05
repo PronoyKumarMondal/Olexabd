@@ -60,6 +60,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'category_id' => 'required|exists:categories,id',
+            'sub_category_id' => 'nullable|exists:categories,id',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image_file' => 'nullable|image|max:10240', // 10MB
@@ -132,6 +133,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'category_id' => 'required|exists:categories,id',
+            'sub_category_id' => 'nullable|exists:categories,id',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image_file' => 'nullable|image|max:10240', // 10MB

@@ -62,10 +62,17 @@ class ShopController extends Controller
         $title = $category->name;
         $children = $category->children()->where('is_active', true)->withCount('products')->get();
         
-        $products = $category->products()
-            ->where('is_active', true)
-            ->latest()
-            ->paginate(12);
+        $products = Product::where('is_active', true);
+
+        if ($category->parent_id) {
+            // It's a sub-category: Match exactly sub_category_id
+            $products->where('sub_category_id', $category->id);
+        } else {
+            // It's a parent-category: Match category_id (Parent)
+            $products->where('category_id', $category->id);
+        }
+
+        $products = $products->latest()->paginate(12);
             
         return view('shop.listing', compact('title', 'products', 'children', 'category'));
     }

@@ -16,7 +16,7 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
                     <label class="form-label">Category <span class="text-danger">*</span></label>
-                    <select id="main_category" class="form-select" required>
+                    <select name="category_id" id="main_category" class="form-select" required>
                         <option value="">Select Category</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -25,12 +25,10 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Sub Category (Optional)</label>
-                    <select id="sub_category" class="form-select" disabled>
+                    <select name="sub_category_id" id="sub_category" class="form-select" disabled>
                         <option value="">Select Sub Category</option>
                     </select>
                 </div>
-                <!-- Actual Input sent to Backend -->
-                <input type="hidden" name="category_id" id="final_category_id" required>
             </div>
 
             <script>
@@ -38,11 +36,9 @@
                     const categories = @json($categories);
                     const mainCat = document.getElementById('main_category');
                     const subCat = document.getElementById('sub_category');
-                    const finalInput = document.getElementById('final_category_id');
 
                     mainCat.addEventListener('change', function() {
                         const selectedId = this.value;
-                        finalInput.value = selectedId; // Default to parent
                         
                         subCat.innerHTML = '<option value="">Select Sub Category</option>';
                         subCat.disabled = true;
@@ -55,18 +51,9 @@
                                     const option = document.createElement('option');
                                     option.value = child.id;
                                     option.textContent = child.name;
-                                    option.dataset.parentId = selectedId;
                                     subCat.appendChild(option);
                                 });
                             }
-                        }
-                    });
-
-                    subCat.addEventListener('change', function() {
-                        if (this.value) {
-                            finalInput.value = this.value; // Override with child
-                        } else {
-                            finalInput.value = mainCat.value; // Fallback to parent
                         }
                     });
                 });

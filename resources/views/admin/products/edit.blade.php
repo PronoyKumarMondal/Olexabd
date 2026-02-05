@@ -14,18 +14,62 @@
                 <input type="text" name="name" class="form-control" value="{{ $product->name }}" required>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Category <span class="text-danger">*</span></label>
-                <select name="category_id" class="form-select" required>
-                    <option value="">Select Category</option>
-                    @foreach($categories as $parent)
-                        <option value="{{ $parent->id }}" class="fw-bold" {{ $product->category_id == $parent->id ? 'selected' : '' }}>{{ $parent->name }}</option>
-                        @foreach($parent->children as $child)
-                            <option value="{{ $child->id }}" {{ $product->category_id == $child->id ? 'selected' : '' }}>{{ $parent->name }} / {{ $child->name }}</option>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Category <span class="text-danger">*</span></label>
+                    <select name="category_id" id="main_category" class="form-select" required>
+                        <option value="">Select Category</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}" {{ $product->category_id == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                         @endforeach
-                    @endforeach
-                </select>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Sub Category (Optional)</label>
+                    <select name="sub_category_id" id="sub_category" class="form-select" {{ $product->category_id ? '' : 'disabled' }}>
+                        <option value="">Select Sub Category</option>
+                        {{-- Pre-populate if parent is selected --}}
+                        @if($product->category_id)
+                            @php
+                                $parent = $categories->find($product->category_id);
+                            @endphp
+                            @if($parent && $parent->children->count() > 0)
+                                @foreach($parent->children as $child)
+                                    <option value="{{ $child->id }}" {{ $product->sub_category_id == $child->id ? 'selected' : '' }}>{{ $child->name }}</option>
+                                @endforeach
+                            @endif
+                        @endif
+                    </select>
+                </div>
             </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const categories = @json($categories);
+                    const mainCat = document.getElementById('main_category');
+                    const subCat = document.getElementById('sub_category');
+
+                    mainCat.addEventListener('change', function() {
+                        const selectedId = this.value;
+                        
+                        subCat.innerHTML = '<option value="">Select Sub Category</option>';
+                        subCat.disabled = true;
+
+                        if (selectedId) {
+                            const category = categories.find(c => c.id == selectedId);
+                            if (category && category.children && category.children.length > 0) {
+                                subCat.disabled = false;
+                                category.children.forEach(child => {
+                                    const option = document.createElement('option');
+                                    option.value = child.id;
+                                    option.textContent = child.name;
+                                    subCat.appendChild(option);
+                                });
+                            }
+                        }
+                    });
+                });
+            </script>
 
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
