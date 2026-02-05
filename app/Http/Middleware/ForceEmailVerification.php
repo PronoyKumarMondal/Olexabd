@@ -19,7 +19,9 @@ class ForceEmailVerification
             // Check FRESH user from DB (in case they verified in another tab)
             if (!Auth::user()->fresh()->hasVerifiedEmail()) {
                 // Allow access only to verification routes and logout
+                // Allow access to verification routes, phone verification, and logout
                 if (!$request->routeIs('verification.*') && 
+                    !$request->routeIs('auth.phone.*') &&
                     !$request->routeIs('logout')) {
                     return redirect()->route('verification.notice');
                 }

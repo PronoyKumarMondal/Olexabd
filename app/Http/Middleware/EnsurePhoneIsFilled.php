@@ -18,7 +18,10 @@ class EnsurePhoneIsFilled
     {
         if (Auth::check() && empty(Auth::user()->phone)) {
             // Prevent infinite loop if already on verify page
-            if (!$request->routeIs('auth.phone.*') && !$request->routeIs('logout')) {
+            // Prevent infinite loop if already on verify page or email verify page
+            if (!$request->routeIs('auth.phone.*') && 
+                !$request->routeIs('verification.*') && 
+                !$request->routeIs('logout')) {
                 return redirect()->route('auth.phone.form');
             }
         }
