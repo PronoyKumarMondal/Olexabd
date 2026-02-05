@@ -72,6 +72,14 @@ Route::group([], function () {
         return redirect()->route('shop.index');
     })->middleware(['auth', 'verified'])->name('dashboard');
 
+    // Static Pages
+    Route::controller(\App\Http\Controllers\PageController::class)->group(function () {
+        Route::get('/contact-us', 'contact')->name('pages.contact');
+        Route::get('/return-warranty-policy', 'returnWarranty')->name('pages.return_warranty');
+        Route::get('/terms-conditions', 'terms')->name('pages.terms');
+        Route::get('/privacy-policy', 'privacy')->name('pages.privacy');
+    });
+
     // Tracking
     Route::get('/track-order', [OrderController::class, 'track'])->name('orders.track');
     Route::post('/track-order', [OrderController::class, 'trackOrder'])->name('orders.track.submit');

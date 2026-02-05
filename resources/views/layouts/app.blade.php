@@ -361,10 +361,10 @@
 
                 <div class="col-lg-2 col-md-6">
                     <h6 class="footer-heading">Support</h6>
-                    <a href="{{ route('orders.track') }}" class="footer-link">Track Order</a>
-                    <a href="#" class="footer-link">Return Policy</a>
-                    <a href="#" class="footer-link">Warranty Claim</a>
-                    <a href="#" class="footer-link">Contact Us</a>
+                    <a href="{{ route('pages.privacy') }}" class="footer-link">Privacy Policy</a>
+                    <a href="{{ route('pages.return_warranty') }}" class="footer-link">Return & Warranty</a>
+                    <a href="{{ route('pages.terms') }}" class="footer-link">Terms & Conditions</a>
+                    <a href="{{ route('pages.contact') }}" class="footer-link">Contact Us</a>
                 </div>
 
                 <div class="col-lg-4 col-md-6">
@@ -372,7 +372,7 @@
                     <p class="small opacity-75">Subscribe to get special offers and updates.</p>
                     <form class="position-relative">
                         <input type="email" class="form-control rounded-pill bg-white border-0 py-3 ps-4" placeholder="Your email address">
-                        <button class="btn btn-primary rounded-pill position-absolute top-0 end-0 m-1 px-4 py-2">Join</button>
+                        <button class="btn btn-primary rounded-pill position-absolute top-50 end-0 translate-middle-y m-1 px-4 py-2">Join</button>
                     </form>
                 </div>
             </div>
