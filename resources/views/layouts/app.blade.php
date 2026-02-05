@@ -165,7 +165,7 @@
                             <ul class="dropdown-menu dropdown-menu-lg-end border-0 shadow-lg p-2 mt-2" style="width: 200px;">
                                 <li class="px-3 py-2 border-bottom mb-2">
                                     <div class="fw-bold">{{ Auth::user()->name }}</div>
-                                    <small class="text-muted" style="font-size: 0.75rem;">{{ Auth::user()->email }}</small>
+                                    <small class="text-muted d-block text-truncate" style="font-size: 0.75rem;" title="{{ Auth::user()->email }}">{{ Auth::user()->email }}</small>
                                 </li>
                                 @if(Auth::user()->is_admin)
                                     <li><a class="dropdown-item rounded-2 text-primary fw-bold" href="{{ route('admin.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Admin Panel</a></li>
