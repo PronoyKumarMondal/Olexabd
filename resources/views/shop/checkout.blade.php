@@ -93,7 +93,7 @@
                                 <div class="col-12 col-md-4">
                                     <input type="radio" class="btn-check" name="payment_method" id="method_bkash" value="bkash" onchange="updatePaymentUI()">
                                     <label class="btn btn-outline-light border text-start p-3 w-100 h-100 d-flex flex-column align-items-center justify-content-center gap-2 rounded-3 method-card" for="method_bkash">
-                                        <img src="https://searchvectorlogo.com/wp-content/uploads/2025/02/bkash-logo-vector.svg" height="40" alt="bKash">
+                                        <img src="https://images.seeklogo.com/logo-png/27/1/bkash-logo-png_seeklogo-273684.png" height="40" alt="bKash">
                                         <span class="fw-bold text-dark">bKash Personal</span>
                                     </label>
                                 </div>
@@ -204,9 +204,9 @@
                             Confirmed Order <i class="bi bi-check-lg ms-2"></i>
                         </button>
                         
-                        <div class="text-center mt-3">
+                        <!-- <div class="text-center mt-3">
                             <small class="text-muted"><i class="bi bi-shield-lock me-1"></i> SSL Secure Payment</small>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
