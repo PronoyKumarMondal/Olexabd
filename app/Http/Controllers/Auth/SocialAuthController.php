@@ -35,6 +35,10 @@ class SocialAuthController extends Controller
             if (!$user->google_id) {
                 $user->update(['google_id' => $googleUser->getId()]);
             }
+            // Trust Google: Mark email as verified if not already
+            if (!$user->email_verified_at) {
+                $user->markEmailAsVerified();
+            }
         } else {
             // Create New User
             $user = User::create([
@@ -44,9 +48,9 @@ class SocialAuthController extends Controller
                 'password' => Hash::make(Str::random(24)), // Random password
                 'phone' => null, // Needs input
                 'address' => null, // Optional initially, but can be asked later
-                 // If role/source needed, default to customer/google
                 'role' => 'customer',
-                'source' => 'google'
+                'source' => 'google',
+                'email_verified_at' => now(), // Google emails are verified
             ]);
         }
 
