@@ -49,9 +49,9 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="text-center">৳{{ $item->price }}</td>
+                                <td class="text-center">৳{{ $item->unit_price }}</td>
                                 <td class="text-center">{{ $item->quantity }}</td>
-                                <td class="pe-4 text-end fw-bold">৳{{ $item->price * $item->quantity }}</td>
+                                <td class="pe-4 text-end fw-bold">৳{{ $item->unit_price * $item->quantity }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -60,12 +60,25 @@
                 <div class="card-footer bg-white p-4">
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Subtotal</span>
-                        <span class="fw-bold">৳{{ $order->total_amount }}</span>
+                        @php
+                            $subtotal = $order->items->sum(function($item) {
+                                return $item->unit_price * $item->quantity;
+                            });
+                        @endphp
+                        <span class="fw-bold">৳{{ number_format($subtotal, 2) }}</span>
                     </div>
+
+                    @if($order->discount_amount > 0)
+                    <div class="d-flex justify-content-between mb-2 text-success">
+                        <span class="text-muted">Discount ({{ $order->coupon_code }})</span>
+                        <span class="fw-bold">-৳{{ number_format($order->discount_amount, 2) }}</span>
+                    </div>
+                    @endif
+
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Shipping</span>
                         @if($order->delivery_charge > 0)
-                            <span class="fw-bold">৳{{ $order->delivery_charge }}</span>
+                            <span class="fw-bold">৳{{ number_format($order->delivery_charge, 2) }}</span>
                         @else
                             <span class="text-success fw-bold">Free</span>
                         @endif
@@ -73,7 +86,7 @@
                     <hr>
                     <div class="d-flex justify-content-between">
                         <span class="h5 fw-bold mb-0">Total</span>
-                        <span class="h5 fw-bold mb-0 text-primary">৳{{ $order->total_amount }}</span>
+                        <span class="h5 fw-bold mb-0 text-primary">৳{{ number_format($order->total_amount, 2) }}</span>
                     </div>
                 </div>
             </div>
