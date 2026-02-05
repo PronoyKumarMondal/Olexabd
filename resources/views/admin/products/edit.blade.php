@@ -179,124 +179,118 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        ClassicEditor
-            .create(document.querySelector('#description'), {
-                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'undo', 'redo'],
-                heading: {
-                    options: [
-                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
-                    ]
-                }
-            })
-            .catch(error => {
-                console.error(error);
+        // CKEditor
+        ClassicEditor.create(document.querySelector('#description'), {
+            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'undo', 'redo']
+        }).catch(error => console.error(error));
+
+        // Drag & Drop
+        const dropZone = document.querySelector('.image-upload-zone');
+        const input = document.getElementById('imageInput');
+        const previewArea = document.getElementById('preview-area');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        if(dropZone && input) {
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = '#4f46e5';
+                dropZone.style.backgroundColor = '#eef2ff';
             });
-    });
-
-    // Simple Drag & Drop & Preview Script
-    const dropZone = document.querySelector('.image-upload-zone');
-    const input = document.getElementById('imageInput');
-
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = '#4f46e5';
-        dropZone.style.backgroundColor = '#eef2ff';
-    });
-
-    dropZone.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = '#ccc';
-        dropZone.style.backgroundColor = '#f8f9fa';
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = '#ccc';
-        dropZone.style.backgroundColor = '#f8f9fa';
-        
-        if (e.dataTransfer.files.length) {
-            input.files = e.dataTransfer.files;
-            previewImage(input);
+            dropZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = '#ccc';
+                dropZone.style.backgroundColor = '#f8f9fa';
+            });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = '#ccc';
+                dropZone.style.backgroundColor = '#f8f9fa';
+                if (e.dataTransfer.files.length) {
+                    input.files = e.dataTransfer.files;
+                    previewImage(input);
+                }
+            });
         }
-    });
 
-    function previewImage(input) {
-        if (input.files && input.files[0]) {
-            const fileName = input.files[0].name;
-            document.getElementById('file-name').innerText = fileName;
-            document.getElementById('preview-area').classList.remove('d-none');
-        }
-    }
-
-    function previewIndividual(input, imgId) {
-        const img = document.getElementById(imgId);
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                img.src = e.target.result;
-                img.classList.remove('d-none');
+        window.previewImage = function(input) {
+            if (input.files && input.files[0]) {
+                fileNameDisplay.innerText = input.files[0].name;
+                previewArea.classList.remove('d-none');
             }
-            reader.readAsDataURL(input.files[0]);
-        } else {
-            img.src = '';
-            img.classList.add('d-none');
+        };
+
+        window.previewIndividual = function(input, imgId) {
+            const img = document.getElementById(imgId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    img.classList.remove('d-none');
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                img.src = '';
+                img.classList.add('d-none');
+            }
+        };
+
+        // Price Input Shared Reference
+        const priceInput = document.querySelector('input[name="price"]');
+
+        // Discount Calculation
+        const discountInput = document.getElementById('discountPrice');
+        const percentDisplay = document.getElementById('discountPercent');
+
+        function calcDiscount() {
+            if(!discountInput || !priceInput) return;
+            
+            const price = parseFloat(priceInput.value) || 0;
+            const discount = parseFloat(discountInput.value) || 0;
+
+            if (price > 0 && discount > 0 && discount < price) {
+                const percent = Math.round(((price - discount) / price) * 100);
+                percentDisplay.innerText = percent + "% OFF";
+            } else {
+                if(percentDisplay) percentDisplay.innerText = "";
+            }
         }
-    }
 
-    // Discount Calculation
-    const priceInput = document.querySelector('input[name="price"]');
-    const discountInput = document.getElementById('discountPrice');
-    const percentDisplay = document.getElementById('discountPercent');
-
-    function calcDiscount() {
-        if(!discountInput) return;
-        
-        const price = parseFloat(priceInput.value) || 0;
-        const discount = parseFloat(discountInput.value) || 0;
-
-        if (price > 0 && discount > 0 && discount < price) {
-            const percent = Math.round(((price - discount) / price) * 100);
-            percentDisplay.innerText = percent + "% OFF";
-        } else {
-            percentDisplay.innerText = "";
+        if(priceInput && discountInput) {
+            priceInput.addEventListener('input', calcDiscount);
+            discountInput.addEventListener('input', calcDiscount);
+            calcDiscount(); // Initial Run
         }
-    }
 
-    if(priceInput && discountInput) {
-        priceInput.addEventListener('input', calcDiscount);
-        discountInput.addEventListener('input', calcDiscount);
-        calcDiscount(); // Run on load
-    }
+        // Commission Calculation
+        const commPercent = document.getElementById('commission_percent');
+        const commAmount = document.getElementById('commission_amount');
 
-    // Commission Calculation
-    const commPercent = document.getElementById('commission_percent');
-    const commAmount = document.getElementById('commission_amount');
+        function calcCommission(source) {
+            if(!priceInput) return;
+            const price = parseFloat(priceInput.value) || 0;
+            
+            if (price <= 0) return;
 
-    function calcCommission(source) {
-        const price = parseFloat(priceInput.value) || 0;
-        
-        if (price <= 0) return;
-
-        if (source === 'percent') {
-            const percent = parseFloat(commPercent.value) || 0;
-            const amount = (price * percent) / 100;
-            commAmount.value = amount.toFixed(2);
-        } else if (source === 'amount') {
-            const amount = parseFloat(commAmount.value) || 0;
-            const percent = (amount / price) * 100;
-            commPercent.value = percent.toFixed(2);
+            if (source === 'percent') {
+                const percent = parseFloat(commPercent.value) || 0;
+                const amount = (price * percent) / 100;
+                commAmount.value = amount.toFixed(2);
+            } else if (source === 'amount') {
+                const amount = parseFloat(commAmount.value) || 0;
+                const percent = (amount / price) * 100;
+                commPercent.value = percent.toFixed(2);
+            }
         }
-    }
 
-    if (commPercent && commAmount && priceInput) {
-        commPercent.addEventListener('input', () => calcCommission('percent'));
-        commAmount.addEventListener('input', () => calcCommission('amount'));
-        priceInput.addEventListener('input', () => {
+        if (commPercent && commAmount && priceInput) {
+            commPercent.addEventListener('input', () => calcCommission('percent'));
+            commAmount.addEventListener('input', () => calcCommission('amount'));
+            priceInput.addEventListener('input', () => {
+                if(commPercent.value) calcCommission('percent');
+            });
+            // Initial Check (for edit mode generally, but good practice)
             if(commPercent.value) calcCommission('percent');
-        });
-    }
+        }
+    });
 </script>
 @endsection
