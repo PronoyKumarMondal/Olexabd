@@ -231,5 +231,35 @@
         priceInput.addEventListener('input', calcDiscount);
         discountInput.addEventListener('input', calcDiscount);
     }
+
+    // Commission Calculation
+    const commPercent = document.getElementById('commission_percent');
+    const commAmount = document.getElementById('commission_amount');
+
+    function calcCommission(source) {
+        const price = parseFloat(priceInput.value) || 0;
+        
+        if (price <= 0) return;
+
+        if (source === 'percent') {
+            const percent = parseFloat(commPercent.value) || 0;
+            const amount = (price * percent) / 100;
+            commAmount.value = amount.toFixed(2);
+        } else if (source === 'amount') {
+            const amount = parseFloat(commAmount.value) || 0;
+            const percent = (amount / price) * 100;
+            commPercent.value = percent.toFixed(2);
+        }
+    }
+
+    if (commPercent && commAmount && priceInput) {
+        commPercent.addEventListener('input', () => calcCommission('percent'));
+        commAmount.addEventListener('input', () => calcCommission('amount'));
+        priceInput.addEventListener('input', () => {
+            // Update amounts if price changes but percent stays correct? 
+            // Usually keep % constant
+            if(commPercent.value) calcCommission('percent');
+        });
+    }
 </script>
 @endsection

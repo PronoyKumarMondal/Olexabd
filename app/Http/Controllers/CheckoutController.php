@@ -188,11 +188,15 @@ class CheckoutController extends Controller
             'delivery_phone' => $request->phone,
         ];
 
+        // Calculate Due Amount
+        if ($paymentMethod == 'cod') {
+             // COD Logic: Advance Paid (Delivery Charge), Rest is Due
+             $orderData['due_amount'] = $total - $deliveryCharge;
+        } else {
+             // Paid Logic: Full Amount Paid, Due is 0
+             $orderData['due_amount'] = 0;
+        }
 
-        // Filter out keys if columns don't exist?
-        // We really should ensure columns exist. 
-        // If Migration failed, this will crash.
-        // Assuming user ran migration or I fixed it.
         $order = Order::create($orderData);
 
          foreach($cart as $id => $item) {

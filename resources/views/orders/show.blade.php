@@ -99,7 +99,7 @@
                         <div class="d-flex justify-content-between">
                             <span class="text-danger fw-bold small text-uppercase">Due Amount</span>
                             @php 
-                                $due = $order->total_amount - $order->delivery_charge;
+                                $due = $order->due_amount > 0 ? $order->due_amount : ($order->total_amount - $order->delivery_charge);
                             @endphp
                             <span class="text-danger fw-bold">৳{{ number_format($due, 2) }}</span>
                         </div>

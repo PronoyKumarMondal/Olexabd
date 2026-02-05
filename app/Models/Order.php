@@ -17,7 +17,9 @@ class Order extends Model
         'payment_status',
         'payment_method', 'shipping_address', 'order_code', 'media',
         'coupon_code', 'discount_amount', 'updated_by', 'traffic_source', 'order_portal',
-        'transaction_id', 'payment_number'
+        'transaction_id', 'payment_number', 'due_amount',
+        'delivery_division_id', 'delivery_district_id', 'delivery_upazila_id',
+        'delivery_postcode', 'delivery_address', 'delivery_phone'
     ];
 
     public static function boot()

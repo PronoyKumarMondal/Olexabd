@@ -94,7 +94,7 @@
                                     </div>
                                     <div class="d-flex justify-content-between text-danger">
                                         <span>Due:</span>
-                                        <strong>৳{{ number_format($order->total_amount - $order->delivery_charge, 2) }}</strong>
+                                        <strong>৳{{ number_format($order->due_amount > 0 ? $order->due_amount : ($order->total_amount - $order->delivery_charge), 2) }}</strong>
                                     </div>
                                 </div>
                             @else

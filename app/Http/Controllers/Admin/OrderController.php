@@ -181,7 +181,8 @@ class OrderController extends Controller
         if ($request->has('mark_fully_paid') && $request->mark_fully_paid == 1) {
             $order->update([
                 'payment_status' => 'paid',
-                'status' => 'completed' // Usually payment collection happens at completion
+                'status' => 'completed',
+                'due_amount' => 0
             ]);
             return redirect()->back()->with('success', "Order marked as Fully Paid and Completed.");
         }
