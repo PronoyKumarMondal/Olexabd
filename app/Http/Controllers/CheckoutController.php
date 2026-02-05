@@ -218,10 +218,7 @@ class CheckoutController extends Controller
             }
         }
         
-        return redirect()->route('bkash.mock_page', [
-            'amount' => $total,
-            'order_id' => 'ORD-' . $order->id,
-            'order_id_db' => $order->id
-        ]);
+        return redirect()->route('orders.show', $order)
+            ->with('success', 'Order placed successfully! Please wait for admin verification.');
     }
 }
