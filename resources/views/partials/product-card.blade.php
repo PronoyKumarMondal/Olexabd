@@ -1,5 +1,5 @@
 <div class="card h-100 border-0 shadow-sm transition-hover">
-    <div class="position-relative bg-white rounded-top" style="height: 220px;">
+    <div class="position-relative bg-white rounded-top overflow-hidden" style="aspect-ratio: 4/3;">
         @if($product->image)
             <img src="{{ $product->image }}" class="w-100 h-100 object-fit-cover" alt="{{ $product->name }}">
         @else
