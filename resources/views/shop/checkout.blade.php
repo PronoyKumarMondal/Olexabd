@@ -95,7 +95,7 @@
                                 
                                 <div id="trx-inputs" class="d-none">
                                     <div class="mb-3">
-                                        <label class="form-label">Sender Phone Number <span class="text-danger">*</span></label>
+                                        <label class="form-label" for="payment_number">Sender Phone Number <span class="text-danger">*</span></label>
                                         <input type="text" name="payment_number" id="payment_number" class="form-control" placeholder="01XXXXXXXXX">
                                     </div>
                                     <div class="mb-3">
