@@ -61,6 +61,52 @@
                                 <textarea name="address" class="form-control" rows="3" placeholder="House #, Road #, Block/Sector, Ward No, etc." required></textarea>
                             </div>
 
+                            <!-- Payment Method Section -->
+                            <hr class="my-4">
+                            <h5 class="fw-bold mb-3">Payment Method</h5>
+                            
+                            <div class="mb-3">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="method_cod" value="cod" checked onchange="updatePaymentUI()">
+                                    <label class="form-check-label fw-bold" for="method_cod">
+                                        Cash on Delivery (COD)
+                                    </label>
+                                    <div class="small text-muted ms-2">Pay delivery charge in advance if applicable.</div>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="method_bkash" value="bkash" onchange="updatePaymentUI()">
+                                    <label class="form-check-label fw-bold" for="method_bkash">
+                                        bKash Personal
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="method_bank" value="bank" onchange="updatePaymentUI()">
+                                    <label class="form-check-label fw-bold" for="method_bank">
+                                        Bank Transfer
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Payment Instructions & Inputs -->
+                            <div id="payment-details-section" class="alert alert-light border p-3 rounded-3 d-none">
+                                <div id="payment-instruction-text" class="mb-3">
+                                    <!-- Dynamic Text -->
+                                </div>
+                                
+                                <div id="trx-inputs" class="d-none">
+                                    <div class="mb-3">
+                                        <label class="form-label">Sender Phone Number <span class="text-danger">*</span></label>
+                                        <input type="text" name="payment_number" id="payment_number" class="form-control" placeholder="01XXXXXXXXX">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Transaction ID (TrxID) <span class="text-danger">*</span></label>
+                                        <input type="text" name="transaction_id" id="transaction_id" class="form-control" placeholder="e.g. 8J7S6D5F">
+                                    </div>
+                                    <small class="text-muted">Admin will verify this information before confirming order.</small>
+                                </div>
+                            </div>
+
+
                             <button type="submit" class="btn btn-dark w-100 rounded-pill py-3 fw-bold shadow-lg">
                                 Place Order
                             </button>
@@ -260,6 +306,86 @@
         
         infoBox.classList.remove('d-none');
         infoText.innerText = `${details} Rate Applied.`;
+        
+        // Update Payment UI after charge calc
+        updatePaymentUI(charge);
+    }
+
+    function updatePaymentUI(chargeOverride = null) {
+        // Get current charge logic if not passed
+        let currentCharge = chargeOverride;
+        if (currentCharge === null) {
+             const display = document.getElementById('shipping-display');
+             // Parse from display text logic or global logic
+             // Simpler: Recalculate or use global var if available. 
+             // We'll rely on global recalculation call mostly.
+             // But let's check the display text if it's "Free" or a number
+             const displayText = display.innerText;
+             if (displayText.includes('Free')) currentCharge = 0;
+             else if (displayText.includes('...')) currentCharge = 0; // Default
+             else currentCharge = parseInt(displayText.replace(/[^\d]/g, '')) || 0;
+        }
+
+        const method = document.querySelector('input[name="payment_method"]:checked').value;
+        const section = document.getElementById('payment-details-section');
+        const instruction = document.getElementById('payment-instruction-text');
+        const inputs = document.getElementById('trx-inputs');
+        const numInput = document.getElementById('payment_number');
+        const trxInput = document.getElementById('transaction_id');
+        const total = currentTotal + currentCharge;
+
+        section.classList.remove('d-none', 'alert-warning', 'alert-info', 'alert-success');
+        inputs.classList.add('d-none');
+        numInput.removeAttribute('required');
+        trxInput.removeAttribute('required');
+
+        if (method === 'cod') {
+            if (currentCharge > 0) {
+                section.classList.remove('d-none');
+                section.classList.add('alert-warning');
+                instruction.innerHTML = `
+                    <strong>Advance Payment Required:</strong> ৳${currentCharge}<br>
+                    Please pay the delivery charge to confirm your order.<br>
+                    <strong>bKash/Nagad:</strong> 019XXXXXXXX (Personal)<br>
+                    <hr class="my-2">
+                    <strong>Bank:</strong> City Bank | <strong>A/C:</strong> 1234567890<br>
+                    <strong>Branch:</strong> Gulshan | <strong>Routing:</strong> 123456789
+                `;
+                inputs.classList.remove('d-none');
+                numInput.setAttribute('required', 'required');
+                trxInput.setAttribute('required', 'required');
+            } else {
+                section.classList.remove('d-none');
+                section.classList.add('alert-success');
+                instruction.innerHTML = `<strong>Free Delivery Enabled!</strong> No advance payment required. Just place the order.`;
+                inputs.classList.add('d-none'); // Hide inputs for free COD
+            }
+        } else if (method === 'bkash') {
+            section.classList.remove('d-none');
+            section.classList.add('alert-info');
+            instruction.innerHTML = `
+                <strong>Total Amount:</strong> ৳${total}<br>
+                Send Money to <strong>bKash Personal: 019XXXXXXXX</strong><br>
+                Use Reference: <em>Order</em>
+            `;
+            inputs.classList.remove('d-none');
+            numInput.setAttribute('required', 'required');
+            trxInput.setAttribute('required', 'required');
+        } else if (method === 'bank') {
+            section.classList.remove('d-none');
+            section.classList.add('alert-info');
+            instruction.innerHTML = `
+                <strong>Total Amount:</strong> ৳${total}<br>
+                <strong>Bank:</strong> City Bank<br>
+                <strong>A/C Name:</strong> OlexaBD<br>
+                <strong>A/C No:</strong> 1234567890<br>
+                <strong>Branch:</strong> Gulshan<br>
+                <strong>Routing:</strong> 123456789
+            `;
+            inputs.classList.remove('d-none');
+            numInput.setAttribute('required', 'required');
+            trxInput.setAttribute('required', 'required');
+        }
     }
 </script>
 @endsection

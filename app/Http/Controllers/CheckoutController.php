@@ -44,15 +44,21 @@ class CheckoutController extends Controller
 
     public function placeOrder(Request $request)
     {
+        // Initial Validation
         $request->validate([
-            'division' => 'required|exists:divisions,id', // Division ID
-            'district' => 'required|exists:districts,id', // District ID
-            'upazila' => 'required|exists:upazilas,id',   // Upazila ID (includes City Corp areas)
-            'address' => 'required|string', // Mandatory as per user
+            'division' => 'required|exists:divisions,id',
+            'district' => 'required|exists:districts,id',
+            'upazila' => 'required|exists:upazilas,id',
+            'address' => 'required|string',
             'phone' => 'required|regex:/(01)[0-9]{9}/',
             'name' => 'required|string',
-            'postcode' => 'required|string' // Mandatory now
+            'postcode' => 'required|string',
+            'payment_method' => 'required|in:cod,bkash,bank',
+            // Conditionals handled below or via complex rule
         ]);
+
+        // ... delivery calculation ... (keep existing code for safe keeping, referencing logical flow)
+
 
         $mode = $request->input('mode', 'cart');
         if ($mode == 'buy_now') {
@@ -119,12 +125,30 @@ class CheckoutController extends Controller
              if($discount > $subtotal) $discount = $subtotal;
         }
 
+        // ... existing delivery calculation logic ...
+
         $total = $subtotal + $deliveryCharge - $discount;
 
-        // Construct Address String for Snapshot (Legacy support + ease of view)
-        // Also ensure we save IDs if columns exist (we'll assume they do or add them)
-        // Check Schema columns existence dynamically or just try to save?
-        // Better to save IDs to new columns.
+        // Custom Validation for Manual Payment
+        $paymentMethod = $request->input('payment_method');
+        $trxId = $request->input('transaction_id');
+        $paymentNumber = $request->input('payment_number');
+
+        if ($paymentMethod == 'cod') {
+             // For COD, if delivery charge > 0, we need Advance Payment Logic
+             if ($deliveryCharge > 0) {
+                 if (empty($trxId) || empty($paymentNumber)) {
+                     return back()->withInput()->with('error', 'For COD outside free delivery, please pay the delivery charge in advance and provide TrxID.');
+                 }
+             }
+        } elseif ($paymentMethod == 'bkash' || $paymentMethod == 'bank') {
+             // Full Payment Required
+             if (empty($trxId) || empty($paymentNumber)) {
+                 return back()->withInput()->with('error', 'Please complete the payment and provide Transaction ID & Sender Number.');
+             }
+        }
+
+        // ... address construction ...
         $division = DB::table('divisions')->find($request->division);
         $district = DB::table('districts')->find($request->district);
         
@@ -132,6 +156,12 @@ class CheckoutController extends Controller
         $fullAddress .= "Address: " . $request->address . "\n";
         $fullAddress .= "Postcode: " . $request->postcode . "\n";
         $fullAddress .= "Location: " . ($upazila->name ?? '') . ", " . ($district->name ?? '') . ", " . ($division->name ?? '');
+
+        // Determine Payment Status
+        $paymentStatus = 'unpaid';
+        // Note: Even if they paid, we mark it 'unpaid' until Admin verifies.
+        // Or we could have a 'reviewing' status if DB supports it. 
+        // Keeping 'unpaid' is safer as requested.
 
         // Create Order
         $orderData = [
@@ -141,9 +171,11 @@ class CheckoutController extends Controller
             'coupon_code' => $couponCode,
             'discount_amount' => $discount,
             'status' => 'pending',
-            'payment_status' => 'unpaid',
+            'payment_status' => $paymentStatus,
             'shipping_address' => $fullAddress,
-            'payment_method' => 'cod', 
+            'payment_method' => $paymentMethod,  // Dynamic
+            'transaction_id' => $trxId,          // New
+            'payment_number' => $paymentNumber,  // New
             'media' => session('order_platform', 'web'),
             'traffic_source' => session('order_campaign'),
             'order_portal' => 'Web Checkout',
@@ -155,6 +187,7 @@ class CheckoutController extends Controller
             'delivery_address' => $request->address,
             'delivery_phone' => $request->phone,
         ];
+
 
         // Filter out keys if columns don't exist?
         // We really should ensure columns exist. 

@@ -49,10 +49,10 @@ To enable "Continue with Google", you need to create a project in the Google Clo
 Open your `.env` file in the project root and add these lines:
 
 ```env
-GOOGLE_CLIENT_ID=your-client-id-here
+
+```GOOGLE_CLIENT_ID=your-client-id-here
 GOOGLE_CLIENT_SECRET=your-client-secret-here
 GOOGLE_REDIRECT_URL=https://olexabd.com/auth/google/callback
-```
 *(Use `http://localhost:8000/auth/google/callback` if testing locally)*
 
 ---
