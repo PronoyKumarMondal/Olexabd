@@ -50,8 +50,10 @@ class SocialAuthController extends Controller
                 'address' => null, // Optional initially, but can be asked later
                 'role' => 'customer',
                 'source' => 'google',
-                'email_verified_at' => now(), // Google emails are verified
             ]);
+            
+            // Mark as verify explicitly (since email_verified_at is not guarded usually, but might be fillable issue)
+            $user->markEmailAsVerified();
         }
 
         Auth::login($user);
