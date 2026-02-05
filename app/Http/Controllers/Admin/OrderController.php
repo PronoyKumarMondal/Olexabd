@@ -163,11 +163,19 @@ class OrderController extends Controller
         ]);
 
         if ($request->has('mark_paid') && $request->mark_paid == 1) {
+            $newPaymentStatus = 'paid';
+            $flashMessage = "Payment verified and order updated.";
+
+            if ($order->payment_method === 'cod') {
+                $newPaymentStatus = 'partial';
+                $flashMessage = "Advance payment verified. Order marked as Partial Paid.";
+            }
+
             $order->update([
-                'payment_status' => 'paid',
-                'status' => $request->status ?? $order->status // Optional status update
+                'payment_status' => $newPaymentStatus,
+                'status' => $request->status ?? $order->status
             ]);
-            return redirect()->back()->with('success', "Payment verified and order updated.");
+            return redirect()->back()->with('success', $flashMessage);
         }
 
         $order->update(['status' => $request->status]);

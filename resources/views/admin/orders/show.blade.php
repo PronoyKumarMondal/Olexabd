@@ -85,6 +85,9 @@
                         <div>
                             @if($order->payment_status === 'paid')
                                 <span class="badge bg-success">Paid</span>
+                            @elseif($order->payment_status === 'partial')
+                                <span class="badge bg-info text-dark">Partial Paid</span>
+                                <div class="small mt-1 text-muted">adv. paid</div>
                             @else
                                 <span class="badge bg-warning text-dark">Unpaid</span>
                             @endif

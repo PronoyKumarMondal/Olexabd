@@ -88,6 +88,23 @@
                         <span class="h5 fw-bold mb-0">Total</span>
                         <span class="h5 fw-bold mb-0 text-primary">৳{{ number_format($order->total_amount, 2) }}</span>
                     </div>
+
+                    @if($order->payment_status == 'partial' || ($order->payment_method == 'cod' && $order->transaction_id && $order->payment_status != 'paid')) 
+                    <hr class="border-secondary border-opacity-10 my-3">
+                    <div class="bg-light p-3 rounded-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-success fw-bold small text-uppercase">Paid (Advance)</span>
+                            <span class="text-success fw-bold">৳{{ number_format($order->delivery_charge, 2) }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-danger fw-bold small text-uppercase">Due Amount</span>
+                            @php 
+                                $due = $order->total_amount - $order->delivery_charge;
+                            @endphp
+                            <span class="text-danger fw-bold">৳{{ number_format($due, 2) }}</span>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -119,6 +136,8 @@
                     <h6 class="fw-bold mb-2">Payment Status</h6>
                     @if($order->payment_status == 'paid')
                         <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Paid via {{ $order->payment_method ?? 'Gateway' }}</span>
+                    @elseif($order->payment_status == 'partial')
+                        <span class="badge bg-info bg-opacity-10 text-info px-3 py-2 rounded-pill">Partial Paid (Advance)</span>
                     @else
                         <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill">Unpaid</span>
                     @endif
