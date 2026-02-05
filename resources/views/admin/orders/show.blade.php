@@ -168,6 +168,7 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="mark_fully_paid" value="1">
+                    <input type="hidden" name="status" value="completed">
                     
                     <div class="d-grid">
                         <small class="text-muted mb-2 text-center">Cash Collected? Clear Due Amount.</small>
