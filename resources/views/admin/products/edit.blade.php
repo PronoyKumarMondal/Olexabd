@@ -38,6 +38,28 @@
                 </div>
             </div>
 
+            <div class="card bg-light border-0 mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-percent me-2"></i>Commission Margin</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Commission Percentage (%)</label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="commission_percentage" id="commission_percent" class="form-control" placeholder="e.g. 10" value="{{ $product->commission_percentage }}">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Commission Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">৳</span>
+                                <input type="number" step="0.01" name="commission_amount" id="commission_amount" class="form-control" placeholder="e.g. 100" value="{{ $product->commission_amount }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             @if(auth('admin')->user()->hasPermission('manage_discounts'))
             <div class="card bg-light border-0 mb-3">
                 <div class="card-body">
