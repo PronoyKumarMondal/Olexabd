@@ -84,7 +84,7 @@
 
             <div class="card bg-light border-0 mb-3">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-3"><i class="bi bi-percent me-2"></i>Commission Margin</h6>
+                    <h6 class="fw-bold mb-3"><i class="bi bi-percent me-2"></i>Revenue Margin</h6>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Commission Percentage (%)</label>
