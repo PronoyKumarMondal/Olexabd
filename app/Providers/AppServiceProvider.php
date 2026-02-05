@@ -63,7 +63,13 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\View::composer('*', function ($view) {
             $view->with('globalCategories', \Illuminate\Support\Facades\Cache::remember('global_categories', 3600, function () {
                 // Fixed: Remove 'order' column sort as it doesn't exist
-                return \App\Models\Category::where('is_active', true)->whereNull('parent_id')->orderBy('name')->get();
+                return \App\Models\Category::where('is_active', true)
+                    ->whereNull('parent_id')
+                    ->with(['children' => function($q) {
+                        $q->where('is_active', true)->orderBy('name');
+                    }])
+                    ->orderBy('name')
+                    ->get();
             }));
         });
     }

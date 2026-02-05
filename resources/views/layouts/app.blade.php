@@ -216,19 +216,40 @@
                 <div class="list-group list-group-flush">
                     @if(isset($globalCategories))
                         @foreach($globalCategories as $cat)
-                        <a href="{{ route('shop.category', $cat->slug) }}" class="list-group-item list-group-item-action py-2 px-0 border-0 d-flex align-items-center justify-content-between">
-                            <span class="d-flex align-items-center gap-3">
-                                @if($cat->image)
-                                    <img src="{{ $cat->image }}" class="rounded-circle bg-light border" width="35" height="35" style="object-fit:cover;">
-                                @else
-                                    <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center text-primary" style="width: 35px; height: 35px;">
-                                        <i class="bi bi-grid small"></i>
+                            <div class="list-group-item list-group-item-action py-2 px-0 border-0">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <a href="{{ route('shop.category', $cat->slug) }}" class="text-decoration-none text-dark d-flex align-items-center gap-3 flex-grow-1">
+                                        @if($cat->image)
+                                            <img src="{{ $cat->image }}" class="rounded-circle bg-light border" width="35" height="35" style="object-fit:cover;">
+                                        @else
+                                            <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center text-primary" style="width: 35px; height: 35px;">
+                                                <i class="bi bi-grid small"></i>
+                                            </div>
+                                        @endif
+                                        <span class="fw-medium">{{ $cat->name }}</span>
+                                    </a>
+                                    
+                                    @if($cat->children->count() > 0)
+                                        <a href="#cat-{{ $cat->id }}" data-bs-toggle="collapse" class="text-secondary p-2" role="button" aria-expanded="false">
+                                            <i class="bi bi-chevron-down small"></i>
+                                        </a>
+                                    @else
+                                        <i class="bi bi-chevron-right text-muted small pe-2"></i>
+                                    @endif
+                                </div>
+
+                                @if($cat->children->count() > 0)
+                                    <div class="collapse ps-5 mt-2 border-start ms-3" id="cat-{{ $cat->id }}">
+                                        <div class="list-group list-group-flush">
+                                            @foreach($cat->children as $child)
+                                                <a href="{{ route('shop.category', $child->slug) }}" class="list-group-item list-group-item-action py-1 border-0 small text-secondary">
+                                                    {{ $child->name }}
+                                                </a>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 @endif
-                                <span class="fw-medium">{{ $cat->name }}</span>
-                            </span>
-                            <i class="bi bi-chevron-right text-muted small"></i>
-                        </a>
+                            </div>
                         @endforeach
                     @endif
                 </div>
