@@ -372,7 +372,7 @@
                     <p class="small opacity-75">Subscribe to get special offers and updates.</p>
                     <form class="position-relative">
                         <input type="email" class="form-control rounded-pill bg-white border-0 py-3 ps-4" placeholder="Your email address">
-                        <button class="btn btn-primary rounded-pill position-absolute top-50 end-0 translate-middle-y m-1 px-4 py-2">Join</button>
+                        <button class="btn btn-primary rounded-pill position-absolute top-50 end-0 translate-middle-y me-2 px-4 py-2">Join</button>
                     </form>
                 </div>
             </div>
