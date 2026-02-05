@@ -137,7 +137,7 @@
 
             <!-- Drag & Drop Image Upload -->
             <div class="mb-3">
-                <label class="form-label">Product Image <span class="text-muted small">(Recommended: 600x500px)</span></label>
+                <label class="form-label">Product Image <span class="text-muted small">(Recommended: 800x600px)</span></label>
                 @if($product->image)
                     <div class="mb-2">
                         <img src="{{ $product->image }}" alt="Current Image" style="height: 100px; border-radius: 5px;">
