@@ -87,7 +87,16 @@
                                 <span class="badge bg-success">Paid</span>
                             @elseif($order->payment_status === 'partial')
                                 <span class="badge bg-info text-dark">Partial Paid</span>
-                                <div class="small mt-1 text-muted">adv. paid</div>
+                                <div class="small mt-2">
+                                    <div class="d-flex justify-content-between text-success">
+                                        <span>Paid:</span>
+                                        <strong>৳{{ number_format($order->delivery_charge, 2) }}</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-danger">
+                                        <span>Due:</span>
+                                        <strong>৳{{ number_format($order->total_amount - $order->delivery_charge, 2) }}</strong>
+                                    </div>
+                                </div>
                             @else
                                 <span class="badge bg-warning text-dark">Unpaid</span>
                             @endif
