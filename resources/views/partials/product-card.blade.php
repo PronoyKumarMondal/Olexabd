@@ -8,15 +8,26 @@
             </div>
         @endif
         
-        <!-- Optional Badges (e.g. Hot/New) can be passed as variables or logic here if needed -->
-        <!-- For now, simplifying to standard image view -->
+        <!-- Discount Badge -->
+        @if($product->has_discount)
+            <div class="position-absolute top-0 start-0 m-2">
+                <span class="badge bg-danger rounded-pill px-2 py-1 shadow-sm font-monospace">{{ $product->discount_percentage }}% OFF</span>
+            </div>
+        @endif
     </div>
     <div class="card-body d-flex flex-column">
         <small class="text-muted mb-1">{{ $product->category->name ?? 'General' }}</small>
         <h6 class="fw-bold mb-3 text-truncate">{{ $product->name }}</h6>
         
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <span class="fs-5 fw-bold text-primary">৳{{ $product->price }}</span>
+            @if($product->has_discount)
+                <div class="d-flex align-items-center gap-2">
+                    <span class="fs-5 fw-bold text-danger">৳{{ $product->effective_price }}</span>
+                    <span class="text-muted text-decoration-line-through small">৳{{ $product->price }}</span>
+                </div>
+            @else
+                <span class="fs-5 fw-bold text-primary">৳{{ $product->price }}</span>
+            @endif
         </div>
 
         <div class="row g-2 mt-auto position-relative" style="z-index: 2;">
